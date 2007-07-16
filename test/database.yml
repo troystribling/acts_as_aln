@@ -1,0 +1,7 @@
+mysql:
+  :adapter: mysql
+  :socket: /var/lib/mysql/mysql.sock
+  :username: tester
+  :password: testing
+  :database: plugin_testing
+ 
