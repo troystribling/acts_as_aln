@@ -7,11 +7,11 @@ class CreateHasAncestorModel < ActiveRecord::Migration
     create_table :aln_resources, :force => true, :primary_key => :aln_resource_id do |t|
       t.column :aln_resource_descendant_id, :integer
       t.column :aln_resource_descendant_type, :string
+      t.column :supporter_id, :integer    
+      t.column :supported_type, :string    
       t.column :created_at, :datetime
       t.column :updated_at, :datetime
       t.column :name, :string
-      t.column :supporter_id, :integer    
-      t.column :supported_type, :string    
     end
    
     create_table :aln_connections, :force => true, :primary_key => :aln_connection_id do |t|
