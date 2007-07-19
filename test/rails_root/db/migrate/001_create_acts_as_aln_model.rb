@@ -1,4 +1,4 @@
-class CreateHasAncestorModel < ActiveRecord::Migration
+class CreateActsAsAlnModel < ActiveRecord::Migration
 
   def self.up
 
@@ -9,8 +9,8 @@ class CreateHasAncestorModel < ActiveRecord::Migration
       t.column :aln_resource_descendant_type, :string
       t.column :supporter_id, :integer    
       t.column :supported_type, :string    
-      t.column :created_at, :datetime
-      t.column :updated_at, :datetime
+      t.column :created_at, :timestamp
+      t.column :updated_at, :timestamp
       t.column :name, :string
     end
    
