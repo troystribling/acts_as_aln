@@ -6,7 +6,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "attributes supported by aln_resources" do
 
   before(:all) do
-    @r = AlnResource.new()
+    @r = AlnResource.new(:name => model_data[:aln_resource][:name])
     @r.save
   end
 
@@ -19,7 +19,7 @@ describe "attributes supported by aln_resources" do
   end
   
   it "should identify name of resource as string" do 
-    @r.name.class.should eql(String)
+    @r.name.should eql(model_data[:aln_resource][:name])
   end
   
 end
@@ -49,7 +49,7 @@ end
 describe "aln_resource supporter associations" do
 
   before(:all) do
-    @r = AlnResource.new()
+    @r = AlnResource.new(:supported_type => model_data[:aln_resource][:supported_type])
     @r.save
   end
 
@@ -62,7 +62,7 @@ describe "aln_resource supporter associations" do
   end
 
   it "should be able to specfy supported type as astring" do 
-    @r.supported_type.class.should eql(String)
+    @r.supported_type.should eql(model_data[:aln_resource][:supported_type])
   end
 
 end

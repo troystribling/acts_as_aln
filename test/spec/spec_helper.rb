@@ -28,4 +28,5 @@ Spec::Runner.configure do |config|
   config.use_instantiated_fixtures  = false
   config.fixture_path = File.dirname(__FILE__) + "/../fixtures/"
   config.model_data = File.open(File.dirname(__FILE__) + '/../fixtures/server-1.yml') {|yf| YAML::load(yf)}
+  config.model_data.symbolize_keys!
 end

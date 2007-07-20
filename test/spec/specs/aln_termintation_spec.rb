@@ -12,6 +12,7 @@ end
 describe "aln_termination inheritance associations" do
 
   it "should be able to have descendants" do 
+    should be_implemented
   end
 
   it "should have aln_resource as ancestor" do 
