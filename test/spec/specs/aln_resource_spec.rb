@@ -10,6 +10,10 @@ describe "attributes supported by aln_resources" do
     @r.save
   end
 
+  after(:all) do
+    @r.destroy
+  end 
+  
   it "should identify date and time of object creation" do 
     @r.created_at.class.should eql(Time)
   end
@@ -52,6 +56,10 @@ describe "aln_resource supporter associations" do
     @r = AlnResource.new(:supported_type => model_data[:aln_resource][:supported_type])
     @r.save
   end
+
+  after(:all) do
+    @r.destroy
+  end 
 
   it "should have a supporter" do 
     @r.should respond_to(:supporter)

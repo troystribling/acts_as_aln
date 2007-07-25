@@ -11,10 +11,16 @@ end
 #########################################################################################################
 describe "aln_connection inheritance associations" do
 
+  before(:all) do
+    @c = AlnTermination.new()
+  end
+
   it "should be able to have descendants" do 
+    @c.should respond_to(:get_descendant)
   end
 
   it "should have aln_resource as ancestor" do 
+    @c.should be_descendant_of(:aln_resource)
   end
 
 end
@@ -24,7 +30,17 @@ end
 #########################################################################################################
 describe "aln_connection terminations associations" do
 
+  before(:all) do
+    @c = AlnTermination.new()
+    @c.save
+  end
+
+  after(:all) do
+    @c.destroy
+  end 
+
   it "should be able to have many terminations" do 
+    @c.should respond_to(:aln_terminations)
   end
 
 end

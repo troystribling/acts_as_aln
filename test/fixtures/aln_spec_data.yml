@@ -2,6 +2,12 @@ aln_resource:
   name: Resource
   supported_type: ResourceDescendant 
 
+aln_termination:
+  name: Termination
+  supported_type: TerminationDescendant
+  directionality: Bidirectional
+  direction: ClientFacing 
+
 server:
   name: SERVER-1
   serial_number: 000-888-999
