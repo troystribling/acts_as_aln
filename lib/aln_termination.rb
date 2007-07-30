@@ -16,12 +16,12 @@ class AlnTermination < ActiveRecord::Base
    #### attribute validators
    ###############################################################
    validates_inclusion_of :directionality, 
-                          :in => %w{unidirectional bidirectional},
+                          :in => ['unidirectional', 'bidirectional'],
                           :message => "should be unidirectional or bidirectional",
                           :allow_nil => true
 
    validates_inclusion_of :direction,
-                          :in => %w{client server peer},
+                          :in => ['client', 'server', 'peer'],
                           :message => "should be client, server or peer",
                           :allow_nil => true
 end
