@@ -61,7 +61,7 @@ describe "aln_resource supporter associations" do
     @r.destroy
   end 
 
-  it "should have a supporter" do 
+  it "should have a supporter association" do 
     @r.should respond_to(:supporter)
   end
 
