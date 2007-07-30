@@ -1,9 +1,9 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 #########################################################################################################
-# attributes
+# timeof model create and update
 #########################################################################################################
-describe "attributes supported by aln_resources" do
+describe "attributes indentifying model update time and create time" do
 
   before(:all) do
     @r = AlnResource.new(:name => model_data[:aln_resource][:name])
@@ -14,63 +14,27 @@ describe "attributes supported by aln_resources" do
     @r.destroy
   end 
   
-  it "should identify date and time of object creation" do 
+  it "should identify date and time of model creation in database with created_at attribute" do 
     @r.created_at.class.should eql(Time)
   end
 
-  it "should identify date and time of last object update" do 
+  it "should identify date and time of last object update in databasenwith updated_at attribute" do 
     @r.updated_at.class.should eql(Time)
   end
-  
-  it "should identify name of resource as string" do 
+    
+end
+
+#########################################################################################################
+# 
+#########################################################################################################
+describe "attributes identifying an aln_resource" do
+
+  before(:all) do
+    @r = AlnResource.new(:name => model_data[:aln_resource][:name])
+  end
+
+  it "should identify name of aln_resource as string" do 
     @r.name.should eql(model_data[:aln_resource][:name])
   end
   
-end
-
-#########################################################################################################
-# inheritance associations
-#########################################################################################################
-describe "aln_resource inheritance associations" do
-
-  before(:all) do
-    @r = AlnResource.new()
-  end
-
-  it "should be able to have descendants" do 
-    @r.should respond_to(:get_descendant)
-  end
-
-  it "should have no ancestor" do 
-    @r.ancestor.should be_nil
-  end
-  
-end
-
-#########################################################################################################
-# supporter associations
-#########################################################################################################
-describe "aln_resource supporter associations" do
-
-  before(:all) do
-    @r = AlnResource.new(:supported_type => model_data[:aln_resource][:supported_type])
-    @r.save
-  end
-
-  after(:all) do
-    @r.destroy
-  end 
-
-  it "should have a supporter association" do 
-    @r.should respond_to(:supporter)
-  end
-
-  it "should have many supported" do 
-    @r.should respond_to(:supported)
-  end
-
-  it "should be able to specfy supported type as astring" do 
-    @r.supported_type.should eql(model_data[:aln_resource][:supported_type])
-  end
-
 end
