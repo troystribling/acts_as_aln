@@ -1,20 +1,20 @@
 test:
   adapter: mysql
-  socket: /var/lib/mysql/mysql.sock
+  socket: /var/run/mysqld/mysqld.sock
   username: tester
   password: testing
   database: plugin_testing
 
 development:
   adapter: mysql
-  socket: /var/lib/mysql/mysql.sock
+  socket: /var/run/mysqld/mysqld.sock
   username: tester
   password: testing
   database: plugin_testing
 
 production:
   adapter: mysql
-  socket: /var/lib/mysql/mysql.sock
+  socket: /var/run/mysqld/mysqld.sock
   username: tester
   password: testing
   database: plugin_testing
