@@ -42,7 +42,7 @@ end
 #########################################################################################################
 describe "aln_termination connection associations" do
 
-  it "should be able to be in a connection" do 
+  it "should be able to be in a connection association" do 
     AlnTermination.new().should respond_to(:aln_connection_id)
   end
 
