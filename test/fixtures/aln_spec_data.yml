@@ -1,10 +1,24 @@
 aln_resource:
   name: Resource
-  supported_type: ResourceDescendant 
+
+aln_resource_supporter_1:
+  name: Resource-1
+
+aln_resource_supporter_2:
+  name: Resource-2
+
+aln_termination_supporter_1:
+  name: Termination-1
+  directionality: Bidirectional
+  direction: ClientFacing 
+
+aln_termination_supporter_2:
+  name: Termination-2
+  directionality: Bidirectional
+  direction: ClientFacing 
 
 aln_termination:
   name: Termination
-  supported_type: TerminationDescendant
   directionality: Bidirectional
   direction: ClientFacing 
 
@@ -17,19 +31,16 @@ server_component:
  -
   attr:
    name: SERVER-1-HW 
-   supported_type: Nic
   supported_by_name: Server-1
   supported_by_model: server
  -
   attr:
    name: SERVER-1-APPS
-   supported_type: AppMain 
   supported_by_name: Server-1
   supported_by_model: server
  -
   attr:
    name: SERVER-1-USERS
-   supported_type: User      
   supported_by_name: Server-1
   supported_by_model: server
 
@@ -63,13 +74,11 @@ app_main_component:
  -
   attr:
    name: FANTASTICA-667-USERS 
-   supported_type: UserTermination
   supported_by_name: FANTASTICA-667
   supported_by_model: app_main
  -
   attr:
    name: FANTASTICA-667-NETCON
-   supported_type: TcpSocketTermination 
   supported_by_name: FANTASTICA-667
   supported_by_model: app_main
 
