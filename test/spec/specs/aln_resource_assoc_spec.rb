@@ -25,24 +25,32 @@ end
 describe "aln_resource supporter associations" do
 
   before(:all) do
-    @r = AlnResource.new(:supported_type => model_data[:aln_resource][:supported_type])
-    @r.save
+    @root = AlnResource.new(:name => model_data[:aln_resource][:name])
   end
 
-  after(:all) do
-    @r.destroy
-  end 
-
-  it "should have a supporter associations" do 
-    @r.should respond_to(:supporter)
+  it "should be able to add and iterate through multiple supporter aln_resource associations" do 
+    @root << AlnResource.new(:name => model_data[:aln_resource_supporter_1][:name])
+    @root << AlnResource.new(:name => model_data[:aln_resource_supporter_2][:name])
+    @root.supporter.each_with_index do |s, i|
+      p s,i
+    end
   end
 
-  it "should have many supported" do 
-    @r.should respond_to(:supported)
+  it "should be able to remove a supporter aln_resource associations" do 
   end
 
-  it "should be able to specfy supported type as astring" do 
-    @r.supported_type.should eql(model_data[:aln_resource][:supported_type])
+  it "should be able to remove all supporter aln_resource associations" do 
+  end
+
+  it "should be able to add athrough nd interate multiple supporter aln_resource descendant associations" do 
+    @root << AlnTermination.new(:name => model_data[:aln_termination_supporter_1][:name])
+    @root << AlnTermination.new(:name => model_data[:aln_termination_supporter_2][:name])
+  end
+
+  it "should be able to remove a supporter aln_resource descendant associations" do 
+  end
+
+  it "should be able to remove all supporter aln_resource descendant associations" do 
   end
 
 end
