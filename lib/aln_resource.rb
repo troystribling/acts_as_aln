@@ -21,19 +21,6 @@ class AlnResource < ActiveRecord::Base
 
   #### find specified model with specified attribute value
   def fetch_by_attr(mod, by_attr, attr_val)
-    if mod.to_s.classify.eql?(supported_type)
-      val = supported.detect do |sup| 
-        attr_val == sup.down_cast(mod).send(by_attr)
-      end
-      val.down_cast(mod) unless val.nil?
-    else
-      val = nil
-      supported.each do |sup|
-        val = sup.fetch_by_attr(mod, by_attr, attr_val)
-        break unless val.nil?
-      end
-      val
-    end  
   end
 
   #### interate through support hierarchy
@@ -48,16 +35,17 @@ class AlnResource < ActiveRecord::Base
   def <<(sup)
     if sup.class.eql?(Array)
       sup.each do |s|
-        supported << s.aln_support_hierarchy
+        supported << s.aln_resource
       end        
     else
-      supported << sup.aln_support_hierarchy
+      supported << sup.aln_resource
     end
   end
   
   
   ####################################################################################
   class << self
+
     #### return roots of support hierachy
     def self.find_root
       find_all_by_supporter_id(nil)
