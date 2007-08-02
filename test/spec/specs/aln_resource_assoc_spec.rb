@@ -5,16 +5,12 @@ require File.dirname(__FILE__) + '/../spec_helper'
 #########################################################################################################
 describe "aln_resource inheritance associations" do
 
-  before(:all) do
-    @r = AlnResource.new()
-  end
-
   it "should declare descendant association" do 
-    @r.should declare_descendant_association
+    AlnResource.new().should declare_descendant_association
   end
 
   it "should have no ancestor" do 
-    @r.ancestor.should be_nil
+    AlnResource.new().ancestor.should be_nil
   end
   
 end
