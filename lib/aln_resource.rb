@@ -33,12 +33,13 @@ class AlnResource < ActiveRecord::Base
   
   #### add supported models
   def <<(sup)
+    get_sup = lambda {|s| s.class.eql?(AlnResource) ? s : s.aln_resource}
     if sup.class.eql?(Array)
-      sup.each do |s|
-        supported << s.aln_resource
+      supported << sup.collect do |s|
+        get_sup[s]
       end        
     else
-      supported << sup.aln_resource
+      supported << get_sup[sup]
     end
   end
   
