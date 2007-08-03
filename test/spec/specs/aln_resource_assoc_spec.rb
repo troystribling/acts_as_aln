@@ -10,41 +10,37 @@ describe "aln_resource inheritance associations" do
   end
 
   it "should have no ancestor" do 
-    AlnResource.new().should_not have_ancestor_association
+    AlnResource.new().should_not declare_ancestor_association
   end
   
 end
 
 #########################################################################################################
-# supporter associations
-#########################################################################################################
-describe "aln_resource supporter associations" do
+# supporter association creation and deletion
+####################################################################@supporter_attr_val#####################################
+describe "aln_supporter association creation and deletion" do
 
-  it "should be able to add and iterate through multiple supporter aln_resource associations" do 
-    root = AlnResource.new(:name => model_data[:aln_resource][:name])
-    root << AlnResource.new(:name => model_data[:aln_resource_supporter_1][:name])
-    root << AlnResource.new(:name => model_data[:aln_resource_supporter_2][:name])
-    root.supporter.each_with_index do |s, i|
-      p s,i
-    end
+  it "should be able to add supporter associations for aln_resource models" do 
+    root = AlnResource.new(model_data[:aln_resource])
+    root << AlnResource.new(model_data[:aln_resource_supported_1])
+    root << AlnResource.new(model_data[:aln_resource_supported_2])
+    root.should have_supporter_with_attribute_value(:name, model_data[:aln_resource_supported_1]['name'])
+    root.should have_supporter_with_attribute_value(:name, model_data[:aln_resource_supported_2]['name'])
   end
 
-  it "should be able to remove a supporter aln_resource associations" do 
+  it "should be able to remove a specified supporter association for aln_resource models" do 
   end
 
-  it "should be able to remove all supporter aln_resource associations" do 
+  it "should be able to remove all supporter associations for aln_resource models" do 
   end
 
-  it "should be able to add athrough nd interate multiple supporter aln_resource descendant associations" do 
-    root = AlnResource.new(:name => model_data[:aln_resource][:name])
-    root << AlnTermination.new(:name => model_data[:aln_termination_supporter_1][:name])
-    root << AlnTermination.new(:name => model_data[:aln_termination_supporter_2][:name])
+  it "should be able to add supporter associations for aln_resource decsendant models" do 
   end
 
-  it "should be able to remove a supporter aln_resource descendant associations" do 
+  it "should be able to remove a specified supporter association for aln_resource descendant models" do 
   end
 
-  it "should be able to remove all supporter aln_resource descendant associations" do 
+  it "should be able to remove all supporter associations for aln_resource descendant models" do 
   end
 
 end
