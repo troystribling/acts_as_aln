@@ -3,7 +3,7 @@
 module PlanB
   module SpecMatchers    
 
-      class HaveSupporterWithAttributeValue  #:nodoc:
+      class HaveSupportedWithAttributeValue  #:nodoc:
 
         def initialize(*exp)
           @supporter_attr = exp[0]
@@ -32,8 +32,8 @@ module PlanB
   
       end
     
-      def have_supporter_with_attribute_value(*exp)
-        HaveSupporterWithAttributeValue.new(*exp)
+      def have_supported_with_attribute_value(*exp)
+        HaveSupportedWithAttributeValue.new(*exp)
       end
    
   end
