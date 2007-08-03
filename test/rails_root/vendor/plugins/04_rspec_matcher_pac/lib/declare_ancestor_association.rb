@@ -3,7 +3,7 @@
 module PlanB
   module SpecMatchers    
 
-      class HaveAncestorAssociation  #:nodoc:
+      class DeclareAncestorAssociation  #:nodoc:
     
         def matches?(mod)
           @mod = mod
@@ -24,8 +24,8 @@ module PlanB
   
       end
     
-      def have_ancestor_association
-        HaveAncestorAssociation.new
+      def declare_ancestor_association
+        DeclareAncestorAssociation.new
       end
    
   end

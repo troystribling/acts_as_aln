@@ -3,27 +3,37 @@
 module PlanB
   module SpecMatchers    
 
-      class HasSupporterWithAttributeValue  #:nodoc:
-    
+      class HaveSupporterWithAttributeValue  #:nodoc:
+
+        def initialize(*exp)
+          @supporter_attr = exp[0]
+          @supporter_attr_val = exp[1]
+        end
+
         def matches?(mod)
           @mod = mod
-          mod.supporter.each do |s, i|
-             p s,i
+          result = @mod.supported.detect do |m|
+            @supporter_attr_val == m.send(@supporter_attr)
           end
+          result.nil? ? false : true
         end
         
         def failure_message
-          "#{@mod.class.name} is unable to support descendant relationships\n#{@err_msg}"
+          "supporter with attribute \'#{@supporter_attr}\' = \'#{@supporter_attr_val}\' not found"
         end
   
+        def negative_failure_message
+          "supporter with attribute \'#{@supporter_attr}\' = \'#{@supporter_attr_val}\' found"
+        end
+
         def description
-          "verify descendant association associations are declared by model"
+          "locate specified supporter"
         end
   
       end
     
-      def has_supporter_with_attribute_value
-        HasSupporterWithAttributeValue.new
+      def have_supporter_with_attribute_value(*exp)
+        HaveSupporterWithAttributeValue.new(*exp)
       end
    
   end
