@@ -33,16 +33,14 @@ class AlnResource < ActiveRecord::Base
   
   #### add supported models
   def <<(sup)
-    get_sup = lambda {|s| s.class.eql?(AlnResource) ? s : s.aln_resource}
     if sup.class.eql?(Array)
       supported << sup.collect do |s|
-        get_sup[s]
+        self.class.get_as_aln_resource(s)
       end        
     else
-      supported << get_sup[sup]
+      supported << self.class.get_as_aln_resource(sup)
     end
-  end
-  
+  end  
   
   ####################################################################################
   class << self
@@ -51,6 +49,17 @@ class AlnResource < ActiveRecord::Base
     def self.find_root
       find_all_by_supporter_id(nil)
     end
+
+    #### return model as aln_resource
+    def get_as_aln_resource(mod)
+      if mod.class.eql?(AlnResource)
+        mod 
+      else
+        mod.respond_to?(:aln_resource) ? mod.aln_resource :
+          raise(PlanB::InvalidType, "target model is invalid")        
+      end
+    end
+    
   end
-      
+        
 end
