@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 #########################################################################################################
-# timeof model create and update
+# time of model create and update
 #########################################################################################################
 describe "attributes indentifying model update time and create time" do
 
@@ -25,9 +25,9 @@ describe "attributes indentifying model update time and create time" do
 end
 
 #########################################################################################################
-# 
+# attributes identifying aln_resource models
 #########################################################################################################
-describe "attributes identifying an aln_resource" do
+describe "attributes identifying aln_resource models" do
 
   before(:all) do
     @r = AlnResource.new(:name => model_data[:aln_resource][:name])

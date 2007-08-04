@@ -1,8 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 #########################################################################################################
-# directionality
-#########################################################################################################
 describe "aln_termination directionality attribute" do
 
   it "should be valid for value nil" do 
@@ -23,8 +21,6 @@ describe "aln_termination directionality attribute" do
 
 end
 
-#########################################################################################################
-# direction
 #########################################################################################################
 describe "aln_termination direction attribute" do
 

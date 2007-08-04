@@ -1,8 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 #########################################################################################################
-# inheritance relations
-#########################################################################################################
 describe "aln_connection inheritance associations" do
 
   it "should declare descendant association" do 
@@ -15,8 +13,6 @@ describe "aln_connection inheritance associations" do
 
 end
 
-#########################################################################################################
-# termination associations
 #########################################################################################################
 describe "aln_connection termination associations" do
 
