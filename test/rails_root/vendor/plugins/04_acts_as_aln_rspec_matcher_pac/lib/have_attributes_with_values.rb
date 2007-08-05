@@ -3,14 +3,14 @@
 module PlanB
   module SpecMatchers    
 
-      class EqlAttributes  #:nodoc:
+      class HaveAttributesWithValues  #:nodoc:
     
         def initialize(expected)
           @expected = expected
         end
     
-        def matches?(attr)
-          @attr = attr
+        def matches?(mod)
+          @attr = mod.attributes
           if @attr.class.eql?(Hash)
             result = @expected.find do |key, val|
               val != @attr[key]
@@ -39,8 +39,8 @@ module PlanB
   
       end
     
-      def eql_attributes(expected)
-        EqlAttributes.new(expected)
+      def hav_attributes_with_vales(expected)
+        HaveAttributesWithValues.new(expected)
       end
    
   end
