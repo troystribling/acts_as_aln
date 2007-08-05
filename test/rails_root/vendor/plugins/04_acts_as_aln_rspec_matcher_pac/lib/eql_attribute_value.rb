@@ -1,5 +1,5 @@
 ############################################################
-# match attributes of model against hash of expected values
+# match attribute of models against expected value
 module PlanB
   module SpecMatchers    
 
