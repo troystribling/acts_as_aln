@@ -20,7 +20,7 @@ class AlnResource < ActiveRecord::Base
   end
 
   #### find specified model with specified attribute value
-  def fetch_by_attr(mod, by_attr, attr_val)
+  def find_supported_by_attr(mod, by_attr, attr_val)
   end
 
   #### interate through support hierarchy
@@ -41,6 +41,18 @@ class AlnResource < ActiveRecord::Base
       supported << self.class.get_as_aln_resource(sup)
     end
   end  
+
+  #### delete specified supported models
+  def delete_supported(attr_name, attr_value)
+    self.supported.delete_if do |m|
+      attr_value == m.send(attr_name)
+    end
+  end
+
+  #### delete all supported models
+  def clear_supported
+    self.supported.clear
+  end
   
   ####################################################################################
   class << self

@@ -49,9 +49,23 @@ describe "aln_resource supported association creation and deletion" do
   end
 
   it "should be able to remove a specified supported association for aln_resource models" do 
+    root = AlnResource.new(model_data[:aln_resource])
+    root << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2])]
+    root.should have_supported_with_attribute_value(:name, model_data[:aln_resource_supported_1]['name'])
+    root.should have_supported_with_attribute_value(:name, model_data[:aln_resource_supported_2]['name'])
+    root.delete_supported(:name, model_data[:aln_resource_supported_1]['name'])
+    root.should_not have_supported_with_attribute_value(:name, model_data[:aln_resource_supported_1]['name'])
+    root.should have_supported_with_attribute_value(:name, model_data[:aln_resource_supported_2]['name'])
   end
 
   it "should be able to remove all supported associations for aln_resource models" do 
+    root = AlnResource.new(model_data[:aln_resource])
+    root << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2])]
+    root.should have_supported_with_attribute_value(:name, model_data[:aln_resource_supported_1]['name'])
+    root.should have_supported_with_attribute_value(:name, model_data[:aln_resource_supported_2]['name'])
+    root.clear_supported
+    root.should_not have_supported_with_attribute_value(:name, model_data[:aln_resource_supported_1]['name'])
+    root.should_not have_supported_with_attribute_value(:name, model_data[:aln_resource_supported_2]['name'])
   end
 
   it "should be able to add supported associations for aln_resource decsendant models" do 
@@ -70,11 +84,29 @@ describe "aln_resource supported association creation and deletion" do
   end
 
   it "should be able to remove a specified supported association for aln_resource descendant models" do 
+    root = AlnResource.new(model_data[:aln_resource])
+    root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2])]
+    root.should have_supported_with_attribute_value(:name, model_data[:aln_termination_supported_1]['name'])
+    root.should have_supported_with_attribute_value(:name, model_data[:aln_termination_supported_2]['name'])
+    root.delete_supported(:name, model_data[:aln_termination_supported_1]['name'])
+    root.should_not have_supported_with_attribute_value(:name, model_data[:aln_termination_supported_1]['name'])
+    root.should have_supported_with_attribute_value(:name, model_data[:aln_termination_supported_2]['name'])
   end
 
   it "should be able to remove all supported associations for aln_resource descendant models" do 
+    root = AlnResource.new(model_data[:aln_resource])
+    root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2])]
+    root.should have_supported_with_attribute_value(:name, model_data[:aln_termination_supported_1]['name'])
+    root.should have_supported_with_attribute_value(:name, model_data[:aln_termination_supported_2]['name'])
+    root.clear_supported
+    root.should_not have_supported_with_attribute_value(:name, model_data[:aln_termination_supported_1]['name'])
+    root.should_not have_supported_with_attribute_value(:name, model_data[:aln_termination_supported_2]['name'])
   end
 
+end
+
+#########################################################################################################
+describe "retreival of supported models from supoorting aln_resorce model" do
 end
 
 #########################################################################################################

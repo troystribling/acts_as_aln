@@ -25,11 +25,6 @@ module PlanB #:nodoc
     
             target.class_eval <<-do_eval
 
-              def descendant_initialize(*args)
-                ancestor.supported_type = \'#{params[:of]}\'.to_s.classify if args[0][:supported_type].nil?
-                aln_support_hierarchy_initialize(*args) if respond_to?(:aln_support_hierarchy_initialize)
-              end
-            
             do_eval
     
           end           

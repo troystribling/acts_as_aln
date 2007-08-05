@@ -19,15 +19,15 @@ module PlanB
         end
         
         def failure_message
-          "supporter with attribute \'#{@supporter_attr}\' = \'#{@supporter_attr_val}\' not found"
+          "supported with attribute \'#{@supporter_attr}\' = \'#{@supporter_attr_val}\' not found"
         end
   
         def negative_failure_message
-          "supporter with attribute \'#{@supporter_attr}\' = \'#{@supporter_attr_val}\' found"
+          "supported with attribute \'#{@supporter_attr}\' = \'#{@supporter_attr_val}\' found"
         end
 
         def description
-          "locate specified supporter"
+          "locate specified supported"
         end
   
       end
