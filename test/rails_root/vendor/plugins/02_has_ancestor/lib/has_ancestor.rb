@@ -11,15 +11,15 @@ module PlanB
     ####################################################
     module Ancestor 
 
-      ####################################################
+      ###################################################
       def self.included(base) #:nodoc
         base.extend(ClassMethods)  
       end
   
-      ####################################################
+      ###################################################
       module ClassMethods
   
-        ####################################################
+        #################################################
         # Declare a model has descendants.
         def has_descendants
           self.primary_key = "#{self.name.tableize.singularize}_id"
@@ -28,7 +28,7 @@ module PlanB
           InstanceMethods::AncestorMethods.add_methods(self)
         end
         
-        ####################################################
+        ##################################################
         # Declare a model ancestor.
         def has_ancestor(args) 
           self.primary_key = "#{self.name.tableize.singularize}_id"
@@ -42,7 +42,7 @@ module PlanB
       ####################################################
       module InstanceMethods
 
-        ####################################################
+        ##################################################
         module AncestorAndDescendantMethods 
     
           ####################################################
@@ -98,7 +98,7 @@ module PlanB
 
         end
         
-        ####################################################
+        ##################################################
         module AncestorMethods #:nodoc :all
     
           def self.add_methods(target)
@@ -115,7 +115,7 @@ module PlanB
     
         end
   
-        ####################################################
+        ##################################################
         module DescendantMethods #:nodoc :all
     
           def self.add_methods(target, parent)
@@ -146,11 +146,15 @@ module PlanB
                 get_#{parent}.update
               end
     
-              def method_missing(meth, *args, &blk)  
+              def method_missing(meth, *args, &blk) 
                 begin
                   super
                 rescue NoMethodError
-                  get_#{parent}.send(meth, *args, &blk)
+                  if self.respond_to?(:descendant_method_missing)
+                    self.descendant_method_missing(meth, *args, &blk)
+                  else
+                    get_#{parent}.send(meth, *args, &blk)
+                  end
                 end
               end
     
@@ -158,8 +162,12 @@ module PlanB
                 begin
                   super
                 rescue NoMethodError
-                  #{parent.to_s.classify}.send(meth, *args, &blk)
-                end
+                  if self.respond_to?(:descendant_method_missing)
+                    self.descendant_method_missing(meth, *args, &blk)
+                  else
+                    #{parent.to_s.classify}.send(meth, *args, &blk)
+                  end
+                 end
               end
     
             do_eval
