@@ -106,7 +106,53 @@ describe "aln_resource supported association creation and deletion" do
 end
 
 #########################################################################################################
-describe "retreival of supported models from supoorting aln_resorce model" do
+describe "retreival of supported models from supporting aln_resorce model" do
+
+  before(:all) do
+    @root = AlnResource.new(model_data[:aln_resource])
+    @root << [
+              AlnResource.new(model_data[:aln_resource_supported_1]),
+              AlnResource.new(model_data[:aln_resource_supported_2]),
+              AlnResource.new(model_data[:aln_resource_supported_3]),
+              AlnTermination.new(model_data[:aln_termination_supported_1]),
+              AlnTermination.new(model_data[:aln_termination_supported_2]),
+              AlnTermination.new(model_data[:aln_termination_supported_3])
+             ]
+  end
+
+  it "should be possible to retrieve a specified supported aln_resource model" do 
+    mod = root.find_supported(:name, model_data[:aln_resource_supported_1]['name'])
+    mod.should have_attributes_with_values(model_data[:aln_resource_supported_1])
+    mod.class.should eql(AlnResource)
+  end
+
+  it "should be possible to retrieve a specified supported aln_resource descendant model" do 
+    mod = root.find_supported(:name, model_data[:aln_termination_supported_1]['name'])
+    mod.should have_attributes_with_values(model_data[:aln_termination_supported_1])
+    mod.class.should eql(AlnTermination)
+  end
+
+  it "should be possible to retrieve all specified supported aln_resource models" do 
+    mods = root.find_all_supported(:name, model_data[:aln_resource_supported_2]['name'])
+    mods.should have_attributes_with_values(model_data[:aln_resource_supported_2])
+    mods.length.should eql(2)
+    mods.each do |mod|
+      mod.class.should eql(AlnResource)
+    end
+  end
+
+  it "should be possible to retrieve all specified supported aln_resource descendant models" do 
+    mods = root.find_all_supported(:name, model_data[:aln_termination_supported_2]['name'])
+    mods.should have_attributes_with_values(model_data[:aln_termination_supported_2])
+    mods.length.should eql(2)
+    mods.each do |mod|
+      mod.class.should eql(AlnTermination)
+    end
+  end
+
+  it "should be possible to retrieve all supported models" do 
+  end
+
 end
 
 #########################################################################################################
