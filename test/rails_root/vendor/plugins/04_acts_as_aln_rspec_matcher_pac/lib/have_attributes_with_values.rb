@@ -9,37 +9,40 @@ module PlanB
           @expected = expected
         end
     
-        def matches?(mod)
-          @attr = mod.attributes
-          if @attr.class.eql?(Hash)
-            result = @expected.find do |key, val|
-              val != @attr[key]
+        def matches?(mod)  
+          if mod.class.eql?(Array)
+            result = mod.find do |m|
+              check_model(m) == false
             end
             result.nil? ? true : false
           else
-            false
+            check_model(mod)
           end
         end
         
+        def check_model(mod)
+          @attr = mod.attributes
+          result = @expected.find do |key, val|
+            val != @attr[key]
+          end
+          result.nil? ? true : false
+        end
+        
         def failure_message
-          if @attr.class.eql?(Hash)
-            error_msg = "Attribute match error\n"
-            @expected.each do |key, val|
-               error_msg << " attribute value '#{@attr[key]}' for '#{key}' expecting '#{val}'\n" 
-            end
-          else
-            error_msg = "expected hash for match got '#{@attr.class.name}'"
+          error_msg = "Attribute match error\n"
+          @expected.each do |key, val|
+             error_msg << " attribute value '#{@attr[key]}' for '#{key}' expecting '#{val}'\n" 
           end
           error_msg
         end
   
         def description
-          "equal attributes"
+          "check model attribute values"
         end
   
       end
     
-      def hav_attributes_with_vales(expected)
+      def have_attributes_with_values(expected)
         HaveAttributesWithValues.new(expected)
       end
    
