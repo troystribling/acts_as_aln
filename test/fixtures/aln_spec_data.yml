@@ -7,28 +7,20 @@ aln_resource_supported_1:
 aln_resource_supported_2:
   name: Resource-2
 
-aln_resource_supported_3:
-  name: Resource-2
-
 aln_termination_supported_1:
   name: Termination-1
-  directionality: Bidirectional
-  direction: ClientFacing 
+  directionality: bidirectional
+  direction: client 
 
 aln_termination_supported_2:
   name: Termination-2
-  directionality: Bidirectional
-  direction: ClientFacing 
-
-aln_termination_supported_3:
-  name: Termination-2
-  directionality: Bidirectional
-  direction: ClientFacing 
+  directionality: bidirectional
+  direction: client 
 
 aln_termination:
   name: Termination
-  directionality: Bidirectional
-  direction: ClientFacing 
+  directionality: bidirectional
+  direction: client 
 
 server:
   name: SERVER-1
