@@ -38,13 +38,23 @@ class AlnResource < ActiveRecord::Base
     end
   end  
 
+  #### destroy model
+  def destroy
+    if AlnResource.exists?(self.id)
+      super
+      self.supported.each do |s|
+        s.to_descendant.destroy
+      end
+    end
+  end
+
   #### delete specified supported model
-  def delete_supported(conds)    
-    self.supported.delete(self.supported.find(:first, :conditions => conds))
+  def destroy_supported(conds)  
+    self.supported.find(:first, :conditions => conds).destroy
   end
 
   #### delete all specified supported models
-  def delete_all_supported(conds)
+  def destroy_all_supported(conds)
     self.supported.delete(self.supported.find(:all, :conditions => conds))
   end
 
@@ -69,8 +79,10 @@ class AlnResource < ActiveRecord::Base
   class << self
 
     #### return roots of support hierachy
-    def self.find_root
-      find_all_by_supporter_id(nil)
+    def find_root
+      find_all_by_supporter_id(nil).collect do |r|
+        r.to_descendant
+      end
     end
 
     #### return model as aln_resource
