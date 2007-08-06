@@ -31,7 +31,26 @@ describe "accessing aln_resource ancestor from descendant models" do
 end
 
 #########################################################################################################
-describe "querry for root of support hierarcy" do
+describe "query for root of support hierarcy" do
+
+  it "should be able to retrieve the root of the hierarcy for aln_resource models" do 
+    root = AlnResource.new(model_data[:aln_resource])
+    root << AlnResource.new(model_data[:aln_resource_supported_1])
+    root << AlnResource.new(model_data[:aln_resource_supported_2])
+    root.save!
+    root_chk = AlnResource.find_root
+    root_chk.id.should eql(root.id)
+    root_chk.should have_attributes_with_values(model_data[:aln_resource])
+    root_chk.supporter.should be_nil
+  end
+
+  it "should be able to retrieve the root of the hierarcy for aln_resource descendant models" do 
+    root = AlnTermination.new(model_data[:aln_resource])
+    root << AlnResource.new(model_data[:aln_resource_supported_1])
+    root << AlnResource.new(model_data[:aln_resource_supported_2])
+    loc_root.save
+  end
+
 end
 
 #########################################################################################################
