@@ -19,10 +19,6 @@ class AlnResource < ActiveRecord::Base
     supported.each {|sup| sup.save_hierarchy}
   end
 
-  #### find specified model with specified attribute value
-  def find_supported_by_attr(mod, by_attr, attr_val)
-  end
-
   #### interate through support hierarchy
   def each
     yield self
@@ -42,11 +38,14 @@ class AlnResource < ActiveRecord::Base
     end
   end  
 
-  #### delete specified supported models
-  def delete_supported(attr_name, attr_value)
-    self.supported.delete_if do |m|
-      attr_value == m.send(attr_name)
-    end
+  #### delete specified supported model
+  def delete_supported(conds)    
+    self.supported.delete(self.supported.find(:first, :conditions => conds))
+  end
+
+  #### delete all specified supported models
+  def delete_all_supported(conds)
+    self.supported.delete(self.supported.find(:all, :conditions => conds))
   end
 
   #### delete all supported models
@@ -54,6 +53,18 @@ class AlnResource < ActiveRecord::Base
     self.supported.clear
   end
   
+  #### find specified supported model
+  def find_supported(conds)
+    self.supported.find(:first, :conditions => conds).to_descendant
+  end
+
+  #### find all specified supported models
+  def find_all_supported(conds)
+    self.supported.find(:all, :conditions => conds).collect do |m|
+      m.to_descendant
+    end
+  end
+
   ####################################################################################
   class << self
 
