@@ -150,39 +150,39 @@ describe "supported lifecycle with aln_resource descendant supporter and aln_res
     root.destroy
   end
 
-#  it "should be able to delete multiple specified supported models without deleting supporter or unintended supported" do 
-#    root = AlnTermination.new(model_data[:aln_resource])
-#    s1 = AlnTermination.new(model_data[:aln_resource_supported_1])
-#    s2 = AlnTermination.new(model_data[:aln_resource_supported_1])
-#    s3 = AlnTermination.new(model_data[:aln_resource_supported_2])
-#    root << [s1, s2, s3]
-#    root.save    
-#    AlnTermination.should exist(s1.id)   
-#    AlnTermination.should exist(s2.id)   
-#    AlnTermination.should exist(s3.id)   
-#    root.destroy_all_supported("name = '#{model_data[:aln_resource_supported_1]['name']}'")
-#    AlnTermination.should_not exist(s1.id)   
-#    AlnTermination.should_not exist(s2.id)   
-#    AlnTermination.should exist(s3.id)   
-#    root.destroy
-#  end
-#
-#  it "should be able to delete all supported models without deleting supporter" do 
-#    root = AlnTermination.new(model_data[:aln_resource])
-#    s1 = AlnTermination.new(model_data[:aln_resource_supported_1])
-#    s2 = AlnTermination.new(model_data[:aln_resource_supported_1])
-#    s3 = AlnTermination.new(model_data[:aln_resource_supported_2])
-#    root << [s1, s2, s3]
-#    root.save    
-#    AlnTermination.should exist(s1.id)   
-#    AlnTermination.should exist(s2.id)   
-#    AlnTermination.should exist(s3.id)   
-#    root.clear_supported
-#    AlnTermination.should_not exist(s1.id)   
-#    AlnTermination.should_not exist(s2.id)   
-#    AlnTermination.should_not exist(s3.id)   
-#    root.destroy
-#  end
+  it "should be able to delete multiple specified supported models without deleting supporter or unintended supported" do 
+    root = AlnTermination.new(model_data[:aln_resource])
+    s1 = AlnTermination.new(model_data[:aln_resource_supported_1])
+    s2 = AlnTermination.new(model_data[:aln_resource_supported_1])
+    s3 = AlnTermination.new(model_data[:aln_resource_supported_2])
+    root << [s1, s2, s3]
+    root.save    
+    AlnTermination.should exist(s1.id)   
+    AlnTermination.should exist(s2.id)   
+    AlnTermination.should exist(s3.id)   
+    root.destroy_all_supported("name = '#{model_data[:aln_resource_supported_1]['name']}'")
+    AlnTermination.should_not exist(s1.id)   
+    AlnTermination.should_not exist(s2.id)   
+    AlnTermination.should exist(s3.id)   
+    root.destroy
+  end
+
+  it "should be able to delete all supported models without deleting supporter" do 
+    root = AlnTermination.new(model_data[:aln_resource])
+    s1 = AlnTermination.new(model_data[:aln_resource_supported_1])
+    s2 = AlnTermination.new(model_data[:aln_resource_supported_1])
+    s3 = AlnTermination.new(model_data[:aln_resource_supported_2])
+    root << [s1, s2, s3]
+    root.save    
+    AlnTermination.should exist(s1.id)   
+    AlnTermination.should exist(s2.id)   
+    AlnTermination.should exist(s3.id)   
+    root.clear_supported
+    AlnTermination.should_not exist(s1.id)   
+    AlnTermination.should_not exist(s2.id)   
+    AlnTermination.should_not exist(s3.id)   
+    root.destroy
+  end
 
 end
 
@@ -193,7 +193,7 @@ describe "query for root of support hierarcy" do
     root = AlnResource.new(model_data[:aln_resource])
     root << AlnResource.new(model_data[:aln_resource_supported_1])
     root << AlnResource.new(model_data[:aln_resource_supported_2])
-    root.save!
+    root.save
     root_chk = AlnResource.find_root.first
     root_chk.id.should eql(root.id)
     root_chk.should have_attributes_with_values(model_data[:aln_resource])
@@ -206,7 +206,7 @@ describe "query for root of support hierarcy" do
     root = AlnTermination.new(model_data[:aln_termination])
     root << AlnResource.new(model_data[:aln_resource_supported_1])
     root << AlnResource.new(model_data[:aln_resource_supported_2])
-    root.save!
+    root.save
     root_chk = AlnTermination.find_root.first
     root_chk.id.should eql(root.id)
     root_chk.should have_attributes_with_values(model_data[:aln_termination])
@@ -218,20 +218,43 @@ describe "query for root of support hierarcy" do
 end
 
 #########################################################################################################
-describe "queries for supported models from supporter aln_resource" do
+describe "queries for supported aln_resource model attributes from supporter aln_resource" do
 
   before(:all) do
     @root = AlnResource.new(model_data[:aln_resource])
     @root << [
               AlnResource.new(model_data[:aln_resource_supported_1]),
               AlnResource.new(model_data[:aln_resource_supported_2]),
-              AlnResource.new(model_data[:aln_resource_supported_3]),
               AlnTermination.new(model_data[:aln_termination_supported_1]),
               AlnTermination.new(model_data[:aln_termination_supported_2]),
-              AlnTermination.new(model_data[:aln_termination_supported_3])
              ]
+    @root.save
   end
 
+  after(:all) do
+    @root.destroy
+  end
+  
+end
+
+#########################################################################################################
+describe "queries for supported aln_resource descendant model attributes from supporter aln_resource descendant" do
+
+  before(:all) do
+    @root = AlnTermination.new(model_data[:aln_resource])
+    @root << [
+              AlnResource.new(model_data[:aln_resource_supported_1]),
+              AlnResource.new(model_data[:aln_resource_supported_2]),
+              AlnTermination.new(model_data[:aln_termination_supported_1]),
+              AlnTermination.new(model_data[:aln_termination_supported_2]),
+             ]
+    @root.save
+  end
+
+  after(:all) do
+    @root.destroy
+  end
+  
 end
 
 #########################################################################################################
