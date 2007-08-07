@@ -50,17 +50,21 @@ class AlnResource < ActiveRecord::Base
 
   #### delete specified supported model
   def destroy_supported(conds)  
-    self.supported.find(:first, :conditions => conds).destroy
+    self.supported.find(:first, :conditions => conds).to_descendant.destroy
   end
 
   #### delete all specified supported models
   def destroy_all_supported(conds)
-    self.supported.delete(self.supported.find(:all, :conditions => conds))
+    self.supported.find(:all, :conditions => conds).each do |s|
+      s.to_descendant.destroy
+    end
   end
 
   #### delete all supported models
   def clear_supported
-    self.supported.clear
+    self.supported.each do |s|
+      s.to_descendant.destroy
+    end
   end
   
   #### find specified supported model
@@ -70,8 +74,8 @@ class AlnResource < ActiveRecord::Base
 
   #### find all specified supported models
   def find_all_supported(conds)
-    self.supported.find(:all, :conditions => conds).collect do |m|
-      m.to_descendant
+    self.supported.find(:all, :conditions => conds).collect do |s|
+      s.to_descendant
     end
   end
 
