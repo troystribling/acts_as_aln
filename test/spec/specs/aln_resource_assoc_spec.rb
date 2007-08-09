@@ -136,7 +136,7 @@ describe "supported lifecycle with aln_resource descendant supporter and aln_res
     AlnTermination.should_not exist(s2.id)   
   end
 
-  it "should be able to delete a specified supported model without deleting supporter or other supported" do 
+  it "should be able to delete a specified supported model using ancestor attributes without deleting supporter or other supported" do 
     root = AlnTermination.new(model_data[:aln_resource])
     s1 = AlnTermination.new(model_data[:aln_resource_supported_1])
     s2 = AlnTermination.new(model_data[:aln_resource_supported_1])
@@ -150,7 +150,7 @@ describe "supported lifecycle with aln_resource descendant supporter and aln_res
     root.destroy
   end
 
-  it "should be able to delete multiple specified supported models without deleting supporter or unintended supported" do 
+  it "should be able to delete multiple specified  using ancestor attributes supported models without deleting supporter or unintended supported" do 
     root = AlnTermination.new(model_data[:aln_resource])
     s1 = AlnTermination.new(model_data[:aln_resource_supported_1])
     s2 = AlnTermination.new(model_data[:aln_resource_supported_1])
@@ -167,6 +167,37 @@ describe "supported lifecycle with aln_resource descendant supporter and aln_res
     root.destroy
   end
 
+  it "should be able to delete a specified supported model using model attributes without deleting supporter or other supported" do 
+    root = AlnTermination.new(model_data[:aln_resource])
+    s1 = AlnTermination.new(model_data[:aln_resource_supported_1])
+    s2 = AlnTermination.new(model_data[:aln_resource_supported_1])
+    root << [s1, s2]
+    root.save    
+    AlnTermination.should exist(s1.id)   
+    AlnTermination.should exist(s2.id)   
+    root.destroy_supported("direction = '#{model_data[:aln_resource_supported_1]['direction']}'")
+    AlnTermination.should_not exist(s1.id)   
+    AlnTermination.should exist(s2.id)   
+    root.destroy
+  end
+
+#  it "should be able to delete multiple specified  using ancestor model supported models without deleting supporter or unintended supported" do 
+#    root = AlnTermination.new(model_data[:aln_resource])
+#    s1 = AlnTermination.new(model_data[:aln_resource_supported_1])
+#    s2 = AlnTermination.new(model_data[:aln_resource_supported_1])
+#    s3 = AlnTermination.new(model_data[:aln_resource_supported_2])
+#    root << [s1, s2, s3]
+#    root.save    
+#    AlnTermination.should exist(s1.id)   
+#    AlnTermination.should exist(s2.id)   
+#    AlnTermination.should exist(s3.id)   
+#    root.destroy_all_supported("name = '#{model_data[:aln_resource_supported_1]['name']}'")
+#    AlnTermination.should_not exist(s1.id)   
+#    AlnTermination.should_not exist(s2.id)   
+#    AlnTermination.should exist(s3.id)   
+#    root.destroy
+#  end
+#
   it "should be able to delete all supported models without deleting supporter" do 
     root = AlnTermination.new(model_data[:aln_resource])
     s1 = AlnTermination.new(model_data[:aln_resource_supported_1])

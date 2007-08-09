@@ -1,3 +1,21 @@
+module PlanB #:nodoc
+  module Aln #:nodoc
+    module Resource #:nodoc
+
+      ####################################################
+      def self.included(base)
+        base.extend(ClassMethods)  
+      end
+
+      ####################################################
+      module ClassMethods
+
+      end
+  
+    end
+  end
+end
+
 class AlnResource < ActiveRecord::Base
 
   ####################################################################################

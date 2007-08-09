@@ -9,12 +9,12 @@ aln_resource_supported_2:
 
 aln_termination_supported_1:
   name: Termination-1
-  directionality: bidirectional
-  direction: client 
+  directionality: unidirectional
+  direction: server 
 
 aln_termination_supported_2:
   name: Termination-2
-  directionality: bidirectional
+  directionality: unidirectional
   direction: client 
 
 aln_termination:
