@@ -10,8 +10,8 @@ module PlanB #:nodoc
       ####################################################
       module ClassMethods
 
-        def acts_as_supporter(params)
-          InstanceMethods::AlnSupporterMethods.add_methods(self, params)
+        def acts_as_aln_resource
+          InstanceMethods::AlnResourceMethods.add_methods(self)
         end
 
       end
@@ -19,9 +19,9 @@ module PlanB #:nodoc
       ####################################################
       module InstanceMethods
 
-        module AlnSupporterMethods
+        module AlnResourceMethods
     
-          def self.add_methods(target, params)
+          def self.add_methods(target)
     
             target.class_eval <<-do_eval
 

@@ -6,7 +6,7 @@ class AlnTermination < ActiveRecord::Base
    ###############################################################
    has_descendants
    has_ancestor :named => :aln_resource   
-
+   
    ###############################################################
    #### declare terminates association with aln_connection
    ###############################################################

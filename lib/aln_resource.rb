@@ -1,26 +1,7 @@
-module PlanB #:nodoc
-  module Aln #:nodoc
-    module Resource #:nodoc
-
-      ####################################################
-      def self.included(base)
-        base.extend(ClassMethods)  
-      end
-
-      ####################################################
-      module ClassMethods
-
-      end
-  
-    end
-  end
-end
-
 class AlnResource < ActiveRecord::Base
 
   ####################################################################################
-  #### declare descendant associations and ancestor association
-  #### with aln_thing
+  #### declare descendant associations 
   ####################################################################################
   has_descendants
   
@@ -58,23 +39,17 @@ class AlnResource < ActiveRecord::Base
 
   #### destroy model
   def destroy
-    if AlnResource.exists?(self.id)
-      super
-      self.supported.each do |s|
-        s.to_descendant.destroy
-      end
-    end
-  end
-
-  #### delete specified supported model
-  def destroy_supported(conds)  
-    self.supported.find(:first, :conditions => conds).to_descendant.destroy
+    super
+    clear_supported
   end
 
   #### delete all specified supported models
-  def destroy_all_supported(conds)
-    self.supported.find(:all, :conditions => conds).each do |s|
-      s.to_descendant.destroy
+  def destroy_supported(model, *args)
+    goner = find_supported(model, *args)
+    if goner.class.eql?(Array)
+      goner.each {|g| g.destroy}
+    else
+      goner.destroy unless goner.nil? 
     end
   end
 
@@ -84,17 +59,13 @@ class AlnResource < ActiveRecord::Base
       s.to_descendant.destroy
     end
   end
-  
-  #### find specified supported model
-  def find_supported(conds)
-    self.supported.find(:first, :conditions => conds).to_descendant
-  end
 
-  #### find all specified supported models
-  def find_all_supported(conds)
-    self.supported.find(:all, :conditions => conds).collect do |s|
-      s.to_descendant
+  def find_supported(model, *args)
+    if args.first.eql?(:first) || args.first.eql?(:all)
+      conditions << "aln_resource.supporter_id = #{id}"
+      args[1].include?(:conditions) ? args[1][:conditions] << ' and ' + conditions : args[1][:conditions] = conditions
     end
+    model.find(*args)
   end
 
   ####################################################################################

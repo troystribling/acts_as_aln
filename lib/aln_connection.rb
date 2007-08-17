@@ -5,7 +5,7 @@ class AlnConnection < ActiveRecord::Base
    #### with aln_resource
    ###############################################################
    has_descendants
-   has_ancestor :named => :aln_resource
+   has_ancestor :named => :aln_resource   
 
    ###############################################################
    #### declare termination associations with aln_terminations
