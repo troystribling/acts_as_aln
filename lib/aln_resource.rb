@@ -60,22 +60,29 @@ class AlnResource < ActiveRecord::Base
     end
   end
 
+  #### find specified supported
   def find_supported(model, *args)
-    if args.first.eql?(:first) || args.first.eql?(:all)
-      conditions << "aln_resource.supporter_id = #{id}"
-      args[1].include?(:conditions) ? args[1][:conditions] << ' and ' + conditions : args[1][:conditions] = conditions
-    end
-    model.find(*args)
+    self.class.find_model_by_condition("aln_resources.supporter_id = #{id}", model, *args)
   end
 
   ####################################################################################
   class << self
 
     #### return roots of support hierachy
-    def find_root
-      find_all_by_supporter_id(nil).collect do |r|
-        r.to_descendant
+    def find_model_root(model, *args)
+      find_model_by_condition("aln_resources.supporter_id is NULL", model, *args)
+    end
+
+    #### find model with specified condition
+    def find_model_by_condition(condition, model, *args)
+      if args.first.eql?(:first) || args.first.eql?(:all)
+        if args[1].nil?
+          args[1] = {:conditions => condition}
+        else
+          args[1].include?(:conditions) ? args[1][:conditions] << ' and ' + condition : args[1][:conditions] = condition
+        end
       end
+      model.find_model(*args)
     end
 
     #### return model as aln_resource
