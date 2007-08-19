@@ -45,7 +45,7 @@ class AlnResource < ActiveRecord::Base
 
   #### delete all specified supported models
   def destroy_supported(model, *args)
-    goner = find_supported(model, *args)
+    goner = find_supported_by_model(model, *args)
     if goner.class.eql?(Array)
       goner.each {|g| g.destroy}
     else
@@ -61,7 +61,7 @@ class AlnResource < ActiveRecord::Base
   end
 
   #### find specified supported
-  def find_supported(model, *args)
+  def find_supported_by_model(model, *args)
     self.class.find_model_by_condition("aln_resources.supporter_id = #{id}", model, *args)
   end
 
@@ -69,7 +69,7 @@ class AlnResource < ActiveRecord::Base
   class << self
 
     #### return roots of support hierachy
-    def find_model_root(model, *args)
+    def find_support_root_by_model(model, *args)
       find_model_by_condition("aln_resources.supporter_id is NULL", model, *args)
     end
 

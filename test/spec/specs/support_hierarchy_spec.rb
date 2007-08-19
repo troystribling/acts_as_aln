@@ -8,7 +8,7 @@ describe "queries for root of support hierarcy" do
     root << AlnResource.new(model_data[:aln_resource_supported_1])
     root << AlnResource.new(model_data[:aln_resource_supported_2])
     root.save
-    root_chk = AlnResource.find_model_root(AlnResource, :first)
+    root_chk = AlnResource.find_support_root_by_model(AlnResource, :first)
     root_chk.id.should be(root.id)
     root_chk.class.should be(AlnResource)
     root_chk.should have_attributes_with_values(model_data[:aln_resource])
@@ -21,7 +21,7 @@ describe "queries for root of support hierarcy" do
     root << AlnResource.new(model_data[:aln_resource_supported_1])
     root << AlnResource.new(model_data[:aln_resource_supported_2])
     root.save
-    root_chk = AlnTermination.find_model_root(AlnTermination, :first)
+    root_chk = AlnTermination.find_support_root_by_model(AlnTermination, :first)
     root_chk.id.should be(root.id)
     root_chk.class.should be(AlnTermination)
     root_chk.should have_attributes_with_values(model_data[:aln_termination])
@@ -34,7 +34,7 @@ describe "queries for root of support hierarcy" do
     root << AlnResource.new(model_data[:aln_resource_supported_1])
     root << AlnResource.new(model_data[:aln_resource_supported_2])
     root.save
-    root_chk = AlnResource.find_model_root(AlnResource, :first)
+    root_chk = AlnResource.find_support_root_by_model(AlnResource, :first)
     root_chk.id.should be(root.aln_resource.id)
     root_chk.class.should be(AlnResource)
     root_chk.to_descendant.should have_attributes_with_values(model_data[:aln_termination])
@@ -51,7 +51,7 @@ describe "queries for root of support hierarcy" do
     root << AlnResource.new(model_data[:aln_resource_supported_2])
     root << AlnResource.new(model_data[:aln_resource_supported_2])
     root.save
-    root_chk = AlnResource.find_model_root(AlnResource, :all)
+    root_chk = AlnResource.find_support_root_by_model(AlnResource, :all)
     root_chk.length.should be(2)
     root_chk.each do |r|
       r.should have_attributes_with_values(model_data[:aln_resource])
@@ -74,7 +74,7 @@ describe "queries for root of support hierarcy" do
     root << AlnResource.new(model_data[:aln_resource_supported_2])
     root << AlnResource.new(model_data[:aln_resource_supported_2])
     root.save
-    root_chk = AlnResource.find_model_root(AlnResource, :all)
+    root_chk = AlnResource.find_support_root_by_model(AlnResource, :all)
     root_chk.length.should be(3)
     root_chk.each do |r|
       r.name.should eql(model_data[:aln_termination]['name']) if r.descendant.class.eql?(AlnTermination)
@@ -98,7 +98,7 @@ describe "queries for root of support hierarcy" do
     root_con << AlnResource.new(model_data[:aln_resource_supported_2])
     root_con << AlnResource.new(model_data[:aln_resource_supported_2])
     root_con.save
-    root_chk = AlnTermination.find_model_root(AlnTermination, :all)
+    root_chk = AlnTermination.find_support_root_by_model(AlnTermination, :all)
     root_chk.length.should be(2)
     root_chk.each do |r|
       r.should have_attributes_with_values(model_data[:aln_termination])
