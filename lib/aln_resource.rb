@@ -30,10 +30,10 @@ class AlnResource < ActiveRecord::Base
   def <<(sup)
     if sup.class.eql?(Array)
       supported << sup.collect do |s|
-        self.class.get_as_aln_resource(s)
+        self.class.get_aln_resource_ancestor(s)
       end        
     else
-      supported << self.class.get_as_aln_resource(sup)
+      supported << self.class.get_aln_resource_ancestor(sup)
     end
   end  
 
@@ -86,7 +86,7 @@ class AlnResource < ActiveRecord::Base
     end
 
     #### return model as aln_resource
-    def get_as_aln_resource(mod)
+    def get_aln_resource_ancestor(mod)
       if mod.class.eql?(AlnResource)
         mod 
       else

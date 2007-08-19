@@ -12,4 +12,13 @@ class AlnConnection < ActiveRecord::Base
    ###############################################################
    has_many :aln_terminations     
 
+   ###############################################################
+   #### attribute validators
+   ###############################################################
+   validates_inclusion_of :directionality, 
+                          :in => ['unidirectional', 'bidirectional'],
+                          :message => "should be unidirectional or bidirectional",
+                          :allow_nil => true
+
+
 end
