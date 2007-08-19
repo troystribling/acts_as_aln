@@ -28,6 +28,7 @@ class AlnResource < ActiveRecord::Base
   
   #### add supported models
   def <<(sup)
+    initialize_depth if supported.length.eql?(0)
     if sup.class.eql?(Array)
       supported << sup.collect do |s|
         self.class.get_aln_resource_ancestor(s)
@@ -37,6 +38,25 @@ class AlnResource < ActiveRecord::Base
     end
   end  
 
+  #### depth management
+  def increment_depth
+    self.depth += 1
+  end
+
+  def decrement_depth
+    self.depth -= 1
+  end
+
+  def reset_depth
+    self.depth = 0
+    supporter.decrement_depth unless supporter.nil?
+  end
+
+  def initialize_depth
+    self.depth = 1
+    supporter.decrement_depth unless supporter.nil?
+  end
+  
   #### destroy model
   def destroy
     super
@@ -51,10 +71,12 @@ class AlnResource < ActiveRecord::Base
     else
       goner.destroy unless goner.nil? 
     end
+    reset_depth if supported.length.eql?(0)
   end
 
   #### delete all supported models
   def clear_supported
+    reset_depth
     self.supported.each do |s|
       s.to_descendant.destroy
     end
