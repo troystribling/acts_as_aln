@@ -28,7 +28,7 @@ class AlnResource < ActiveRecord::Base
   
   #### add supported models
   def <<(sup)
-    initialize_depth if supported.length.eql?(0)
+    increment_depth if supported.count.eql?(0)
     if sup.class.eql?(Array)
       supported << sup.collect do |s|
         self.class.get_aln_resource_ancestor(s)
@@ -40,23 +40,14 @@ class AlnResource < ActiveRecord::Base
 
   #### depth management
   def increment_depth
-    self.depth += 1
+    depth = 1
+    supporter.decrement_depth unless supporter.nil?
   end
-
   def decrement_depth
-    self.depth -= 1
-  end
-
-  def reset_depth
-    self.depth = 0
+    depth = 0
     supporter.decrement_depth unless supporter.nil?
   end
 
-  def initialize_depth
-    self.depth = 1
-    supporter.decrement_depth unless supporter.nil?
-  end
-  
   #### destroy model
   def destroy
     super
@@ -71,12 +62,12 @@ class AlnResource < ActiveRecord::Base
     else
       goner.destroy unless goner.nil? 
     end
-    reset_depth if supported.length.eql?(0)
+    decrement_depth if supported.count.eql?(0)
   end
 
   #### delete all supported models
   def clear_supported
-    reset_depth
+    decrement_depth
     self.supported.each do |s|
       s.to_descendant.destroy
     end
@@ -84,7 +75,12 @@ class AlnResource < ActiveRecord::Base
 
   #### find specified supported
   def find_supported_by_model(model, *args)
-    self.class.find_model_by_condition("aln_resources.supporter_id = #{id}", model, *args)
+    self.class.find_by_model_and_condition("aln_resources.supporter_id = #{id}", model, *args)
+  end
+
+  #### find specified supporter
+  def find_supporter_by_model(model)
+    model.find_by_model("#{self.supporter_id}")
   end
 
   ####################################################################################
@@ -92,11 +88,11 @@ class AlnResource < ActiveRecord::Base
 
     #### return roots of support hierachy
     def find_support_root_by_model(model, *args)
-      find_model_by_condition("aln_resources.supporter_id is NULL", model, *args)
+      find_by_model_and_condition("aln_resources.supporter_id is NULL", model, *args)
     end
 
     #### find model with specified condition
-    def find_model_by_condition(condition, model, *args)
+    def find_by_model_and_condition(condition, model, *args)
       if args.first.eql?(:first) || args.first.eql?(:all)
         if args[1].nil?
           args[1] = {:conditions => condition}
@@ -104,10 +100,10 @@ class AlnResource < ActiveRecord::Base
           args[1].include?(:conditions) ? args[1][:conditions] << ' and ' + condition : args[1][:conditions] = condition
         end
       end
-      model.find_model(*args)
+      model.find_by_model(*args)
     end
 
-    #### return model as aln_resource
+    #### return model aln_resource ancestor
     def get_aln_resource_ancestor(mod)
       if mod.class.eql?(AlnResource)
         mod 

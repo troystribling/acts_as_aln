@@ -91,6 +91,8 @@ describe "attribute identifying support hierarchy depth" do
     sup1 = @root.find_supported_by_model(AlnTermination, :first, :conditions => "aln_resources.name = '#{model_data[:aln_termination_supported_1]['name']}'")
     sup1 << AlnTermination.new(model_data[:aln_termination_supported_1])
     @root.depth.should eql(2)
+     sup1 << AlnTermination.new(model_data[:aln_termination_supported_1])
+    @root.depth.should eql(2)
     sup2 = sup1.find_supported_by_model(AlnTermination, :first, :conditions => "aln_resources.name = '#{model_data[:aln_termination_supported_1]['name']}'")
     sup2 << AlnTermination.new(model_data[:aln_termination_supported_1])
     @root.depth.should eql(3)

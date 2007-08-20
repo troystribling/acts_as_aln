@@ -351,12 +351,73 @@ describe "queries for supported models from aln_resource descendant supporter" d
 end
 
 #########################################################################################################
-describe "supporter queries from aln_resource supported" do
+describe "supporter interface from supported", :shared => true do
+
+  it "should retrieve supporter as aln_resource when supported is aln_resource" do 
+     supported = AlnResource.find_by_model(:first, :conditions=>"aln_resources.name='#{model_data[:aln_resource_supported_1]['name']}'")
+     supported.find_supporter_by_model(AlnResource).attributes.should == AlnResource.get_aln_resource_ancestor(@supporter).attributes
+  end
+
+  it "should retrieve supporter as aln_resource when supported is aln_resource descendant" do 
+     supported = AlnResource.find_by_model(:first, :conditions=>"aln_resources.name='#{model_data[:aln_termination_supported_1]['name']}'")
+     supported.find_supporter_by_model(AlnResource).attributes.should == AlnResource.get_aln_resource_ancestor(@supporter).attributes
+  end
+
+end
+
+
+#########################################################################################################
+describe "supporter interface from supported for aln_resource supporter" do
+
+  before(:all) do
+    supporter = AlnResource.new(model_data[:aln_resource])
+    supporter << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_1])] 
+    supporter.save
+  end
+
+  after(:all) do
+    supporter = AlnResource.find_support_root_by_model(AlnResource, :first)
+    supporter.destroy
+  end
+
+  before(:each) do
+    @supporter = AlnResource.find_support_root_by_model(AlnResource, :first)
+  end
+
+  it_should_behave_like "supporter interface from supported"
 
 end
 
 #########################################################################################################
-describe "supporter queries from aln_resource descendant supported" do
+describe "supporter interface from supported for aln_resource descendant supporter" do
+
+  before(:all) do
+    supporter = AlnTermination.new(model_data[:aln_resource])
+    supporter << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_1])] 
+    supporter.save
+  end
+
+  after(:all) do
+    supporter = AlnResource.find_support_root_by_model(AlnResource, :first)
+    supporter.destroy
+  end
+
+  before(:each) do
+    @supporter = AlnTermination.find_support_root_by_model(AlnTermination, :first)
+  end
+
+  it_should_behave_like "supporter interface from supported"
+
+  it "should retrieve supporter as aln_resource descendant when supported is aln_resource" do 
+     supported = AlnResource.find_by_model(:first, :conditions=>"aln_resources.name='#{model_data[:aln_resource_supported_1]['name']}'")
+     supported.find_supporter_by_model(AlnTermination).attributes.should == @supporter.attributes
+  end
+
+  it "should retrieve supporter as aln_resource descendant when supported is aln_resource descendant" do 
+     supported = AlnResource.find_by_model(:first, :conditions=>"aln_resources.name='#{model_data[:aln_termination_supported_1]['name']}'")
+     supported.find_supporter_by_model(AlnTermination).attributes.should == @supporter.attributes
+  end
+
 end
 
 #########################################################################################################
