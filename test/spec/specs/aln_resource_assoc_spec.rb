@@ -66,7 +66,7 @@ describe "save and destroy when aln_resource is supporter and aln_resource is su
     root.save    
     AlnResource.should exist(s1.id)   
     AlnResource.should exist(s2.id)   
-    root.destroy_supported(AlnResource, :first, :conditions => "aln_resources.name = '#{model_data[:aln_resource_supported_1]['name']}'")
+    root.destroy_supported_by_model(AlnResource, :first, :conditions => "aln_resources.name = '#{model_data[:aln_resource_supported_1]['name']}'")
     AlnResource.should_not exist(s1.id)   
     AlnResource.should exist(s2.id)   
     root.destroy
@@ -82,7 +82,7 @@ describe "save and destroy when aln_resource is supporter and aln_resource is su
     AlnResource.should exist(s1.id)   
     AlnResource.should exist(s2.id)   
     AlnResource.should exist(s3.id)   
-    root.destroy_supported(AlnResource, :all, :conditions => "aln_resources.name = '#{model_data[:aln_resource_supported_1]['name']}'")
+    root.destroy_supported_by_model(AlnResource, :all, :conditions => "aln_resources.name = '#{model_data[:aln_resource_supported_1]['name']}'")
     AlnResource.should_not exist(s1.id)   
     AlnResource.should_not exist(s2.id)   
     AlnResource.should exist(s3.id)   
@@ -99,7 +99,7 @@ describe "save and destroy when aln_resource is supporter and aln_resource is su
     AlnResource.should exist(s1.id)   
     AlnResource.should exist(s2.id)   
     AlnResource.should exist(s3.id)   
-    root.clear_supported
+    root.destroy_supported
     AlnResource.should_not exist(s1.id)   
     AlnResource.should_not exist(s2.id)   
     AlnResource.should_not exist(s3.id)   
@@ -144,7 +144,7 @@ describe "save and destroy when aln_resource descendant is supporter and aln_res
     root.save    
     AlnTermination.should exist(s1.id)   
     AlnTermination.should exist(s2.id)   
-    root.destroy_supported(AlnTermination, :first, :conditions => "aln_resources.name = '#{model_data[:aln_termination_supported_1]['name']}'")
+    root.destroy_supported_by_model(AlnTermination, :first, :conditions => "aln_resources.name = '#{model_data[:aln_termination_supported_1]['name']}'")
     AlnTermination.should_not exist(s1.id)   
     AlnTermination.should exist(s2.id)   
     root.destroy
@@ -160,7 +160,7 @@ describe "save and destroy when aln_resource descendant is supporter and aln_res
     AlnTermination.should exist(s1.id)   
     AlnTermination.should exist(s2.id)   
     AlnTermination.should exist(s3.id)   
-    root.destroy_supported(AlnTermination, :all, :conditions => "aln_resources.name = '#{model_data[:aln_termination_supported_1]['name']}'")
+    root.destroy_supported_by_model(AlnTermination, :all, :conditions => "aln_resources.name = '#{model_data[:aln_termination_supported_1]['name']}'")
     AlnTermination.should_not exist(s1.id)   
     AlnTermination.should_not exist(s2.id)   
     AlnTermination.should exist(s3.id)   
@@ -175,7 +175,7 @@ describe "save and destroy when aln_resource descendant is supporter and aln_res
     root.save    
     AlnTermination.should exist(s1.id)   
     AlnTermination.should exist(s2.id)   
-    root.destroy_supported(AlnTermination, :first, :conditions => "aln_terminations.direction = '#{model_data[:aln_termination_supported_1]['direction']}'")
+    root.destroy_supported_by_model(AlnTermination, :first, :conditions => "aln_terminations.direction = '#{model_data[:aln_termination_supported_1]['direction']}'")
     AlnTermination.should_not exist(s1.id)   
     AlnTermination.should exist(s2.id)   
     root.destroy
@@ -191,7 +191,7 @@ describe "save and destroy when aln_resource descendant is supporter and aln_res
     AlnTermination.should exist(s1.id)   
     AlnTermination.should exist(s2.id)   
     AlnTermination.should exist(s3.id)   
-    root.destroy_supported(AlnTermination, :all, :conditions => "aln_terminations.direction = '#{model_data[:aln_termination_supported_1]['direction']}'")
+    root.destroy_supported_by_model(AlnTermination, :all, :conditions => "aln_terminations.direction = '#{model_data[:aln_termination_supported_1]['direction']}'")
     AlnTermination.should_not exist(s1.id)   
     AlnTermination.should_not exist(s2.id)   
     AlnTermination.should exist(s3.id)   
@@ -208,7 +208,7 @@ describe "save and destroy when aln_resource descendant is supporter and aln_res
     AlnTermination.should exist(s1.id)   
     AlnTermination.should exist(s2.id)   
     AlnTermination.should exist(s3.id)   
-    root.clear_supported
+    root.destroy_supported
     AlnTermination.should_not exist(s1.id)   
     AlnTermination.should_not exist(s2.id)   
     AlnTermination.should_not exist(s3.id)   

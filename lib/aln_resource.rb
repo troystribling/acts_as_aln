@@ -40,22 +40,23 @@ class AlnResource < ActiveRecord::Base
 
   #### depth management
   def increment_depth
-    depth = 1
+    self.depth += 1
     supporter.decrement_depth unless supporter.nil?
   end
+  
   def decrement_depth
-    depth = 0
+    self.depth -= 1
     supporter.decrement_depth unless supporter.nil?
   end
 
   #### destroy model
   def destroy
-    super
     clear_supported
+    super
   end
 
   #### delete all specified supported models
-  def destroy_supported(model, *args)
+  def destroy_supported_by_model(model, *args)
     goner = find_supported_by_model(model, *args)
     if goner.class.eql?(Array)
       goner.each {|g| g.destroy}
@@ -65,9 +66,14 @@ class AlnResource < ActiveRecord::Base
     decrement_depth if supported.count.eql?(0)
   end
 
+  #### delete all supported models and decrement depth
+  def destroy_supported
+    decrement_depth
+    clear_supported
+  end
+
   #### delete all supported models
   def clear_supported
-    decrement_depth
     self.supported.each do |s|
       s.to_descendant.destroy
     end
