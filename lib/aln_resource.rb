@@ -80,7 +80,7 @@ class AlnResource < ActiveRecord::Base
 
   #### find specified supporter
   def find_supporter_by_model(model)
-    model.find_by_model("#{self.supporter_id}")
+    self.class.find_by_model_and_condition("aln_resources.aln_resource_id = #{self.supporter_id}", model, :first)
   end
 
   ####################################################################################

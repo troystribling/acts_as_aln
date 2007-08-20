@@ -392,13 +392,13 @@ end
 describe "supporter interface from supported for aln_resource descendant supporter" do
 
   before(:all) do
-    supporter = AlnTermination.new(model_data[:aln_resource])
+    supporter = AlnTermination.new(model_data[:aln_termination])
     supporter << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_1])] 
     supporter.save
   end
 
   after(:all) do
-    supporter = AlnResource.find_support_root_by_model(AlnResource, :first)
+    supporter = AlnTermination.find_support_root_by_model(AlnTermination, :first)
     supporter.destroy
   end
 
