@@ -89,13 +89,12 @@ describe "attribute identifying support hierarchy depth" do
     @root.depth.should eql(0)
     @root << AlnTermination.new(model_data[:aln_termination_supported_1])
     @root << AlnTermination.new(model_data[:aln_termination_supported_1])
-    @root.save
     @root.depth.should eql(1)
-    sup1 = @root.find_supported_by_model(AlnTermination, :first, :conditions => "aln_resources.name = '#{model_data[:aln_termination_supported_1]['name']}'")
-    sup1 << AlnTermination.new(model_data[:aln_termination_supported_1])
+    @root.supported[0] << AlnTermination.new(model_data[:aln_termination_supported_1])
     @root.depth.should eql(2)
-    sup1 << AlnTermination.new(model_data[:aln_termination_supported_1])
+    @root.supported[0]  << AlnTermination.new(model_data[:aln_termination_supported_1])
     @root.depth.should eql(2)
+    p @root
   end
 
 #  it "should decrement by 1 when the layer of supported removed" do
