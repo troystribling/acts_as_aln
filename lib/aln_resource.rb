@@ -31,18 +31,18 @@ class AlnResource < ActiveRecord::Base
     increment_depth if supported.count.eql?(0)
     if sup.class.eql?(Array)
       supported << sup.collect do |s|
-        self.class.get_aln_resource_ancestor(s)
+        supported_as_aln_resource(s)
       end        
     else
-      supported << self.class.get_aln_resource_ancestor(sup)
+      supported << supported_as_aln_resource(sup)
     end
   end  
 
   #### depth management
   def increment_depth
     self.depth += 1
-    puts "#{self.name}: depth = #{self.depth}"
-    p supporter
+#   puts "#{self.name}: depth = #{self.depth}"
+#    p supporter
     supporter.increment_depth unless supporter.nil?
   end
   
@@ -51,12 +51,21 @@ class AlnResource < ActiveRecord::Base
     supporter.decrement_depth unless supporter.nil?
   end
 
-  #### destroy model
-  def destroy
-    clear_supported
-    super
+  #### return model aln_resource ancestor
+  def supported_as_aln_resource(mod)
+    if mod.class.eql?(AlnResource)
+      mod.supporter = self
+      mod
+    else
+      if mod.respond_to?(:aln_resource)  
+        mod.aln_resource.supporter = self
+        mod.aln_resource
+      else
+        raise(PlanB::InvalidType, "target model is invalid")
+      end
+    end
   end
-
+    
   #### delete all specified supported models
   def destroy_supported_by_model(model, *args)
     goner = find_supported_by_model(model, *args)
@@ -66,6 +75,12 @@ class AlnResource < ActiveRecord::Base
       goner.destroy unless goner.nil? 
     end
     decrement_depth if supported.count.eql?(0)
+  end
+
+  #### destroy model
+  def destroy
+    clear_supported
+    super
   end
 
   #### delete all supported models and decrement depth
@@ -112,7 +127,7 @@ class AlnResource < ActiveRecord::Base
     end
 
     #### return model aln_resource ancestor
-    def get_aln_resource_ancestor(mod)
+    def aln_resource_ancestor(mod)
       if mod.class.eql?(AlnResource)
         mod 
       else

@@ -14,18 +14,18 @@ describe "aln_resource inheritance associations" do
 end
 
 #########################################################################################################
-describe "retrieval of aln_resource ancestor from descendant models" do
+describe "retrieval of aln_resource ancestor from aln_resource descendant models" do
 
-  it "should return class.self if model is aln_resource" do
-    AlnResource.get_aln_resource_ancestor(AlnResource.new(model_data[:aln_resource])).class.should eql(AlnResource) 
+  it "should return aln_resource if model is aln_resource when retrieved from class" do
+    AlnResource.aln_resource_ancestor(AlnResource.new(model_data[:aln_resource])).class.should eql(AlnResource) 
   end
 
-  it "should return aln_resource if model is a descendant of aln_resource" do 
-    AlnResource.get_aln_resource_ancestor(AlnTermination.new(model_data[:aln_termination])).class.should eql(AlnResource) 
+  it "should return aln_resource if model is a descendant of aln_resource when retrieved from class" do 
+    AlnResource.aln_resource_ancestor(AlnTermination.new(model_data[:aln_termination])).class.should eql(AlnResource) 
   end
 
-  it "should raise PlanB::InvalidType if model is not a descendant of aln_resource" do
-    lambda{AlnResource.get_aln_resource_ancestor(Array.new)}.should raise_error(PlanB::InvalidType) 
+  it "should raise PlanB::InvalidType if model is not a descendant of aln_resource when retrieved from class" do
+    lambda{AlnResource.aln_resource_ancestor(Array.new)}.should raise_error(PlanB::InvalidType) 
   end
   
 end
@@ -288,12 +288,12 @@ describe "queries for supporter model from supported model", :shared => true do
 
   it "should retrieve supporter as aln_resource when supported is aln_resource" do 
      supported = AlnResource.find_by_model(:first, :conditions=> "aln_resources.name='#{model_data[:aln_resource_supported_1]['name']}'")
-     supported.find_supporter_by_model(AlnResource).attributes.should == AlnResource.get_aln_resource_ancestor(@supporter).attributes
+     supported.find_supporter_by_model(AlnResource).attributes.should == AlnResource.aln_resource_ancestor(@supporter).attributes
   end
 
   it "should retrieve supporter as aln_resource when supported is aln_resource descendant" do 
      supported = AlnResource.find_by_model(:first, :conditions=> "aln_resources.name='#{model_data[:aln_termination_supported_1]['name']}'")
-     supported.find_supporter_by_model(AlnResource).attributes.should == AlnResource.get_aln_resource_ancestor(@supporter).attributes
+     supported.find_supporter_by_model(AlnResource).attributes.should == AlnResource.aln_resource_ancestor(@supporter).attributes
   end
 
 end
@@ -350,6 +350,53 @@ describe "queries for supporter model from supported for aln_resource descendant
      supported = AlnResource.find_by_model(:first, :conditions=> "aln_resources.name='#{model_data[:aln_termination_supported_1]['name']}'")
      supported.find_supporter_by_model(AlnTermination).attributes.should == @supporter.attributes
   end
+
+end
+
+#########################################################################################################
+describe "retrieval of supported aln_resource ancestor model from supporter", :shared => true do
+
+  it "should return aln_resource if model is aln_resource when retrieved from supporter instance" do
+    supported = @supporter.supported_as_aln_resource(AlnResource.new(model_data[:aln_resource]))
+    supported.class.should be(AlnResource)
+    supported.supporter.attributes.should == @supporter_aln_resource.attributes
+    supported.supporter.object_id.should eql(@supporter_aln_resource.object_id)
+  end
+
+  it "should return aln_resource if model is a descendant of aln_resource when retrieved from supporter instance" do 
+    supported = @supporter.supported_as_aln_resource(AlnTermination.new(model_data[:aln_termination]))
+    supported.class.should be(AlnResource)
+    supported.supporter.attributes.should == @supporter_aln_resource.attributes
+    supported.supporter.object_id.should eql(@supporter_aln_resource.object_id)
+   end
+
+  it "should raise PlanB::InvalidType if model is not a descendant of aln_resource when retrieved from supporter instance" do
+    lambda{@supporter.supported_as_aln_resource(Array.new)}.should raise_error(PlanB::InvalidType) 
+  end
+  
+end
+
+#########################################################################################################
+describe "retrieval of supported aln_resource ancestor model from supporter aln_resource" do
+
+  before(:each) do
+    @supporter = AlnResource.new(model_data[:aln_resource])
+    @supporter_aln_resource = @supporter
+  end
+
+  it_should_behave_like "retrieval of supported aln_resource ancestor model from supporter"
+
+end
+
+#########################################################################################################
+describe "retrieval of supported aln_resource ancestor model from supporter aln_resource descendant" do
+
+  before(:each) do
+    @supporter = AlnTermination.new(model_data[:aln_termination])
+    @supporter_aln_resource = @supporter.aln_resource
+  end
+
+  it_should_behave_like "retrieval of supported aln_resource ancestor model from supporter"
 
 end
 
