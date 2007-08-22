@@ -41,8 +41,6 @@ class AlnResource < ActiveRecord::Base
   #### depth management
   def increment_depth
     self.depth += 1
-#   puts "#{self.name}: depth = #{self.depth}"
-#    p supporter
     supporter.increment_depth unless supporter.nil?
   end
   

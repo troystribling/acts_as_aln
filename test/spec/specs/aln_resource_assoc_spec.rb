@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-#########################################################################################################
+##########################################################################################################
 describe "aln_resource inheritance associations" do
 
   it "should declare descendant association" do 
@@ -150,7 +150,7 @@ describe "save and destroy when aln_resource descendant is supporter and aln_res
 
 end
 
-#########################################################################################################
+##########################################################################################################
 describe "queries for supported models from a supporter model", :shared => true do
 
   it "should return a single aln_resource supporter model when a condition on an aln_resource attribute is specified" do 
@@ -227,7 +227,7 @@ describe "queries for supported models from a supporter model", :shared => true 
 
 end
 
-#########################################################################################################
+##########################################################################################################
 describe "queries for supported models from aln_resource supporter model" do
 
   before(:all) do
@@ -255,7 +255,7 @@ describe "queries for supported models from aln_resource supporter model" do
   
 end
 
-#########################################################################################################
+##########################################################################################################
 describe "queries for supported models from aln_resource descendant supporter model" do
 
   before(:all) do
@@ -283,7 +283,7 @@ describe "queries for supported models from aln_resource descendant supporter mo
   
 end
 
-#########################################################################################################
+##########################################################################################################
 describe "queries for supporter model from supported model", :shared => true do
 
   it "should retrieve supporter as aln_resource when supported is aln_resource" do 
@@ -299,7 +299,7 @@ describe "queries for supporter model from supported model", :shared => true do
 end
 
 
-#########################################################################################################
+##########################################################################################################
 describe "queries for supporter model from supported for aln_resource supporter" do
 
   before(:all) do
@@ -321,7 +321,7 @@ describe "queries for supporter model from supported for aln_resource supporter"
 
 end
 
-#########################################################################################################
+##########################################################################################################
 describe "queries for supporter model from supported for aln_resource descendant supporter" do
 
   before(:all) do
@@ -353,7 +353,7 @@ describe "queries for supporter model from supported for aln_resource descendant
 
 end
 
-#########################################################################################################
+##########################################################################################################
 describe "retrieval of supported aln_resource ancestor model from supporter", :shared => true do
 
   it "should return aln_resource if model is aln_resource when retrieved from supporter instance" do
@@ -376,7 +376,7 @@ describe "retrieval of supported aln_resource ancestor model from supporter", :s
   
 end
 
-#########################################################################################################
+##########################################################################################################
 describe "retrieval of supported aln_resource ancestor model from supporter aln_resource" do
 
   before(:each) do
@@ -388,7 +388,7 @@ describe "retrieval of supported aln_resource ancestor model from supporter aln_
 
 end
 
-#########################################################################################################
+##########################################################################################################
 describe "retrieval of supported aln_resource ancestor model from supporter aln_resource descendant" do
 
   before(:each) do
@@ -400,7 +400,7 @@ describe "retrieval of supported aln_resource ancestor model from supporter aln_
 
 end
 
-#########################################################################################################
+##########################################################################################################
 describe "supporter model and supported model lifecyle relations relative to supported model" do
 
   before(:each) do
@@ -409,12 +409,12 @@ describe "supporter model and supported model lifecyle relations relative to sup
     @root << @s1
   end
 
-  it "should not save supporter when supported is saved" do 
+  it "should save supporter when supported is saved" do 
    @s1.save
    @s1.class.should exist(@s1.id)
-   @root.class.should_not exist(@root.id)
-   @root.class.should_not exist(@root.aln_resource.id)
+   @root.class.should exist(@root.id)
    @s1.destroy
+   @root.destroy
   end
 
   it "should not destroy supporter when supported is destroyed" do 
@@ -429,7 +429,7 @@ describe "supporter model and supported model lifecyle relations relative to sup
 
 end
 
-#########################################################################################################
+##########################################################################################################
 describe "generation of supporter queries from aln_resource supported" do
 end
 
