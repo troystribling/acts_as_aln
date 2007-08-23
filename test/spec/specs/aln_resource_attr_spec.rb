@@ -4,7 +4,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 #describe "attributes indentifying model update time and create time" do
 #
 #  before(:all) do
-#    @r = AlnResource.new(:name => model_data[:aln_resource][:name])
+#    @r = AlnResource.new(:resource_name => model_data[:aln_resource][:resource_name])
 #    @r.save
 #  end
 #
@@ -26,11 +26,11 @@ require File.dirname(__FILE__) + '/../spec_helper'
 #describe "attributes identifying aln_resource models" do
 #
 #  before(:all) do
-#    @r = AlnResource.new(:name => model_data[:aln_resource][:name])
+#    @r = AlnResource.new(:resource_name => model_data[:aln_resource][:resource_name])
 #  end
 #
 #  it "should identify name of aln_resource as string" do 
-#    @r.name.should eql(model_data[:aln_resource][:name])
+#    @r.resource_name.should eql(model_data[:aln_resource][:resource_name])
 #  end
 #  
 #end
@@ -38,18 +38,23 @@ require File.dirname(__FILE__) + '/../spec_helper'
 ##########################################################################################################
 describe "attribute identifying support hierarchy depth", :shared => true do
 
-#  it "should be 0 for no supported" do
-#    @root.depth.should eql(0)
-#  end
-
-  it "should increment to 1 when first supported with no supported is added" do
-#    @root.depth.should eql(0)
-    @root << AlnTermination.new(model_data[:aln_termination_supported_1])
-    p @root.aln_resource.attributes
-    p " "
-    p @root.attributes
-    @root.depth.should eql(1)    
+  it "should be 0 for no supported" do
+    p "check"
+  puts "root = #{@root.object_id}"
+  puts "ancestor = #{@root.aln_resource.object_id}"
+    p @root.methods.grep(/depth/)
+p @root.attributes
+p @root.aln_resource.attributes
+p @root.aln_resource_id.class.name
+    @root.hierarchy_depth.should eql(0)
+    p @root.methods.grep(/depth/)
   end
+
+#  it "should increment to 1 when first supported with no supported is added" do
+#    @root.depth.should eql(0)
+#    @root << AlnTermination.new(model_data[:aln_termination_supported_1])
+#    @root.hierarchy_depth.should eql(1)    
+#  end
 
 #  it "should remain 1 as additional supported with no supported are added" do
 #    @root.depth.should eql(0)
@@ -65,7 +70,7 @@ describe "attribute identifying support hierarchy depth", :shared => true do
 #    @root.depth.should eql(1)
 #    @root << AlnResource.new(model_data[:aln_resource_supported_1])
 #    @root.depth.should eql(1)
-#    @root.destroy_supported_by_model(AlnTermination, :first, :conditions => "aln_resources.name = '#{model_data[:aln_termination_supported_1]['name']}'")
+#    @root.destroy_supported_by_model(AlnTermination, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_1]['name']}'")
 #    @root.depth.should eql(1)
 #  end
 #
@@ -166,8 +171,12 @@ end
 describe "attribute identifying support hierarchy depth accessed from aln_resource descendant root" do
 
   before(:each) do
+  p "Create"
     AlnTermination.new(model_data[:aln_termination]).save
+  p "get root"
     @root = AlnTermination.find_support_root_by_model(AlnTermination, :first)
+  puts "root = #{@root.object_id}"
+  puts "ancestor = #{@root.aln_resource.object_id}"
   end
 
   after(:each) do

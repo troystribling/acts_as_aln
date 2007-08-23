@@ -60,7 +60,7 @@ describe "supporter model and supported model lifecyle relations relative to sup
     @root.save    
     @s1.class.should exist(@s1.id)   
     @s2.class.should exist(@s2.id)   
-    @root.destroy_supported_by_model(@s1.class, :first, :conditions => "aln_resources.name = '#{@s1.name}'")
+    @root.destroy_supported_by_model(@s1.class, :first, :conditions => "aln_resources.resource_name = '#{@s1.name}'")
     @s1.class.should_not exist(@s1.id)   
     @s2.class.should exist(@s2.id)   
     @root.destroy
@@ -72,7 +72,7 @@ describe "supporter model and supported model lifecyle relations relative to sup
     @s1.class.should exist(@s1.id)   
     @s2.class.should exist(@s2.id)   
     @s3.class.should exist(@s3.id)   
-    @root.destroy_supported_by_model(@s1.class, :all, :conditions => "aln_resources.name = '#{@s1.name}'")
+    @root.destroy_supported_by_model(@s1.class, :all, :conditions => "aln_resources.resource_name = '#{@s1.name}'")
     @s1.class.should_not exist(@s1.id)   
     @s2.class.should_not exist(@s2.id)   
     @s3.class.should exist(@s3.id)   
@@ -154,12 +154,12 @@ end
 describe "queries for supported models from a supporter model", :shared => true do
 
   it "should return a single aln_resource supporter model when a condition on an aln_resource attribute is specified" do 
-    @root_chk.find_supported_by_model(AlnResource, :first, :conditions => "aln_resources.name = '#{model_data[:aln_resource_supported_1]['name']}'").should \
+    @root_chk.find_supported_by_model(AlnResource, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'").should \
       have_attributes_with_values(model_data[:aln_resource_supported_1])
   end
 
   it "should return a single aln_resource descendant supporter model when a condition an aln_resource attribute is specified" do 
-    @root_chk.find_supported_by_model(AlnTermination, :first, :conditions => "aln_resources.name = '#{model_data[:aln_termination_supported_1]['name']}'").should \
+    @root_chk.find_supported_by_model(AlnTermination, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_1]['resource_name']}'").should \
       have_attributes_with_values(model_data[:aln_termination_supported_1])
   end
 
@@ -169,12 +169,12 @@ describe "queries for supported models from a supporter model", :shared => true 
   end
 
   it "should return a single aln_resource descendant supporter model when conditions on both aln_resource attributes and aln_resource descendant attributes are specified" do 
-    @root_chk.find_supported_by_model(AlnTermination, :first, :conditions => "aln_terminations.direction = '#{model_data[:aln_termination_supported_1]['direction']}' and aln_resources.name = '#{model_data[:aln_termination_supported_1]['name']}'").should \
+    @root_chk.find_supported_by_model(AlnTermination, :first, :conditions => "aln_terminations.direction = '#{model_data[:aln_termination_supported_1]['direction']}' and aln_resources.resource_name = '#{model_data[:aln_termination_supported_1]['resource_name']}'").should \
       have_attributes_with_values(model_data[:aln_termination_supported_1])
   end
 
   it "should return all aln_resource supporter models as aln_resources models that match a condition on a specified aln_resource attribute" do 
-    result = @root_chk.find_supported_by_model(AlnResource, :all, :conditions => "aln_resources.name = '#{model_data[:aln_resource_supported_1]['name']}'")
+    result = @root_chk.find_supported_by_model(AlnResource, :all, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'")
     result.length.should be(2)
     result.each do |r|
       result.should have_attributes_with_values(model_data[:aln_resource_supported_1])
@@ -183,7 +183,7 @@ describe "queries for supported models from a supporter model", :shared => true 
   end
 
   it "should return all aln_resource descendant supporter models as specified model that match a condition on a specified aln_resource attribute" do 
-    result = @root_chk.find_supported_by_model(AlnTermination, :all, :conditions => "aln_resources.name = '#{model_data[:aln_termination_supported_1]['name']}'")
+    result = @root_chk.find_supported_by_model(AlnTermination, :all, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_1]['resource_name']}'")
     result.length.should be(2)
     result.each do |r|
       result.should have_attributes_with_values(model_data[:aln_termination_supported_1])
@@ -201,7 +201,7 @@ describe "queries for supported models from a supporter model", :shared => true 
   end
 
   it "should return all aln_resource descendant supporter models as specified model that match specified conditions on both aln_resource attributes and aln_resource descendant attributes" do 
-    result = @root_chk.find_supported_by_model(AlnTermination, :all, :conditions => "aln_terminations.direction = '#{model_data[:aln_termination_supported_1]['direction']}' and aln_resources.name = '#{model_data[:aln_termination_supported_1]['name']}'")
+    result = @root_chk.find_supported_by_model(AlnTermination, :all, :conditions => "aln_terminations.direction = '#{model_data[:aln_termination_supported_1]['direction']}' and aln_resources.resource_name = '#{model_data[:aln_termination_supported_1]['resource_name']}'")
     result.length.should be(2)
     result.each do |r|
       result.should have_attributes_with_values(model_data[:aln_termination_supported_1])
@@ -287,12 +287,12 @@ end
 describe "queries for supporter model from supported model", :shared => true do
 
   it "should retrieve supporter as aln_resource when supported is aln_resource" do 
-     supported = AlnResource.find_by_model(:first, :conditions=> "aln_resources.name='#{model_data[:aln_resource_supported_1]['name']}'")
+     supported = AlnResource.find_by_model(:first, :conditions=> "aln_resources.resource_name='#{model_data[:aln_resource_supported_1]['resource_name']}'")
      supported.find_supporter_by_model(AlnResource).attributes.should == AlnResource.aln_resource_ancestor(@supporter).attributes
   end
 
   it "should retrieve supporter as aln_resource when supported is aln_resource descendant" do 
-     supported = AlnResource.find_by_model(:first, :conditions=> "aln_resources.name='#{model_data[:aln_termination_supported_1]['name']}'")
+     supported = AlnResource.find_by_model(:first, :conditions=> "aln_resources.resource_name='#{model_data[:aln_termination_supported_1]['resource_name']}'")
      supported.find_supporter_by_model(AlnResource).attributes.should == AlnResource.aln_resource_ancestor(@supporter).attributes
   end
 
@@ -342,12 +342,12 @@ describe "queries for supporter model from supported for aln_resource descendant
   it_should_behave_like "queries for supporter model from supported model"
 
   it "should retrieve supporter as aln_resource descendant when supported is aln_resource" do 
-     supported = AlnResource.find_by_model(:first, :conditions=> "aln_resources.name='#{model_data[:aln_resource_supported_1]['name']}'")
+     supported = AlnResource.find_by_model(:first, :conditions=> "aln_resources.resource_name='#{model_data[:aln_resource_supported_1]['resource_name']}'")
      supported.find_supporter_by_model(AlnTermination).attributes.should == @supporter.attributes
   end
 
   it "should retrieve supporter as aln_resource descendant when supported is aln_resource descendant" do 
-     supported = AlnResource.find_by_model(:first, :conditions=> "aln_resources.name='#{model_data[:aln_termination_supported_1]['name']}'")
+     supported = AlnResource.find_by_model(:first, :conditions=> "aln_resources.resource_name='#{model_data[:aln_termination_supported_1]['resource_name']}'")
      supported.find_supporter_by_model(AlnTermination).attributes.should == @supporter.attributes
   end
 

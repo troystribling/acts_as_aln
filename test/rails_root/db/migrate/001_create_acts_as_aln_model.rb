@@ -8,10 +8,10 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
       t.column :aln_resource_descendant_id, :integer
       t.column :aln_resource_descendant_type, :string
       t.column :supporter_id, :integer    
-      t.column :depth, :integer, :default => 0
+      t.column :hierarchy_depth, :integer, :default => 0
       t.column :created_at, :timestamp
       t.column :updated_at, :timestamp
-      t.column :name, :string
+      t.column :resource_name, :string
     end
    
     create_table :aln_connections, :force => true, :primary_key => :aln_connection_id do |t|

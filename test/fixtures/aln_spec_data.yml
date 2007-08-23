@@ -1,75 +1,75 @@
 aln_resource:
-  name: Resource
+  resource_name: Resource
 
 aln_resource_supported_1:
-  name: Resource-1
+  resource_name: Resource-1
 
 aln_resource_supported_2:
-  name: Resource-2
+  resource_name: Resource-2
 
 aln_termination:
-  name: Termination
+  resource_name: Termination
   directionality: bidirectional
   direction: client 
 
 aln_termination_supported_1:
-  name: Termination-1
+  resource_name: Termination-1
   directionality: unidirectional
   direction: server 
 
 aln_termination_supported_2:
-  name: Termination-2
+  resource_name: Termination-2
   directionality: unidirectional
   direction: client 
 
 aln_connection_1:
-  name: Connection-1
+  resource_name: Connection-1
   directionality: unidirectional
 
 aln_connection_2:
-  name: Connection-2
+  resource_name: Connection-2
   directionality: unidirectional
 
 aln_connection_3:
-  name: Connection-3
+  resource_name: Connection-3
   directionality: bidirectional
 
 aln_termination_supported_1:
-  name: Termination-1
+  resource_name: Termination-1
   directionality: unidirectional
   direction: server 
 
 aln_termination_supported_2:
-  name: Termination-2
+  resource_name: Termination-2
   directionality: unidirectional
   direction: client 
 
 server:
-  name: SERVER-1
+  resource_name: SERVER-1
   serial_number: 000-888-999
   model: FABULATOR-975  
 
 server_component:
  -
   attr:
-   name: SERVER-1-HW 
+   resource_name: SERVER-1-HW 
   supported_by_name: Server-1
   supported_by_model: server
  -
   attr:
-   name: SERVER-1-APPS
+   resource_name: SERVER-1-APPS
   supported_by_name: Server-1
   supported_by_model: server
  -
   attr:
-   name: SERVER-1-USERS
+   resource_name: SERVER-1-USERS
   supported_by_name: Server-1
   supported_by_model: server
 
 user:
  -
   attr:
-   name: faust
+   resource_name: faust
    uid: 88
   supported_by_name: SERVER-1-USERS
   supported_by_model: server_component
@@ -77,7 +77,7 @@ user:
 app_main:
  -
   attr:
-   name: FANTASTICA-667
+   resource_name: FANTASTICA-667
    serial_number: 444-333-222
    pid: 777  
   supported_by_name: SERVER-1-APPS
@@ -86,7 +86,7 @@ app_main:
 nic:
  -
   attr:
-   name: NETULATOR-445
+   resource_name: NETULATOR-445
    serial_number: 444-FFF-211
    slot: 2
   supported_by_name: SERVER-1-HW
@@ -95,31 +95,31 @@ nic:
 app_main_component:
  -
   attr:
-   name: FANTASTICA-667-USERS 
+   resource_name: FANTASTICA-667-USERS 
   supported_by_name: FANTASTICA-667
   supported_by_model: app_main
  -
   attr:
-   name: FANTASTICA-667-NETCON
+   resource_name: FANTASTICA-667-NETCON
   supported_by_name: FANTASTICA-667
   supported_by_model: app_main
 
 user_termination:
  -
   attr:
-   name: faust-termination  
+   resource_name: faust-termination  
   supported_by_name: faust
   supported_by_model: user
  -
   attr:
-   name: FANTASTICA-667-USER
+   resource_name: FANTASTICA-667-USER
   supported_by_name: FANTASTICA-667-USERS
   supported_by_model: app_main_component
 
 ethernet_termination:
  -
   attr:
-   name: NETULATOR-445-ETH
+   resource_name: NETULATOR-445-ETH
    mac_addr: 88:99:ff:bb:aa:cc
   supported_by_name: NETULATOR-445
   supported_by_model: nic
@@ -127,7 +127,7 @@ ethernet_termination:
 ip_termination:
  -
   attr:
-   name: NETULATOR-445-IP
+   resource_name: NETULATOR-445-IP
    ip_addr: 192.56.99.255
   supported_by_name: NETULATOR-445-ETH
   supported_by_model: ethernet_termination
@@ -135,17 +135,17 @@ ip_termination:
 tcp_socket_termination:
  -
   attr:
-   name: FANTASTICA-667-TCP-SOCKET
+   resource_name: FANTASTICA-667-TCP-SOCKET
   supported_by_name: FANTASTICA-667-NETCON
   supported_by_model: app_main_component
  -
   attr:
-   name: NETULATOR-445-TCP-1
+   resource_name: NETULATOR-445-TCP-1
   supported_by_name: NETULATOR-445-IP
   supported_by_model: ip_termination
  -
   attr:
-   name: NETULATOR-445-TCP-2
+   resource_name: NETULATOR-445-TCP-2
   supported_by_name: NETULATOR-445-IP
   supported_by_model: ip_termination
     

@@ -162,7 +162,10 @@ module PlanB
               end
         
               def get_#{parent}
-                build_#{parent} if #{parent}.nil?      
+                build_#{parent} if #{parent}.nil?
+                p self.class.name
+                p self.object_id
+                p #{parent}.object_id      
                 #{parent}
               end
 
@@ -170,19 +173,17 @@ module PlanB
                 get_#{parent}      
               end
            
-              def attributes
-                super.merge(get_#{parent}.attributes)
-              end
-
               def update
                 super
                 get_#{parent}.update
               end
     
               def method_missing(meth, *args, &blk) 
+            p meth
                 begin
                   super
                 rescue NoMethodError
+            p meth
                   if self.respond_to?(:descendant_method_missing)
                     self.descendant_method_missing(meth, *args, &blk)
                   else
