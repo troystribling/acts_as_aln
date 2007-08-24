@@ -42,8 +42,7 @@ describe "attribute identifying support hierarchy depth", :shared => true do
     p "check"
   puts "root = #{@root.object_id}"
   puts "ancestor = #{@root.aln_resource.object_id}"
-    p @root.methods.grep(/depth/)
-p @root.attributes
+p AlnResource.column_names
 p @root.aln_resource.attributes
 p @root.aln_resource_id.class.name
     @root.hierarchy_depth.should eql(0)
