@@ -40,7 +40,6 @@ class AlnResource < ActiveRecord::Base
 
   #### depth management
   def increment_depth
-  puts "increment_depth = #{self.object_id}"
     self.hierarchy_depth += 1
     supporter.increment_depth unless supporter.nil?
   end

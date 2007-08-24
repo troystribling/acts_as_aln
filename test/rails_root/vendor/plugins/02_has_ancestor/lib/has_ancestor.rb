@@ -55,6 +55,10 @@ module PlanB
               def self.class_hierarchy
                 @@ancestor_class == nil ? [self.name] : [self.name] + @@ancestor_class.class_hierarchy
               end
+
+              def self.attribute_to_ancestor(attr)
+                class_hierarchy.detect {|c| eval(c).column_names.include?(attr.to_s)}
+              end
               
               def class_hierarchy
                 self.class.class_hierarchy
@@ -163,9 +167,6 @@ module PlanB
         
               def get_#{parent}
                 build_#{parent} if #{parent}.nil?
-                p self.class.name
-                p self.object_id
-                p #{parent}.object_id      
                 #{parent}
               end
 
@@ -178,17 +179,20 @@ module PlanB
                 get_#{parent}.update
               end
     
-              def method_missing(meth, *args, &blk) 
-            p meth
-                begin
-                  super
-                rescue NoMethodError
-            p meth
-                  if self.respond_to?(:descendant_method_missing)
-                    self.descendant_method_missing(meth, *args, &blk)
-                  else
-                    get_#{parent}.send(meth, *args, &blk)
+              def method_missing(meth, *args, &blk)
+                meth_class = self.class.attribute_to_ancestor(meth) 
+                if meth_class.nil? || meth_class == self.class.name
+                  begin
+                    super
+                  rescue NoMethodError
+                    if self.respond_to?(:descendant_method_missing)
+                      self.descendant_method_missing(meth, *args, &blk)
+                    else
+                      get_#{parent}.send(meth, *args, &blk)
+                    end
                   end
+                else
+                 eval(meth_class.tableize.singularize).send(meth, *args, &blk)
                 end
               end
     
