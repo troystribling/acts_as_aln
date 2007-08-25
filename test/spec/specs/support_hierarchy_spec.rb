@@ -77,8 +77,8 @@ describe "queries for root of support hierarcy" do
     root_chk = AlnResource.find_support_root_by_model(AlnResource, :all)
     root_chk.length.should be(3)
     root_chk.each do |r|
-      r.name.should eql(model_data[:aln_termination]['name']) if r.descendant.class.eql?(AlnTermination)
-      r.name.should eql(model_data[:aln_connection_1]['name']) if r.descendant.class.eql?(AlnConnection)
+      r.resource_name.should eql(model_data[:aln_termination]['resource_name']) if r.descendant.class.eql?(AlnTermination)
+      r.resource_name.should eql(model_data[:aln_connection_1]['resource_name']) if r.descendant.class.eql?(AlnConnection)
       r.supporter.should be_nil
       r.class.should be(AlnResource)
       r.destroy

@@ -60,7 +60,7 @@ describe "supporter model and supported model lifecyle relations relative to sup
     @root.save    
     @s1.class.should exist(@s1.id)   
     @s2.class.should exist(@s2.id)   
-    @root.destroy_supported_by_model(@s1.class, :first, :conditions => "aln_resources.resource_name = '#{@s1.name}'")
+    @root.destroy_supported_by_model(@s1.class, :first, :conditions => "aln_resources.resource_name = '#{@s1.resource_name}'")
     @s1.class.should_not exist(@s1.id)   
     @s2.class.should exist(@s2.id)   
     @root.destroy
@@ -72,7 +72,7 @@ describe "supporter model and supported model lifecyle relations relative to sup
     @s1.class.should exist(@s1.id)   
     @s2.class.should exist(@s2.id)   
     @s3.class.should exist(@s3.id)   
-    @root.destroy_supported_by_model(@s1.class, :all, :conditions => "aln_resources.resource_name = '#{@s1.name}'")
+    @root.destroy_supported_by_model(@s1.class, :all, :conditions => "aln_resources.resource_name = '#{@s1.resource_name}'")
     @s1.class.should_not exist(@s1.id)   
     @s2.class.should_not exist(@s2.id)   
     @s3.class.should exist(@s3.id)   

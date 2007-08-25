@@ -178,6 +178,10 @@ module PlanB
                 super
                 get_#{parent}.update
               end
+
+              def attributes
+                super.merge(get_#{parent}.attributes)
+              end
     
               def method_missing(meth, *args, &blk)
                 meth_class = self.class.attribute_to_ancestor(meth) 
