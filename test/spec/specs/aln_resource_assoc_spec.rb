@@ -92,6 +92,14 @@ describe "supporter model and supported model lifecyle relations relative to sup
     @root.destroy
   end
 
+  it "should not save supported supported when supporter is saved" do 
+    @root.should be_implemented
+  end
+
+  it "should destroy supported supported when supporter destroyed" do 
+    @root.should be_implemented
+  end
+
 end
 
 #########################################################################################################
