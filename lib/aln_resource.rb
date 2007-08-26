@@ -28,7 +28,7 @@ class AlnResource < ActiveRecord::Base
   
   #### add supported models
   def <<(sup)
-    increment_depth if supported.count.eql?(0)
+    increment_depth if supported.length.eql?(0)
     if sup.class.eql?(Array)
       supported << sup.collect do |s|
         supported_as_aln_resource(s)
@@ -41,6 +41,8 @@ class AlnResource < ActiveRecord::Base
   #### depth management
   def increment_depth
     self.hierarchy_depth += 1
+    puts "#{self.hierarchy_depth}"
+    puts "#{self.resource_name}, #{self.object_id}"
     supporter.increment_depth unless supporter.nil?
   end
   

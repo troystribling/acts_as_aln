@@ -56,7 +56,7 @@ module PlanB
                 @@ancestor_class == nil ? [self.name] : [self.name] + @@ancestor_class.class_hierarchy
               end
 
-              def self.attribute_to_ancestor(attr)
+              def self.ancestor_for_attribute(attr)
                 class_hierarchy.detect {|c| eval(c).column_names.include?(attr.to_s)}
               end
               
@@ -184,7 +184,7 @@ module PlanB
               end
     
               def method_missing(meth, *args, &blk)
-                meth_class = self.class.attribute_to_ancestor(meth) 
+                meth_class = self.class.ancestor_for_attribute(meth) 
                 if meth_class.nil? || meth_class == self.class.name
                   begin
                     super
