@@ -13,8 +13,12 @@ module PlanB
           'Example not implemented'
         end
   
+        def negative_failure_message
+          'Take it out then'
+        end
+
         def description
-          "be implemented"
+          "implemented it"
         end
   
       end
