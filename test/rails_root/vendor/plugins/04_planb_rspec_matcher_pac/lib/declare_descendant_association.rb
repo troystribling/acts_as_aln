@@ -6,29 +6,28 @@ module PlanB
       class DeclareDescendantAssociation  #:nodoc:
     
         def matches?(mod)
-          @mod = mod
-          mod_name = @mod.class.name.tableize.singularize
+          mod.class.eql?(Class) ? @mod_name = @mod.name.tabelize.singularize : @mod_name = @mod.class.name.tabelize.singularize
           result = true
           @err_msg = ""
-          unless (@mod.respond_to?(:get_descendant))
+          unless (mod.respond_to?(:get_descendant))
             @err_msg << "has_descendants not called\n"
             result = false
           end
-          unless (@mod.respond_to?("#{mod_name}_descendant_id".to_sym))
-            @err_msg << "#{mod_name}_descendant_id not specified\n"
+          unless (mod.columns_hash_hierarchy.include?("#{@mod_name}_descendant_id"))
+            @err_msg << "#{@mod_name}_descendant_id not specified\n"
             result = false
           else
-            unless (eval("@mod.column_for_attribute('#{mod_name}_descendant_id').type").eql?(:integer))
-              @err_msg << "#{mod_name}_descendant_id not not type :integer\n"
+            unless (mod.columns_hash_hierarchy["#{@mod_name}_descendant_id"].type.eql?(:integer))
+              @err_msg << "#{@mod_name}_descendant_id not not type :integer\n"
               result = false
             end
           end
-          unless (@mod.respond_to?("#{mod_name}_descendant_type".to_sym))
-            @err_msg << "#{mod_name}_descendant_type not specified\n"
+          unless (mod.columns_hash_hierarchy.include?("#{@mod_name}_descendant_type"))
+            @err_msg << "#{@mod_name}_descendant_type not specified\n"
             result = false
           else
-            unless (eval("@mod.column_for_attribute('#{mod_name}_descendant_type').type").eql?(:string))
-              @err_msg << "#{mod_name}_descendant_type not type :string\n"
+            unless (mod.columns_hash_hierarchy["#{@mod_name}_descendant_id"].type.eql?(:string))
+              @err_msg << "#{@mod_name}_descendant_type not type :string\n"
               result = false
             end
           end
@@ -36,9 +35,13 @@ module PlanB
         end
         
         def failure_message
-          "#{@mod.class.name} is unable to support descendant relationships\n#{@err_msg}"
+          "#{@mod_name} does not support descendant relationships\n#{@err_msg}"
         end
   
+        def negative_failure_message
+          "#{@mod_name} supports descendant relationships\n#{@err_msg}"
+        end
+
         def description
           "verify descendant association associations are declared by model"
         end

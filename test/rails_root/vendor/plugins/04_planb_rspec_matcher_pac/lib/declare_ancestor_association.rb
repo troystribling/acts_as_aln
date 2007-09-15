@@ -7,7 +7,7 @@ module PlanB
     
         def matches?(mod)
           @mod = mod
-          @mod.respond_to?(:get_ancestor) ? true : false
+          @mod.respond_to?(:get_ancestor)
         end
         
         def failure_message
