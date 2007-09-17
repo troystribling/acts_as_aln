@@ -16,25 +16,29 @@ module PlanB
     
           def self.add_methods(target, parent)
 
-            target.class_eval <<-do_eval
-   
-              def initialize(*args)
-                super(*args)
-                get_#{parent}.#{parent}_descendant = self
-                descendant_initialize(*args) if respond_to?(:descendant_initialize)
-              end
-        
-              def get_#{parent}
-                build_#{parent} if #{parent}.nil?      
-                #{parent}
-              end
-
-              def get_ancestor
-                get_#{parent}      
-              end
-           
-            do_eval
+            unless target.has_ancestor?
+            
+              target.class_eval <<-do_eval
+     
+                def initialize(*args)
+                  super(*args)
+                  get_#{parent}.#{parent}_descendant = self
+                  descendant_initialize(*args) if respond_to?(:descendant_initialize)
+                end
+          
+                def get_#{parent}
+                  build_#{parent} if #{parent}.nil?      
+                  #{parent}
+                end
+  
+                def get_ancestor
+                  get_#{parent}      
+                end
+             
+              do_eval
     
+            end
+            
           end           
     
         end
@@ -59,7 +63,7 @@ module PlanB
 
           def method_missing(meth, *args, &blk)
             meth_class = self.class.ancestor_for_attribute(meth) 
-            if meth_class.nil? || meth_class == self.class.name
+            if meth_class.nil? or meth_class.eql?(self.class)
               begin
                 super
               rescue NoMethodError
@@ -70,11 +74,7 @@ module PlanB
                 end
               end
             else
-             if respond_to?(meth_class.tableize.singularize.to_sym)
-               get_ancestor.send(meth, *args, &blk)
-             else
-               descendant_method_missing(meth, *args, &blk)
-             end
+              get_ancestor.send(meth, *args, &blk)
             end
           end
               
@@ -124,7 +124,7 @@ module PlanB
             finder_options = args[attr_count]
             finder_cond = " "
             (0..attr_count-1).each do |i|
-              finder_cond << ancestor_for_attribute(finder_attr[i].to_sym).tableize + "." +
+              finder_cond << ancestor_for_attribute(finder_attr[i].to_sym).name.tableize + "." +
               finder_attr[i] + " = " + add_attribute(column_info[finder_attr[i]].type, args[i])
               i.eql?(finder_attr.length-1) ? finder_cond << " " : finder_cond << " and " 
             end
@@ -155,7 +155,7 @@ module PlanB
               else attr.to_s
             end
           end
-                  
+              
         end
         
       end

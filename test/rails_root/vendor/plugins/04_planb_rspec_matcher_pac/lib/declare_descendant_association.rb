@@ -10,7 +10,7 @@ module PlanB
           result = true
           @err_msg = ""
           add_error = lambda {|msg| @err_msg << msg + "\n"; result = false}
-          unless (mod.have_descendants?)
+          unless (mod.has_descendants?)
             add_error["has_descendants not called"]            
           end
           descendant_id = "#{@mod_name}_descendant_id"

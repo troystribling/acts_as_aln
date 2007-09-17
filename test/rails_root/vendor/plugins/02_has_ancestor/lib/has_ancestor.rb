@@ -44,7 +44,7 @@ module PlanB
           ##################################################
           # Declare a model ancestor.
           def has_ancestor(args = {}) 
-
+           
             args.assert_valid_keys(:named)
             self.primary_key = "#{self.name.tableize.singularize}_id"
             eval("has_one args[:named], :as => :#{args[:named]}_descendant, :dependent => :destroy")
@@ -58,9 +58,9 @@ module PlanB
             PlanB::Has::Ancestor::DynamicMethods::Descendant.add_methods(self, args[:named])
             include(PlanB::Has::Ancestor::InstanceMethods::Descendant)
             extend(PlanB::Has::Ancestor::ClassMethods::Descendant)
-
+              
           end    
-          
+ 
         end
                                 
       end

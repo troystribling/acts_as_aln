@@ -34,9 +34,6 @@ module PlanB
       ####################################################
       module InstanceMethods
         module Ancestor          
-          def have_descendants?
-            true
-          end
         end
       end
 
@@ -44,9 +41,6 @@ module PlanB
       ####################################################
       module ClassMethods
         module Ancestor  
-          def have_descendants?
-            true
-          end
         end
       end
       ##################################################
