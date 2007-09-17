@@ -34,13 +34,19 @@ module PlanB
       ####################################################
       module InstanceMethods
         module Ancestor          
+          def have_descendants?
+            true
+          end
         end
       end
 
       ###################################################
       ####################################################
       module ClassMethods
-        module Ancestor          
+        module Ancestor  
+          def have_descendants?
+            true
+          end
         end
       end
       ##################################################

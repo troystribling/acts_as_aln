@@ -6,29 +6,27 @@ module PlanB
       class DeclareDescendantAssociation  #:nodoc:
     
         def matches?(mod)
-          mod.class.eql?(Class) ? @mod_name = @mod.name.tabelize.singularize : @mod_name = @mod.class.name.tabelize.singularize
+          mod.class.eql?(Class) ? @mod_name = mod.name.tableize.singularize : @mod_name = mod.class.name.tableize.singularize
           result = true
           @err_msg = ""
-          unless (mod.respond_to?(:get_descendant))
-            @err_msg << "has_descendants not called\n"
-            result = false
+          add_error = lambda {|msg| @err_msg << msg + "\n"; result = false}
+          unless (mod.have_descendants?)
+            add_error["has_descendants not called"]            
           end
-          unless (mod.columns_hash_hierarchy.include?("#{@mod_name}_descendant_id"))
-            @err_msg << "#{@mod_name}_descendant_id not specified\n"
-            result = false
+          descendant_id = "#{@mod_name}_descendant_id"
+          unless (mod.columns_hash_hierarchy.include?(descendant_id))
+            add_error["#{descendant_id} not specified"]            
           else
-            unless (mod.columns_hash_hierarchy["#{@mod_name}_descendant_id"].type.eql?(:integer))
-              @err_msg << "#{@mod_name}_descendant_id not not type :integer\n"
-              result = false
+            unless (mod.columns_hash_hierarchy[descendant_id].type.eql?(:integer))
+              add_error["#{descendant_id} not type :integer"]
             end
           end
-          unless (mod.columns_hash_hierarchy.include?("#{@mod_name}_descendant_type"))
-            @err_msg << "#{@mod_name}_descendant_type not specified\n"
-            result = false
+          descendant_type = "#{@mod_name}_descendant_type"
+          unless (mod.columns_hash_hierarchy.include?(descendant_type))
+            add_error["#{descendant_type} not specified"]
           else
-            unless (mod.columns_hash_hierarchy["#{@mod_name}_descendant_id"].type.eql?(:string))
-              @err_msg << "#{@mod_name}_descendant_type not type :string\n"
-              result = false
+            unless (mod.columns_hash_hierarchy[descendant_type].type.eql?(:string))
+              add_error["#{descendant_type} not type :string"]
             end
           end
           result
