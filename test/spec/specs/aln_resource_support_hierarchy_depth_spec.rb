@@ -1,14 +1,14 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-##########################################################################################################
-#describe "support hierarchy depth when support hierarchy consists only of root", :shared => true do
-#
-#  it "should be 0" do
-#    @root.hierarchy_depth.should eql(0)
-#  end
-#  
-#end
-#
+#########################################################################################################
+describe "support hierarchy depth when it consists only of root", :shared => true do
+
+  it "should be 0" do
+    @root.hierarchy_depth.should eql(0)
+  end
+  
+end
+
 ##########################################################################################################
 #describe "support hierarchy depth when support hierarchy has a depth of 1", :shared => true do
 #
@@ -80,58 +80,33 @@ require File.dirname(__FILE__) + '/../spec_helper'
 #
 #end
 
-#describe "persistance of support hierarchy depth when support hierarchy has a depth of 1", :shared => true do
-#
-#  it "should be possible to update hierachy root, save hierarchy then retrieve hiearchy depth from root" do
-#    @root.support_hierarchy_depth.should eql(0)
-#    @root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_1])]
-#    @root.support_hierarchy_depth.should eql(1)
-#    @root.save_hierarchy
-#    root_chk = AlnResource.find_support_root_by_model(AlnResource, :first)
-#    root_chk.support_hierarchy_depth.should eql(1)
-#    root_chk << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_1])]
-#    root_chk.support_hierarchy_depth.should eql(1)
-#  end
-#  
-#end
-#
+###########################################################################################################
+describe "persistance of support hierarchy depth when depth is 1", :shared => true do
 
-describe "persistance of support hierarchy depth when support hierarchy has a depth greater than 1", :shared => true do
-
-  it "should be possible to update hierachy root, save hierarchy then retrieve hiearchy depth from root" do
+  it "should be possible to increase depth of persistent support hierarchy when hierarchy depth is 0" do
+    @root.support_hierarchy_depth.should eql(0)
+    @root << AlnTermination.new(model_data[:aln_termination_supported_1])
     @root.support_hierarchy_depth.should eql(1)
-    @root.supported.first.support_hierarchy_depth.should eql(0)
-puts "adding second layer"
-    @root.supported.first << AlnTermination.new(model_data[:aln_termination_supported_1])
-#p @root
-puts "root: #{@root.object_id}"
-puts "root.supported.first.supporter: #{@root.supported.first.supporter.object_id}"
-#p root_chk.supported.first.supporter.object_id
-#root_chk.supported.each {|s| puts "#{s.resource_name},#{s.supporter.id}"}
-#    root_chk.support_hierarchy_depth.should eql(2)
-#    root_chk.supported.first.support_hierarchy_depth.should eql(1)
   end
   
 end
 
-############################################################################################################
-#describe "attribute identifying support hierarchy depth accessed from aln_resource root" do
-#
-#  before(:each) do
-#    AlnResource.new(model_data[:aln_resource]).save
-#    @root = AlnResource.find_support_root_by_model(AlnResource, :first)
-#  end
-#
-#  after(:each) do
-#    AlnResource.find_support_root_by_model(AlnResource, :first).destroy   
-#  end
-#
-#  it_should_behave_like "attribute identifying support hierarchy depth"  
-#
-#end
-#
+
 ###########################################################################################################
-describe "support hierarchy depth accessed from aln_resource descendant root when depth is grater than 1" do
+describe "persistence of support hierarchy depth when depth greater than 1", :shared => true do
+
+  it "should be possible to increase depth of persistent support hierarchy when hierarchy depth is 1" do
+    @root.support_hierarchy_depth.should eql(1)
+    @root.supported.first.support_hierarchy_depth.should eql(0)
+    @root.supported.first << AlnTermination.new(model_data[:aln_termination_supported_1])
+    @root.support_hierarchy_depth.should eql(2)
+    @root.supported.first.support_hierarchy_depth.should eql(1)
+  end
+  
+end
+
+###########################################################################################################
+describe "support hierarchy depth accessed from aln_resource descendant root when depth is greater than 1" do
 
   before(:each) do
     root_tmp = AlnResource.new(model_data[:aln_resource])
@@ -144,24 +119,32 @@ describe "support hierarchy depth accessed from aln_resource descendant root whe
     @root.destroy   
   end
 
-  it_should_behave_like "persistance of support hierarchy depth when support hierarchy has a depth greater than 1"  
+  it_should_behave_like "support hierarchy depth when it consists only of root"  
+
+  it_should_behave_like "persistance of support hierarchy depth when depth is 1"
+
+  it_should_behave_like "persistence of support hierarchy depth when depth greater than 1"  
   
 end
 
-##########################################################################################################
-#describe "support hierarchy depth accessed from aln_resource descendant root when depth is grater than 1" do
-#
-#  before(:each) do
-#    root_tmp = AlnTermination.new(model_data[:aln_termination])
-#    root_tmp << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_1])]
-#    root_tmp.save_hierarchy
-#    @root = AlnTermination.find_support_root_by_model(AlnTermination, :first)
-#  end
-#
-#  after(:each) do
-#    @root.destroy   
-#  end
-#
-#  it_should_behave_like "persistance of support hierarchy depth when support hierarchy has a depth greater than 1"  
-#  
-#end
+#########################################################################################################
+describe "support hierarchy depth accessed from aln_resource descendant root when depth is greater than 1" do
+
+  before(:each) do
+    root_tmp = AlnTermination.new(model_data[:aln_termination])
+    root_tmp << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_1])]
+    root_tmp.save_hierarchy
+    @root = AlnTermination.find_support_root_by_model(AlnTermination, :first)
+  end
+
+  after(:each) do
+    @root.destroy   
+  end
+
+  it_should_behave_like "support hierarchy depth when it consists only of root"  
+
+  it_should_behave_like "persistance of support hierarchy depth when depth is 1"
+  
+  it_should_behave_like "persistence of support hierarchy depth when depth greater than 1"  
+  
+end

@@ -46,17 +46,18 @@ class AlnResource < ActiveRecord::Base
     unless association.respond_to?(:loaded?)
       association = ActiveRecord::Associations::HasManyAssociation.new(self, @@supported_reflection)
       instance_variable_set("@supported", association)
+      association.each {|a| a.supporter = self}
     end
-    association.reload if force_reload
-    association.each{|a| p a.class}
+    if force_reload
+      association.reload
+      association.each{|a| a.supporter = self}
+    end
     association
   end
 
   #### depth management
   def increment_depth
     self.support_hierarchy_depth += 1
-#    puts "#{self.class.name}, #{self.resource_name}, #{self.object_id}"
-#    puts "support_hierarchy_depth:#{self.support_hierarchy_depth}"
     supporter.increment_depth unless supporter.nil?
   end
   
