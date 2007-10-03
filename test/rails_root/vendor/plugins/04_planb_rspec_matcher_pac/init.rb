@@ -1,4 +1,3 @@
-require "be_implemented"
 require "array_matcher"
 require "be_class"
 require "have_attributes_with_values"
