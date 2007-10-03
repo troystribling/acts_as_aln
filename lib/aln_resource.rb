@@ -10,6 +10,7 @@ class AlnResource < ActiveRecord::Base
   ####################################################################################
   belongs_to :supporter, :class_name => self.name, :foreign_key => "supporter_id" 
   has_many :supported, :class_name => self.name, :foreign_key => "supporter_id" , :dependent => :destroy
+  @@supported_reflection = create_has_many_reflection(:supported, :class_name => self.name, :foreign_key => "supporter_id")
        
   ####################################################################################
   ##### save all models in hierarchy
@@ -38,16 +39,29 @@ class AlnResource < ActiveRecord::Base
     end
   end  
 
+  #### supported
+  def supported (*params)
+    force_reload = params.first unless params.empty?
+    association = instance_variable_get("@supported")
+    unless association.respond_to?(:loaded?)
+      association = ActiveRecord::Associations::HasManyAssociation.new(self, @@supported_reflection)
+      instance_variable_set("@supported", association)
+    end
+    association.reload if force_reload
+    association.each{|a| p a.class}
+    association
+  end
+
   #### depth management
   def increment_depth
-    self.hierarchy_depth += 1
-    puts "#{self.hierarchy_depth}"
-    puts "#{self.resource_name}, #{self.object_id}"
+    self.support_hierarchy_depth += 1
+#    puts "#{self.class.name}, #{self.resource_name}, #{self.object_id}"
+#    puts "support_hierarchy_depth:#{self.support_hierarchy_depth}"
     supporter.increment_depth unless supporter.nil?
   end
   
   def decrement_depth
-    self.hierarchy_depth -= 1
+    self.support_hierarchy_depth -= 1
     supporter.decrement_depth unless supporter.nil?
   end
 
@@ -132,7 +146,7 @@ class AlnResource < ActiveRecord::Base
         mod 
       else
         mod.respond_to?(:aln_resource) ? mod.aln_resource :
-          raise(PlanB::InvalidType, "target model is invalid")        
+          raise(PlanB::InvalidClass, "target model is invalid")        
       end
     end
     
