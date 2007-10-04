@@ -43,14 +43,15 @@ class AlnResource < ActiveRecord::Base
   def supported (*params)
     force_reload = params.first unless params.empty?
     association = instance_variable_get("@supported")
+    set_supporter = lambda {association.each{|a| a.supporter = self}}
     unless association.respond_to?(:loaded?)
       association = ActiveRecord::Associations::HasManyAssociation.new(self, @@supported_reflection)
       instance_variable_set("@supported", association)
-      association.each {|a| a.supporter = self}
+      set_supporter[]
     end
     if force_reload
       association.reload
-      association.each{|a| a.supporter = self}
+      set_supporter[]
     end
     association
   end

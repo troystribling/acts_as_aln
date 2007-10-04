@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 #########################################################################################################
-describe "support hierarchy depth when it consists only of root", :shared => true do
+describe "support hierarchy depth when hierarchy consists only of root", :shared => true do
 
   it "should be 0" do
-    @root.hierarchy_depth.should eql(0)
+    @root.support_hierarchy_depth.should eql(0)
   end
   
 end
@@ -106,6 +106,42 @@ describe "persistence of support hierarchy depth when depth greater than 1", :sh
 end
 
 ###########################################################################################################
+describe "support hierarchy depth accessed from aln_resource descendant root when depth is 1" do
+
+  before(:each) do
+    AlnResource.new(model_data[:aln_resource]).save
+    @root = AlnResource.find_support_root_by_model(AlnResource, :first)
+  end
+
+  after(:each) do
+    @root.destroy   
+  end
+
+  it_should_behave_like "support hierarchy depth when hierarchy consists only of root"  
+
+  it_should_behave_like "persistance of support hierarchy depth when depth is 1"
+
+end
+
+#########################################################################################################
+describe "support hierarchy depth accessed from aln_resource descendant root when depth is 1" do
+
+  before(:each) do
+    AlnResource.new(model_data[:aln_resource]).save
+    @root = AlnResource.find_support_root_by_model(AlnResource, :first)
+  end
+
+  after(:each) do
+    @root.destroy   
+  end
+
+  it_should_behave_like "support hierarchy depth when hierarchy consists only of root"  
+
+  it_should_behave_like "persistance of support hierarchy depth when depth is 1"
+  
+end
+
+###########################################################################################################
 describe "support hierarchy depth accessed from aln_resource descendant root when depth is greater than 1" do
 
   before(:each) do
@@ -118,10 +154,6 @@ describe "support hierarchy depth accessed from aln_resource descendant root whe
   after(:each) do
     @root.destroy   
   end
-
-  it_should_behave_like "support hierarchy depth when it consists only of root"  
-
-  it_should_behave_like "persistance of support hierarchy depth when depth is 1"
 
   it_should_behave_like "persistence of support hierarchy depth when depth greater than 1"  
   
@@ -141,10 +173,6 @@ describe "support hierarchy depth accessed from aln_resource descendant root whe
     @root.destroy   
   end
 
-  it_should_behave_like "support hierarchy depth when it consists only of root"  
-
-  it_should_behave_like "persistance of support hierarchy depth when depth is 1"
-  
   it_should_behave_like "persistence of support hierarchy depth when depth greater than 1"  
   
 end
