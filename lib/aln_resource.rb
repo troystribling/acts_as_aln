@@ -58,16 +58,20 @@ class AlnResource < ActiveRecord::Base
 
   #### depth management
   def increment_depth(supported_depth)
-    self.support_hierarchy_depth += 1 if supported_depth.eql?(self.support_hierarchy_depth) 
+    self.support_hierarchy_depth = supported_depth + 1 if supported_depth >= self.support_hierarchy_depth 
     supporter.increment_depth(self.support_hierarchy_depth) unless supporter.nil?
   end
   
   def decrement_depth(supported_depth)
+  puts "supported.length: #{supported.length}"
+    if supported.length.eql?(0)
   puts "decrement_depth:supported_depth #{supported_depth}"
   puts "decrement_depth:support_hierarchy_depth #{self.support_hierarchy_depth}"
-    self.support_hierarchy_depth -= 1 if supported_depth.eql?(self.support_hierarchy_depth)
-    supporter.decrement_depth(self.support_hierarchy_depth) unless supporter.nil?
+      supporter.decrement_depth(self.support_hierarchy_depth) unless supporter.nil?
+      self.support_hierarchy_depth = self.support_hierarchy_depth - supported_depth
   puts "decrement_depth:decremented support_hierarchy_depth #{self.support_hierarchy_depth}"
+    end
+  puts ""
   end
 
   #### return model aln_resource ancestor
@@ -93,27 +97,24 @@ class AlnResource < ActiveRecord::Base
     else
       goner.destroy unless goner.nil? 
     end
-    decrement_depth(self.support_hierarchy_depth + 1) if supported.length.eql?(0)
+    puts "destroy_supported_by_model"
+    decrement_depth(self.support_hierarchy_depth)
   end
 
   #### destroy model
   def destroy
-    clear_supported
+    puts "destroy"
+    destroy_supported
     super
   end
 
   #### delete all supported models and decrement depth
   def destroy_supported
-  puts "destroy_supported: #{self.support_hierarchy_depth}"
-    decrement_depth(self.support_hierarchy_depth)
-    clear_supported
-  end
-
-  #### delete all supported models
-  def clear_supported
+    puts "destroy_supported"
     self.supported.each do |s|
       s.to_descendant.destroy
     end
+    decrement_depth(self.support_hierarchy_depth)
   end
 
   #### find specified supported
