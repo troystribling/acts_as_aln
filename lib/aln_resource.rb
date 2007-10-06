@@ -19,6 +19,22 @@ class AlnResource < ActiveRecord::Base
     supported.each {|sup| sup.save_hierarchy}
   end
 
+  #### destroy model and all supported models
+  def destroy
+    self.supported.each {|s| s.to_descendant.destroy}
+    super
+  end
+
+  #### delete all specified supported models
+  def destroy_by_model(model, *args)
+    goner = find_supported_by_model(model, *args)
+    if goner.class.eql?(Array)
+      goner.each {|g| g.destroy}
+    else
+      goner.destroy unless goner.nil? 
+    end
+  end
+
   #### interate through support hierarchy
   def each
     yield self
@@ -56,24 +72,6 @@ class AlnResource < ActiveRecord::Base
     association
   end
 
-  #### depth management
-  def increment_depth(supported_depth)
-    self.support_hierarchy_depth = supported_depth + 1 if supported_depth >= self.support_hierarchy_depth 
-    supporter.increment_depth(self.support_hierarchy_depth) unless supporter.nil?
-  end
-  
-  def decrement_depth(supported_depth)
-  puts "supported.length: #{supported.length}"
-    if supported.length.eql?(0)
-  puts "decrement_depth:supported_depth #{supported_depth}"
-  puts "decrement_depth:support_hierarchy_depth #{self.support_hierarchy_depth}"
-      supporter.decrement_depth(self.support_hierarchy_depth) unless supporter.nil?
-      self.support_hierarchy_depth = self.support_hierarchy_depth - supported_depth
-  puts "decrement_depth:decremented support_hierarchy_depth #{self.support_hierarchy_depth}"
-    end
-  puts ""
-  end
-
   #### return model aln_resource ancestor
   def supported_as_aln_resource(mod)
     if mod.class.eql?(AlnResource)
@@ -89,32 +87,22 @@ class AlnResource < ActiveRecord::Base
     end
   end
     
-  #### delete all specified supported models
-  def destroy_supported_by_model(model, *args)
-    goner = find_supported_by_model(model, *args)
-    if goner.class.eql?(Array)
-      goner.each {|g| g.destroy}
-    else
-      goner.destroy unless goner.nil? 
-    end
-    puts "destroy_supported_by_model"
-    decrement_depth(self.support_hierarchy_depth)
-  end
-
-  #### destroy model
-  def destroy
-    puts "destroy"
-    destroy_supported
-    super
-  end
-
-  #### delete all supported models and decrement depth
+  #### destroy all supported and update meta data
   def destroy_supported
-    puts "destroy_supported"
-    self.supported.each do |s|
-      s.to_descendant.destroy
-    end
     decrement_depth(self.support_hierarchy_depth)
+    self.supported.each {|s| s.to_descendant.destroy}
+  end
+
+  #### destroy all specified supported and update meta data
+  def destroy_supported_by_model(model, *args)
+    decrement_depth(self.support_hierarchy_depth)
+    destroy_by_model(model, *args)
+  end
+
+  #### destroy model support hierarchy and update metadata
+  def destroy_support_hierarchy
+    decrement_depth(self.support_hierarchy_depth)
+    destroy
   end
 
   #### find specified supported
@@ -125,6 +113,20 @@ class AlnResource < ActiveRecord::Base
   #### find specified supporter
   def find_supporter_by_model(model)
     self.class.find_by_model_and_condition("aln_resources.aln_resource_id = #{self.supporter_id}", model, :first)
+  end
+
+  #### increment hierarchy depth
+  def increment_depth(supported_depth)
+    self.support_hierarchy_depth = supported_depth + 1 if supported_depth >= self.support_hierarchy_depth 
+    supporter.increment_depth(self.support_hierarchy_depth) unless supporter.nil?
+  end
+  
+  #### decrement hierarchy depth
+  def decrement_depth(supported_depth)
+    if supported.length.eql?(0)
+      supporter.decrement_depth(self.support_hierarchy_depth) unless supporter.nil?
+      self.support_hierarchy_depth = self.support_hierarchy_depth - supported_depth
+    end
   end
 
   ####################################################################################
