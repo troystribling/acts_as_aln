@@ -83,6 +83,60 @@ describe "support hierarchy depth when support hierarchy has a depth greater tha
     @root.support_hierarchy_depth.should eql(1)
   end
   
+  it "should increment total hierarchy depth when a supported with supported is added to a leaf by added hierarchy depth + 1" do
+    @root.support_hierarchy_depth.should eql(1)
+    added_root = AlnResource.new(model_data[:aln_resource])
+    added_root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
+    added_root.supported.first << AlnResource.new(model_data[:aln_resource_supported_1])
+    added_root.support_hierarchy_depth.should eql(2)
+    @root.supported.first << added_root
+    @root.support_hierarchy_depth.should eql(4)    
+  end
+
+  it "should not increment total support hierarchy depth when a supported with supported is added that does not increase total depth" do
+    @root.support_hierarchy_depth.should eql(1)
+    deep_root = AlnResource.new(model_data[:aln_resource])
+    deep_root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
+    deep_root.supported.first << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
+    deep_root.supported.first.supported.last << AlnTermination.new(model_data[:aln_termination_supported_1])
+    deep_root.support_hierarchy_depth.should eql(3)
+    @root.supported.first << deep_root
+    @root.support_hierarchy_depth.should eql(5)    
+    shallow_root = AlnResource.new(model_data[:aln_resource])
+    shallow_root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
+    shallow_root.supported.first << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
+    shallow_root.support_hierarchy_depth.should eql(2)
+    @root.supported.last << shallow_root
+    @root.support_hierarchy_depth.should eql(5)    
+  end
+
+  it "should decrement total hierarchy depth when a supported with supported is removed by removed hierarchy depth + 1" do
+    @root.support_hierarchy_depth.should eql(1)
+    added_root = AlnResource.new(model_data[:aln_resource])
+    added_root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
+    added_root.supported.first << AlnResource.new(model_data[:aln_resource_supported_1])
+    added_root.support_hierarchy_depth.should eql(2)
+    @root.supported.first << added_root
+    @root.support_hierarchy_depth.should eql(4)    
+  end
+
+
+  it "should not decrement total hierarchy depth when a supported with supported is destroyed that does not decrease total depth" do
+    @root.support_hierarchy_depth.should eql(1)
+    deep_root = AlnResource.new(model_data[:aln_resource])
+    deep_root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
+    deep_root.supported.first << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
+    deep_root.supported.first.supported.last << AlnTermination.new(model_data[:aln_termination_supported_1])
+    deep_root.support_hierarchy_depth.should eql(3)
+    @root.supported.first << deep_root
+    @root.support_hierarchy_depth.should eql(5)    
+    shallow_root = AlnResource.new(model_data[:aln_resource])
+    shallow_root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
+    shallow_root.supported.first << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
+    shallow_root.support_hierarchy_depth.should eql(2)
+    @root.supported.last << shallow_root
+    @root.support_hierarchy_depth.should eql(5)    
+  end
 
 end
 
