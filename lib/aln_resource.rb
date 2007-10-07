@@ -25,16 +25,6 @@ class AlnResource < ActiveRecord::Base
     super
   end
 
-  #### delete all specified supported models
-  def destroy_by_model(model, *args)
-    goner = find_supported_by_model(model, *args)
-    if goner.class.eql?(Array)
-      goner.each {|g| g.destroy}
-    else
-      goner.destroy unless goner.nil? 
-    end
-  end
-
   #### interate through support hierarchy
   def each
     yield self
@@ -45,12 +35,13 @@ class AlnResource < ActiveRecord::Base
   
   #### add supported models
   def <<(sup)
-    increment_depth(self.support_hierarchy_depth) if supported.length.eql?(0)
     if sup.class.eql?(Array)
       supported << sup.collect do |s|
+        increment_depth(s.support_hierarchy_depth)
         supported_as_aln_resource(s)
       end        
     else
+      increment_depth(sup.support_hierarchy_depth)
       supported << supported_as_aln_resource(sup)
     end
   end  
@@ -89,20 +80,26 @@ class AlnResource < ActiveRecord::Base
     
   #### destroy all supported and update meta data
   def destroy_supported
-    decrement_depth(self.support_hierarchy_depth)
     self.supported.each {|s| s.to_descendant.destroy}
+    self.supported.clear
+    decrement_depth
   end
 
-  #### destroy all specified supported and update meta data
+  #### destroy specified supported and update meta data
   def destroy_supported_by_model(model, *args)
-    decrement_depth(self.support_hierarchy_depth)
-    destroy_by_model(model, *args)
+    goner = find_supported_by_model(model, *args)
+    if goner.class.eql?(Array)
+      goner.each {|g| g.destroy}
+    else
+      goner.destroy unless goner.nil? 
+    end
+    decrement_depth
   end
 
-  #### destroy model support hierarchy and update metadata
+  #### destroy model and support hierarchy and update metadata
   def destroy_support_hierarchy
-    decrement_depth(self.support_hierarchy_depth)
     destroy
+    supporter.decrement_depth unless supporter.nil?
   end
 
   #### find specified supported
@@ -116,17 +113,21 @@ class AlnResource < ActiveRecord::Base
   end
 
   #### increment hierarchy depth
-  def increment_depth(supported_depth)
-    self.support_hierarchy_depth = supported_depth + 1 if supported_depth >= self.support_hierarchy_depth 
-    supporter.increment_depth(self.support_hierarchy_depth) unless supporter.nil?
+  def increment_depth(depth)
+    if depth >= self.support_hierarchy_depth
+      self.support_hierarchy_depth = depth + 1  
+      self.supporter.increment_depth(self.support_hierarchy_depth) unless self.supporter.nil?
+    end
   end
   
   #### decrement hierarchy depth
-  def decrement_depth(supported_depth)
-    if supported.length.eql?(0)
-      supporter.decrement_depth(self.support_hierarchy_depth) unless supporter.nil?
-      self.support_hierarchy_depth = self.support_hierarchy_depth - supported_depth
-    end
+  def decrement_depth
+    if self.supported.empty?
+      self.support_hierarchy_depth = 0
+    else 
+      self.support_hierarchy_depth = self.supported.collect {|s| s.support_hierarchy_depth}.max + 1
+    end   
+    self.supporter.decrement_depth unless self.supporter.nil?
   end
 
   ####################################################################################
