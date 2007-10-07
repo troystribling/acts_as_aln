@@ -55,7 +55,7 @@ describe "support hierarchy depth when support hierarchy has a depth greater tha
     @root.support_hierarchy_depth.should eql(2)
   end
 
-  it "should remain 1 as additional supported with no supported are added" do
+  it "should not increment as additional supported with no supported are added" do
     @root.support_hierarchy_depth.should eql(1)
     @root.supported.first << AlnResource.new(model_data[:aln_resource_supported_1])
     @root.support_hierarchy_depth.should eql(2)
@@ -67,7 +67,7 @@ describe "support hierarchy depth when support hierarchy has a depth greater tha
     @root.support_hierarchy_depth.should eql(2)
   end
 
-  it "should remain 1 when a supported with no supported is destroyed and more than 1 supported with no supported remain" do
+  it "should not decrement when a supported with no supported is destroyed and more than 1 supported with no supported remain" do
     @root.support_hierarchy_depth.should eql(1)
     @root.supported.first << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
     @root.support_hierarchy_depth.should eql(2)
