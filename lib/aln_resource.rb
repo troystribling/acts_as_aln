@@ -63,7 +63,7 @@ class AlnResource < ActiveRecord::Base
     association
   end
 
-  #### return model aln_resource ancestor
+  #### return model aln_resource supported
   def supported_as_aln_resource(mod)
     if mod.class.eql?(AlnResource)
       mod.supporter = self
@@ -77,7 +77,7 @@ class AlnResource < ActiveRecord::Base
       end
     end
   end
-    
+
   #### destroy all supported and update meta data
   def destroy_supported
     self.supported.each {|s| s.to_descendant.destroy}
@@ -88,10 +88,9 @@ class AlnResource < ActiveRecord::Base
   #### destroy specified supporter and update meta data
   def destroy_supported_by_model(model, *args)
     goner = find_supported_by_model(model, *args)
-    p goner
     destroy_element = lambda do |e|
-        e.destroy
-        self.supported.delete(e.aln_resource)
+      e.destroy
+      self.supported.delete(self.class.get_as_aln_resource(e))
     end
     if goner.class.eql?(Array)
       goner.each {|g| destroy_element[g]} 
@@ -104,7 +103,11 @@ class AlnResource < ActiveRecord::Base
   #### destroy model and support hierarchy and update metadata
   def destroy_support_hierarchy
     destroy
-    supporter.decrement_depth unless supporter.nil?
+    p self.resource_name
+    unless supporter.nil?
+      supporter.supported.delete(self.class.get_as_aln_resource(self))
+      supporter.decrement_depth
+    end 
   end
 
   #### find specified supported
@@ -164,7 +167,20 @@ class AlnResource < ActiveRecord::Base
           raise(PlanB::InvalidClass, "target model is invalid")        
       end
     end
-    
+
+    #### return model aln_resource
+    def get_as_aln_resource(mod)
+      if mod.class.eql?(AlnResource)
+        mod
+      else
+        if mod.respond_to?(:aln_resource)  
+          mod.aln_resource
+        else
+          raise(PlanB::InvalidType, "target model is invalid")
+        end
+      end
+    end
+          
   end
         
 end
