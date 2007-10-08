@@ -85,13 +85,18 @@ class AlnResource < ActiveRecord::Base
     decrement_depth
   end
 
-  #### destroy specified supported and update meta data
+  #### destroy specified supporter and update meta data
   def destroy_supported_by_model(model, *args)
     goner = find_supported_by_model(model, *args)
+    p goner
+    destroy_element = lambda do |e|
+        e.destroy
+        self.supported.delete(e.aln_resource)
+    end
     if goner.class.eql?(Array)
-      goner.each {|g| g.destroy}
+      goner.each {|g| destroy_element[g]} 
     else
-      goner.destroy unless goner.nil? 
+      destroy_element[goner] unless goner.nil? 
     end
     decrement_depth
   end
@@ -104,7 +109,7 @@ class AlnResource < ActiveRecord::Base
 
   #### find specified supported
   def find_supported_by_model(model, *args)
-    self.class.find_by_model_and_condition("aln_resources.supporter_id = #{id}", model, *args)
+    self.class.find_by_model_and_condition("aln_resources.supporter_id = #{self.id}", model, *args)
   end
 
   #### find specified supporter

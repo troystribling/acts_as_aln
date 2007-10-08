@@ -83,7 +83,7 @@ describe "support hierarchy depth when support hierarchy has a depth greater tha
     @root.support_hierarchy_depth.should eql(1)
   end
   
-  it "should increment total hierarchy depth when a supported with supported is added to a leaf by added hierarchy depth + 1" do
+  it "should increment total hierarchy depth when a supported with supported is added to a deepest leaf by added hierarchy depth + 1" do
     @root.support_hierarchy_depth.should eql(1)
     added_root = AlnResource.new(model_data[:aln_resource])
     added_root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
@@ -110,7 +110,7 @@ describe "support hierarchy depth when support hierarchy has a depth greater tha
     @root.support_hierarchy_depth.should eql(5)    
   end
 
-  it "should decrement total hierarchy depth when a supported with supported is removed by removed hierarchy depth + 1" do
+  it "should decrement total hierarchy depth when a supported with supported where this supported had increased the total hierarchy depth by its hierarchy depth + 1" do
     @root.support_hierarchy_depth.should eql(1)
     added_root = AlnResource.new(model_data[:aln_resource])
     added_root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
@@ -118,6 +118,8 @@ describe "support hierarchy depth when support hierarchy has a depth greater tha
     added_root.support_hierarchy_depth.should eql(2)
     @root.supported.first << added_root
     @root.support_hierarchy_depth.should eql(4)    
+    @root.supported.first.destroy_supported
+    @root.support_hierarchy_depth.should eql(1)    
   end
 
 
@@ -136,6 +138,42 @@ describe "support hierarchy depth when support hierarchy has a depth greater tha
     shallow_root.support_hierarchy_depth.should eql(2)
     @root.supported.last << shallow_root
     @root.support_hierarchy_depth.should eql(5)    
+    @root.supported.last.destroy_supported
+    @root.support_hierarchy_depth.should eql(5)    
+  end
+
+end
+
+###########################################################################################################
+describe "support hierarchy depth decrement for aln_resource destroy methods", :shared => true do
+
+  def build_test_hierarchy 
+    @root.support_hierarchy_depth.should eql(1)
+    added_root = AlnResource.new(model_data[:aln_resource])
+    added_root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
+    added_root.supported.first << AlnResource.new(model_data[:aln_resource_supported_1])
+    added_root.support_hierarchy_depth.should eql(2)
+    @root.supported.first << added_root
+    @root.support_hierarchy_depth.should eql(4)    
+  end
+
+  it "should be support hierachy depth of destroyed support hierarchy for AlnResource#destroy_supported" do
+    build_test_hierarchy
+    @root.supported.first.destroy_supported
+    @root.support_hierarchy_depth.should eql(1)    
+  end
+
+  it "should be support hierachy depth of destroyed support hierarchy for AlnResource#destroy_supported_by_model" do
+    build_test_hierarchy
+    @root.supported.first.destroy_supported_by_model(AlnTermination, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_1]['name']}'")
+    @root.support_hierarchy_depth.should eql(1)    
+  end
+
+  it "should be support hierachy depth of destroyed support hierarchy for AlnResource#destroy_support_hierarchy" do
+    build_test_hierarchy
+    @root.supported.first.destroy_support_hierarchy
+    @root.support_hierarchy_depth.should eql(1)    
+    @root.supported.length.should eql(1)    
   end
 
 end
@@ -223,6 +261,8 @@ describe "support hierarchy depth accessed from aln_resource descendant root whe
 
   it_should_behave_like "persistence of support hierarchy depth for depth greater than 1"  
   
+  it_should_behave_like "support hierarchy depth decrement for aln_resource destroy methods"
+  
 end
 
 ##########################################################################################################
@@ -242,5 +282,7 @@ describe "support hierarchy depth accessed from aln_resource descendant root whe
   it_should_behave_like "support hierarchy depth when support hierarchy has a depth greater than 1"
 
   it_should_behave_like "persistence of support hierarchy depth for depth greater than 1"  
+
+  it_should_behave_like "support hierarchy depth decrement for aln_resource destroy methods"
   
 end
