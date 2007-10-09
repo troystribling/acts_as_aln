@@ -149,43 +149,66 @@ describe "support hierarchy depth decrement for aln_resource destroy methods", :
 
   def build_test_hierarchy 
     @root.support_hierarchy_depth.should eql(1)
-    added_root = AlnResource.new(model_data[:aln_resource])
-    added_root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
-    added_root.supported.first << AlnResource.new(model_data[:aln_resource_supported_1])
-    added_root.support_hierarchy_depth.should eql(2)
-    @root.supported.first << added_root
+    @added_root = AlnResource.new(model_data[:aln_resource])
+    @added_root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
+    @added_root.supported.first << AlnResource.new(model_data[:aln_resource_supported_1])
+    @added_root.support_hierarchy_depth.should eql(2)
+  end
+  
+  def add_to_aln_resource_leaf
+    @root.supported.last << @added_root
     @root.support_hierarchy_depth.should eql(4)    
   end
 
-  it "should be support hierachy depth of destroyed support hierarchy for AlnResource#destroy_supported" do
+  def add_to_aln_termination_leaf
+    @root.supported.first << @added_root
+    @root.support_hierarchy_depth.should eql(4)    
+  end
+
+  it "should be support hierachy depth of destroyed support hierarchy for AlnResource#destroy_supported when supporter is aln_termination" do
     build_test_hierarchy
+    add_to_aln_termination_leaf
     @root.supported.first.destroy_supported
+    @root.support_hierarchy_depth.should eql(1)    
+  end
+
+  it "should be support hierachy depth of destroyed support hierarchy for AlnResource#destroy_supported when supporter is aln_resource" do
+    build_test_hierarchy
+    add_to_aln_resource_leaf
+    @root.supported.last.destroy_supported
     @root.support_hierarchy_depth.should eql(1)    
   end
 
   it "should be support hierachy depth of destroyed support hierarchy for AlnResource#destroy_supported_by_model when supporter is aln_termination" do
     build_test_hierarchy
+    add_to_aln_termination_leaf
     @root.destroy_supported_by_model(AlnTermination, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_1]['resource_name']}'")
     @root.support_hierarchy_depth.should eql(1)    
   end
 
   it "should be support hierachy depth of destroyed support hierarchy for AlnResource#destroy_supported_by_model when supporter is aln_resource" do
-    @root.support_hierarchy_depth.should eql(1)
-    added_root = AlnResource.new(model_data[:aln_resource])
-    added_root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnResource.new(model_data[:aln_resource_supported_1])]
-    added_root.supported.first << AlnResource.new(model_data[:aln_resource_supported_1])
-    added_root.support_hierarchy_depth.should eql(2)
-    @root.supported.last << added_root
-    @root.support_hierarchy_depth.should eql(4)    
+    build_test_hierarchy
+    add_to_aln_resource_leaf
     @root.destroy_supported_by_model(AlnResource, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_2]['resource_name']}'")
     @root.support_hierarchy_depth.should eql(1)    
   end
 
-  it "should be support hierachy depth of destroyed support hierarchy for AlnResource#destroy_support_hierarchy" do
+  it "should be support hierachy depth of destroyed support hierarchy for AlnResource#destroy_support_hierarchy when supporter is aln_termination" do
     build_test_hierarchy
+    add_to_aln_termination_leaf
     @root.supported.first.supported.first.destroy_support_hierarchy
     @root.support_hierarchy_depth.should eql(1)    
     @root.supported.first.supported.length.should eql(0)    
+    @root.supported.length.should eql(2)    
+  end
+
+  it "should be support hierachy depth of destroyed support hierarchy for AlnResource#destroy_support_hierarchy when supporter is aln_resource" do
+    build_test_hierarchy
+    add_to_aln_resource_leaf
+    @root.supported.last.supported.first.destroy_support_hierarchy
+    @root.support_hierarchy_depth.should eql(1)    
+    @root.supported.last.supported.length.should eql(0)    
+    @root.supported.length.should eql(2)    
   end
 
 end
