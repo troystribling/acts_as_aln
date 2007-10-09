@@ -103,7 +103,6 @@ class AlnResource < ActiveRecord::Base
   #### destroy model and support hierarchy and update metadata
   def destroy_support_hierarchy
     destroy
-    p self.resource_name
     unless supporter.nil?
       supporter.supported.delete(self.class.get_as_aln_resource(self))
       supporter.decrement_depth
