@@ -73,7 +73,7 @@ class AlnResource < ActiveRecord::Base
         mod.aln_resource.supporter = self
         mod.aln_resource
       else
-        raise(PlanB::InvalidType, "target model is invalid")
+        raise(PlanB::InvalidClass, "target model is invalid")
       end
     end
   end
@@ -157,16 +157,6 @@ class AlnResource < ActiveRecord::Base
       model.find_by_model(*args)
     end
 
-    #### return model aln_resource ancestor
-    def aln_resource_ancestor(mod)
-      if mod.class.eql?(AlnResource)
-        mod 
-      else
-        mod.respond_to?(:aln_resource) ? mod.aln_resource :
-          raise(PlanB::InvalidClass, "target model is invalid")        
-      end
-    end
-
     #### return model aln_resource
     def get_as_aln_resource(mod)
       if mod.class.eql?(AlnResource)
@@ -175,7 +165,7 @@ class AlnResource < ActiveRecord::Base
         if mod.respond_to?(:aln_resource)  
           mod.aln_resource
         else
-          raise(PlanB::InvalidType, "target model is invalid")
+          raise(PlanB::InvalidClass, "target model is invalid")
         end
       end
     end
