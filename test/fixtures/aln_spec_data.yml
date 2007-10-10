@@ -22,9 +22,21 @@ aln_termination_supported_2:
   directionality: unidirectional
   direction: client 
 
+aln_termination_resource:
+  resource_name: Termination
+
+aln_termination_resource_supported_1:
+  resource_name: Termination-1
+
+aln_termination_resource_supported_2:
+  resource_name: Termination-2
+
 aln_connection:
   resource_name: Connection-1
   directionality: unidirectional
+
+aln_connection_resource:
+  resource_name: Connection-1
 
 server:
   resource_name: SERVER-1

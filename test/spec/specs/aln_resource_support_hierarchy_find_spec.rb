@@ -77,8 +77,8 @@ describe "queries for root of support hierarcy" do
     root_chk = AlnResource.find_support_root_by_model(AlnResource, :all)
     root_chk.length.should be(3)
     root_chk.each do |r|
-      r.resource_name.should eql(model_data[:aln_termination]['resource_name']) if r.descendant.class.eql?(AlnTermination)
-      r.resource_name.should eql(model_data[:aln_connection]['resource_name']) if r.descendant.class.eql?(AlnConnection)
+      r.should have_attributes_with_values(model_data[:aln_termination_resource]) if r.descendant.class.eql?(AlnTermination)
+      r.should have_attributes_with_values(model_data[:aln_connection_resource]) if r.descendant.class.eql?(AlnConnection)
       r.supporter.should be_nil
       r.class.should be(AlnResource)
       r.destroy
@@ -115,6 +115,8 @@ end
 describe "queries for supported from supporter", :shared => true do
 
   it "should find all supported of specified return models as aln_reasource" do 
+    @root.supported.should have_attributes_with_values([model_data[:aln_termination_resource_supported_1], model_data[:aln_termination_resource_supported_2], model_data[:aln_resource_supported_1], model_data[:aln_resource_supported_2]])
+    @root.supported.should be_class(AlnResource)
   end
 
   it "should find first supported of specified model type and return models as specified type" do 
@@ -144,39 +146,39 @@ describe "queries for supported from supporter", :shared => true do
 end
 
 ##########################################################################################################
-#describe "queries for supported from aln_resource supporter" do
-#
-#  before(:each) do
-#    root = AlnResource.new(model_data[:aln_resource])
-#    root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
-#             AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2])]
-#    root.save
-#    @root = AlnResource.find_support_root_by_model(AlnResource, :first)
-#  end
-#
-#  after(:each) do
-#    @root.destroy   
-#  end
-#  
-#  it_should_behave_like "queries for supported from supporter"
-#    
-#end
-#
+describe "queries for supported from aln_resource supporter" do
+
+  before(:each) do
+    root = AlnResource.new(model_data[:aln_resource])
+    root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
+             AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2])]
+    root.save
+    @root = AlnResource.find_support_root_by_model(AlnResource, :first)
+  end
+
+  after(:each) do
+    @root.destroy   
+  end
+  
+  it_should_behave_like "queries for supported from supporter"
+    
+end
+
 ##########################################################################################################
-#describe "queries for supported from aln_resource descendant supporter" do
-#
-#  before(:each) do
-#    root = AlnTermination.new(model_data[:aln_termination])
-#    root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
-#             AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2])]
-#    root.save
-#    @root = AlnResource.find_support_root_by_model(AlnResource, :first)
-#  end
-#
-#  after(:each) do
-#    @root.destroy   
-#  end
-#  
-#  it_should_behave_like "queries for supported from supporter"
-#  
-#end
+describe "queries for supported from aln_resource descendant supporter" do
+
+  before(:each) do
+    root = AlnTermination.new(model_data[:aln_termination])
+    root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
+             AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2])]
+    root.save
+    @root = AlnResource.find_support_root_by_model(AlnResource, :first)
+  end
+
+  after(:each) do
+    @root.destroy   
+  end
+  
+  it_should_behave_like "queries for supported from supporter"
+  
+end
