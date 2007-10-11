@@ -52,18 +52,46 @@ describe "retrieval of aln_resource ancestor from aln_resource descendant model 
 end
 
 ##########################################################################################################
-describe "retrieval of aln_resource supported from a model instance" do
+describe "retrieval of aln_resource supported from a model instance", :shared => true do
 
   it "should return aln_resource if model is aln_resource" do
-    AlnResource.new.supported_as_aln_resource(AlnResource.new(model_data[:aln_resource])).class.should eql(AlnResource) 
+    mod = @mod_class.new
+    s = mod.supported_as_aln_resource(AlnResource.new(model_data[:aln_resource]))
+    s.class.should eql(AlnResource)
+    s.supporter.should eql(mod) 
   end
 
   it "should return aln_resource if model is a descendant of aln_resource" do 
-    AlnResource.new.supported_as_aln_resource(AlnTermination.new(model_data[:aln_termination])).class.should eql(AlnResource) 
+    mod = @mod_class.new
+    s = mod.supported_as_aln_resource(AlnTermination.new(model_data[:aln_termination]))
+    s.class.should eql(AlnResource)
+    s.supporter.should eql(mod) 
   end
 
   it "should raise PlanB::InvalidType if model is not a descendant of aln_resource" do
-    lambda{AlnResource.new.supported_as_aln_resource(Array.new)}.should raise_error(PlanB::InvalidClass) 
+    lambda{@mod_class.new.supported_as_aln_resource(Array.new)}.should raise_error(PlanB::InvalidClass) 
   end
+  
+end
+
+##########################################################################################################
+describe "retrieval of aln_resource supported from an aln_resource model instance", :shared => true do
+
+  before(:all) do
+    @mod_class = AlnResource
+  end
+  
+  it_should_behave_like "retrieval of aln_resource supported from a model instance"
+  
+end
+
+##########################################################################################################
+describe "retrieval of aln_resource supported from an aln_resource descendant model instance", :shared => true do
+
+  before(:all) do
+    @mod_class = AlnTermination
+  end
+  
+  it_should_behave_like "retrieval of aln_resource supported from a model instance"
   
 end

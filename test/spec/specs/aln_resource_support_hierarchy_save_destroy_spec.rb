@@ -149,3 +149,13 @@ describe "supporter model and supported model lifecyle relations relative to sup
 
 end
 
+#########################################################################################################
+describe "support hierarchy lifecycle", :shared => true do
+
+  it "should save and destroy entire hierarchy when called from hierarchy root" do
+  end
+  
+  it "should destroy entire hierarchy and update hierarchy metadata when called from hierarchy root" do
+  end
+  
+end
