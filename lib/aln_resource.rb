@@ -102,7 +102,7 @@ class AlnResource < ActiveRecord::Base
 
   #### destroy model and support hierarchy and update metadata
   def destroy_support_hierarchy
-    self.destroy
+    self.to_descendant.destroy
     unless supporter.nil?
       supporter.supported.delete(self.class.get_as_aln_resource(self))
       supporter.decrement_depth
@@ -117,6 +117,15 @@ class AlnResource < ActiveRecord::Base
   #### find specified supporter
   def find_supporter_by_model(model)
     self.class.find_by_model_and_condition("aln_resources.aln_resource_id = #{self.supporter_id}", model, :first)
+  end
+
+  #### find specified model in support hierarchy
+  def find_model_in_support_hierarchy(model, *args)
+    f = 0
+    (0..self.support_hierarchy_depth - 1).each do |l|
+      f = l
+    end
+    f
   end
 
   #### increment hierarchy depth

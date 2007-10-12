@@ -183,6 +183,7 @@ describe "support hierarchy lifecycle when hierarchy depth is greater than 1", :
     @root.destroy_supported
     @root.should persist
     verify_nonpersistence
+    @root.destroy
   end
     
 end
