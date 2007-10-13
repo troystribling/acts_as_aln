@@ -187,7 +187,7 @@ end
 describe "queries for supported within hierachy from hierarchy root when hiearchy depth is greater than 1", :shared => true  do
 
   it "should find first supported for aln_resource models" do
-    p @root.find_model_in_support_hierarchy(AlnResource, :first) 
+    p @root.find_by_model_in_support_hierarchy(AlnResource, :first) 
   end
 
   it "should find first supported of the specified aln_resource descendant model" do 
@@ -199,6 +199,28 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
 
   it "should find all supported of the specified aln_resource descendant model" do 
   end
+
+end
+
+##########################################################################################################
+describe "queries for supported within hierachy from hierarchy root when hiearchy depth is 1", :shared => true  do
+
+  it "should find first supported for aln_resource models" do
+  end
+
+  it "should find first supported of the specified aln_resource descendant model" do 
+  end
+  
+  it "should find all supported aln_resource models" do 
+  end
+
+  it "should find all supported of the specified aln_resource descendant model" do 
+  end
+
+end
+
+##########################################################################################################
+describe "queries for supported within hierachy from hierarchy root when hiearchy depth is 0", :shared => true  do
 
 end
 
@@ -253,5 +275,77 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
   end
 
 #  it_should_behave_like "queries for supported within hierachy from hierarchy root when hiearchy depth is greater than 1"
+  
+end
+
+##########################################################################################################
+describe "queries for supported within hierachy from hierarchy root when hiearchy depth is 1 for aln_resource root"  do
+  
+  before(:each) do
+    root = AlnResource.new(model_data[:aln_resource])
+    root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
+             AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2])]
+    root.save_hierarchy
+    @root = AlnResource.find_support_root_by_model(AlnResource, :first)
+  end
+  
+  after(:each) do
+    @root.destroy
+  end
+
+#  it_should_behave_like "queries for supported within hierachy from hierarchy root when hiearchy depth is 1"
+  
+end
+
+##########################################################################################################
+describe "queries for supported within hierachy from hierarchy root when hiearchy depth is 1 for aln_termination root"  do
+
+  before(:each) do
+    root = AlnTermination.new(model_data[:aln_termination])
+    root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
+             AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2])]
+    root.save_hierarchy
+    @root = AlnTermination.find_support_root_by_model(AlnTermination, :first)
+  end
+
+  after(:each) do
+    @root.destroy
+  end
+
+#  it_should_behave_like "queries for supported within hierachy from hierarchy root when hiearchy depth is 1"
+  
+end
+
+##########################################################################################################
+describe "queries for supported within hierachy from hierarchy root when hiearchy depth is 0 for aln_resource root"  do
+  
+  before(:each) do
+    root = AlnResource.new(model_data[:aln_resource])
+    root.save_hierarchy
+    @root = AlnResource.find_support_root_by_model(AlnResource, :first)
+  end
+  
+  after(:each) do
+    @root.destroy
+  end
+
+#  it_should_behave_like "queries for supported within hierachy from hierarchy root when hiearchy depth is 0"
+  
+end
+
+##########################################################################################################
+describe "queries for supported within hierachy from hierarchy root when hiearchy depth is 0 for aln_termination root"  do
+
+  before(:each) do
+    root = AlnTermination.new(model_data[:aln_termination])
+    root.save_hierarchy
+    @root = AlnTermination.find_support_root_by_model(AlnTermination, :first)
+  end
+
+  after(:each) do
+    @root.destroy
+  end
+
+#  it_should_behave_like "queries for supported within hierachy from hierarchy root when hiearchy depth is 0"
   
 end

@@ -9,7 +9,7 @@ class AlnResource < ActiveRecord::Base
   ##### declare support hierachy associations and define methods
   ####################################################################################
   belongs_to :supporter, :class_name => self.name, :foreign_key => "supporter_id" 
-  has_many :supported, :class_name => self.name, :foreign_key => "supporter_id" , :dependent => :destroy
+  has_many :supported, :class_name => self.name, :foreign_key => "supporter_id"
   @@supported_reflection = create_has_many_reflection(:supported, :class_name => self.name, :foreign_key => "supporter_id")
        
   ####################################################################################
@@ -120,12 +120,22 @@ class AlnResource < ActiveRecord::Base
   end
 
   #### find specified model in support hierarchy
-  def find_model_in_support_hierarchy(model, *args)
-    f = 0
-    (0..self.support_hierarchy_depth - 1).each do |l|
-      f = l
+  def find_by_model_in_support_hierarchy(model, *args)
+    mods = []
+    (1..self.support_hierarchy_depth).each do |qlevel|
+      joins = "AS r "
+      qargs = args
+      (1..level).each do |jlevel|
+        jtable = "l#{jlevel.to_s}" 
+        joins << "LEFT JOIN aln_resources AS #{jtable} ON #{jtable}"
+      end
+      if qargs[1].nil?
+        qargs[1] = {:joins => joins}
+      else
+        qargs[1].include?(:joins) ?  qargs[1][:joins] << ' ' + joins : qargs[1][:joins] = joins
+      end
     end
-    f
+    mods
   end
 
   #### increment hierarchy depth
