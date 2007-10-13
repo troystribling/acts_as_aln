@@ -125,15 +125,20 @@ class AlnResource < ActiveRecord::Base
     (1..self.support_hierarchy_depth).each do |qlevel|
       joins = "AS r "
       qargs = args
-      (1..level).each do |jlevel|
+      (1..qlevel).each do |jlevel|
         jtable = "l#{jlevel.to_s}" 
-        joins << "LEFT JOIN aln_resources AS #{jtable} ON #{jtable}"
+        joins << "LEFT JOIN aln_resources AS #{jtable} ON #{jtable}.supporter_id = "
+        jlevel.eql?(1) ? joins << "#{self.id} " : joins << "l#{(jlevel-1).to_s}.aln_resource_id"
       end
+      p joins
       if qargs[1].nil?
         qargs[1] = {:joins => joins}
       else
         qargs[1].include?(:joins) ?  qargs[1][:joins] << ' ' + joins : qargs[1][:joins] = joins
       end
+      p qargs
+      p args
+      p model.find_by_model(*qargs)
     end
     mods
   end
