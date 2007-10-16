@@ -1,3 +1,6 @@
+####################################################################################
+#### ALN Resource model
+####################################################################################
 class AlnResource < ActiveRecord::Base
 
   ####################################################################################
@@ -6,14 +9,18 @@ class AlnResource < ActiveRecord::Base
   has_descendants
   
   ####################################################################################
-  ##### declare support hierachy associations and define methods
+  ##### declare instance attributes
   ####################################################################################
-  belongs_to :supporter, :class_name => self.name, :foreign_key => "supporter_id" 
-  has_many :supported, :class_name => self.name, :foreign_key => "supporter_id"
-  @@supported_reflection = create_has_many_reflection(:supported, :class_name => self.name, :foreign_key => "supporter_id")
+  attr_accesor :supporter
        
   ####################################################################################
-  ##### save all models in hierarchy
+  ##### initialize model
+  def initialize
+    @supported = AlnSupported.new
+  end
+  
+  ####################################################################################
+  ##### save entire hierarchy
   def save_hierarchy
     save
     supported.each {|sup| sup.save_hierarchy}
@@ -23,59 +30,6 @@ class AlnResource < ActiveRecord::Base
   def destroy
     self.supported.each {|s| s.to_descendant.destroy}
     super
-  end
-
-  #### interate through support hierarchy
-  def each
-    yield self
-    supported.each do |sup|
-      sup.each {|x| yield x}
-    end
-  end
-  
-  #### add supported models
-  def <<(sup)
-    if sup.class.eql?(Array)
-      supported << sup.collect do |s|
-        increment_depth(s.support_hierarchy_depth)
-        supported_as_aln_resource(s)
-      end        
-    else
-      increment_depth(sup.support_hierarchy_depth)
-      supported << supported_as_aln_resource(sup)
-    end
-  end  
-
-  #### supported
-  def supported (*params)
-    force_reload = params.first unless params.empty?
-    association = instance_variable_get("@supported")
-    set_supporter = lambda {association.each{|a| a.supporter = self}}
-    unless association.respond_to?(:loaded?)
-      association = ActiveRecord::Associations::HasManyAssociation.new(self, @@supported_reflection)
-      instance_variable_set("@supported", association)
-      set_supporter[]
-    end
-    if force_reload
-      association.reload
-      set_supporter[]
-    end
-    association
-  end
-
-  #### return model aln_resource supported
-  def supported_as_aln_resource(mod)
-    if mod.class.eql?(AlnResource)
-      mod.supporter = self
-      mod
-    else
-      if mod.respond_to?(:aln_resource)  
-        mod.aln_resource.supporter = self
-        mod.aln_resource
-      else
-        raise(PlanB::InvalidClass, "target model is invalid")
-      end
-    end
   end
 
   #### destroy all supported and update meta data
@@ -108,7 +62,54 @@ class AlnResource < ActiveRecord::Base
       supporter.decrement_depth
     end 
   end
+  
+  ####################################################################################
+  #### interate through support hierarchy
+  def each
+    yield self
+    supported.each do |sup|
+      sup.each {|x| yield x}
+    end
+  end
+  
+  ####################################################################################
+  #### add supported model to model instance
+  def << (sup)
+    sup.class.eql?(Array) ? sup.each{|s| increment_metadata(s)} : increment_metadata(sup)
+    @supported << s
+  end  
 
+  #### supported
+  def supported
+    @supported.load(self) unless @supported.loaded?
+    @supported
+  end
+  
+  ####################################################################################
+  def increment_metadata(sup)
+  end
+
+  ####################################################################################
+  def decrement_metadata(sup)
+  end
+  
+  ####################################################################################
+  #### return model aln_resource supported
+  def supported_as_aln_resource(mod)
+    if mod.class.eql?(AlnResource)
+      mod.supporter = self
+      mod
+    else
+      if mod.respond_to?(:aln_resource)  
+        mod.aln_resource.supporter = self
+        mod.aln_resource
+      else
+        raise(PlanB::InvalidClass, "target model is invalid")
+      end
+    end
+  end
+
+  ####################################################################################
   #### find specified supported
   def find_supported_by_model(model, *args)
     self.class.find_by_model_and_condition("aln_resources.supporter_id = #{self.id}", model, *args)
@@ -117,48 +118,6 @@ class AlnResource < ActiveRecord::Base
   #### find specified supporter
   def find_supporter_by_model(model)
     self.class.find_by_model_and_condition("aln_resources.aln_resource_id = #{self.supporter_id}", model, :first)
-  end
-
-  #### find specified model in support hierarchy
-  def find_by_model_in_support_hierarchy(model, *args)
-    mods = []
-    (1..self.support_hierarchy_depth).each do |qlevel|
-      joins = "AS r "
-      qargs = args
-      (1..qlevel).each do |jlevel|
-        jtable = "l#{jlevel.to_s}" 
-        joins << "LEFT JOIN aln_resources AS #{jtable} ON #{jtable}.supporter_id = "
-        jlevel.eql?(1) ? joins << "#{self.id} " : joins << "l#{(jlevel-1).to_s}.aln_resource_id"
-      end
-      p joins
-      if qargs[1].nil?
-        qargs[1] = {:joins => joins}
-      else
-        qargs[1].include?(:joins) ?  qargs[1][:joins] << ' ' + joins : qargs[1][:joins] = joins
-      end
-      p qargs
-      p args
-      p model.find_by_model(*qargs)
-    end
-    mods
-  end
-
-  #### increment hierarchy depth
-  def increment_depth(depth)
-    if depth >= self.support_hierarchy_depth
-      self.support_hierarchy_depth = depth + 1  
-      self.supporter.increment_depth(self.support_hierarchy_depth) unless self.supporter.nil?
-    end
-  end
-  
-  #### decrement hierarchy depth
-  def decrement_depth
-    if self.supported.empty?
-      self.support_hierarchy_depth = 0
-    else 
-      self.support_hierarchy_depth = self.supported.collect {|s| s.support_hierarchy_depth}.max + 1
-    end   
-    self.supporter.decrement_depth unless self.supporter.nil?
   end
 
   ####################################################################################
