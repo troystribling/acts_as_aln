@@ -8,7 +8,9 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
       t.column :aln_resource_descendant_id, :integer
       t.column :aln_resource_descendant_type, :string
       t.column :supporter_id, :integer    
-      t.column :support_hierarchy_depth, :integer, :default => 0
+      t.column :support_hierarchy_root, :integer, :default => 1
+      t.column :support_hierarchy_left, :integer, :default => 1
+      t.column :support_hierarchy_right, :integer, :default => 2
       t.column :created_at, :datetime
       t.column :updated_at, :datetime
       t.column :resource_name, :string
