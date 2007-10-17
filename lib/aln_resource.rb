@@ -12,7 +12,13 @@ class AlnResource < ActiveRecord::Base
   ##### declare instance attributes
   ####################################################################################
   attr_accesor :supporter
-       
+
+  ####################################################################################
+  def supporter=(sup)
+    @supporter = sup
+    self.supporter_id = @supporter.id
+  end
+         
   ####################################################################################
   ##### initialize model
   def initialize
@@ -74,15 +80,15 @@ class AlnResource < ActiveRecord::Base
   
   ####################################################################################
   #### add supported model to model instance
-  def add_supported (sup)
+  def << (sup)
     sup.class.eql?(Array) ? sup.each{|s| increment_metadata(s)} : increment_metadata(sup)
-    @supported << s
+    @supported << sup
   end  
 
   #### add supported model to model instance
   def move_supported (sup)
     sup.class.eql?(Array) ? sup.each{|s| increment_metadata(s)} : increment_metadata(sup)
-    @supported << s
+    @supported << sup
   end  
 
   #### supported
@@ -93,7 +99,11 @@ class AlnResource < ActiveRecord::Base
   
   ####################################################################################
   def increment_metadata(sup)
-    sup.
+    sup.support_hierarchy_left = self.support_hierarchy_left + 1
+    sup.support_hierarchy_right = self.support_hierarchy_left + 2
+    self.support_hierarchy_root.nil? ? sup.support_hierarchy_root = self.id : sup.support_hierarchy_root = self.support_hierarchy_root
+    self.class.update_all("support_hierarchy_left = (support_hierarchy_left + 2)", "support_hierarchy_left > #{sup.support_hierarchy_left}") 
+    self.class.update_all("support_hierarchy_right = (support_hierarchy_right + 2)", "support_hierarchy_right > #{sup.support_hierarchy_right}") 
   end
 
   ####################################################################################

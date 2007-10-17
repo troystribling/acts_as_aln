@@ -13,9 +13,8 @@ class AlnSupported
   end
   
   def << (sup)
-    if sup.class.eql?(Array)
-    else
-    end
+    sup = [sup] unless sup.class.eql?(Array)
+    @supported + sup
   end
   
   def loaded?
