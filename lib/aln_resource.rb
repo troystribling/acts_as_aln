@@ -74,7 +74,13 @@ class AlnResource < ActiveRecord::Base
   
   ####################################################################################
   #### add supported model to model instance
-  def << (sup)
+  def add_supported (sup)
+    sup.class.eql?(Array) ? sup.each{|s| increment_metadata(s)} : increment_metadata(sup)
+    @supported << s
+  end  
+
+  #### add supported model to model instance
+  def move_supported (sup)
     sup.class.eql?(Array) ? sup.each{|s| increment_metadata(s)} : increment_metadata(sup)
     @supported << s
   end  
@@ -87,6 +93,7 @@ class AlnResource < ActiveRecord::Base
   
   ####################################################################################
   def increment_metadata(sup)
+    sup.
   end
 
   ####################################################################################

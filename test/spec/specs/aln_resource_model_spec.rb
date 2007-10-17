@@ -28,8 +28,20 @@ describe "attributes supported by aln_resource models" do
     AlnResource.should have_attribute(:resource_name, :string)
   end
 
-  it "should include an intger identifying depth supoort hierarchy relative to aln_resource" do 
-    AlnResource.should have_attribute(:support_hierarchy_depth, :integer)
+  it "should include an integer preordered tree parameter support_hierarchy_left" do 
+    AlnResource.should have_attribute(:support_hierarchy_left, :integer)
+  end
+
+  it "should include an integer preordered tree parameter support_hierarchy_right" do 
+    AlnResource.should have_attribute(:support_hierarchy_right, :integer)
+  end
+
+  it "should include id of support hierarchy root" do 
+    AlnResource.should have_attribute(:support_hierarchy_root_id, :integer)
+  end
+
+  it "should include id of supporter" do 
+    AlnResource.should have_attribute(:supporter_id, :integer)
   end
 
 end
