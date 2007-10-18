@@ -100,10 +100,12 @@ class AlnResource < ActiveRecord::Base
   ####################################################################################
   def increment_metadata(sup)
     sup.support_hierarchy_left = self.support_hierarchy_left + 1
-    sup.support_hierarchy_right = self.support_hierarchy_left + 2
+    sup.support_hierarchy_right = sup.support_hierarchy_left + 2
     self.support_hierarchy_root.nil? ? sup.support_hierarchy_root = self.id : sup.support_hierarchy_root = self.support_hierarchy_root
-    self.class.update_all("support_hierarchy_left = (support_hierarchy_left + 2)", "support_hierarchy_left > #{sup.support_hierarchy_left}") 
-    self.class.update_all("support_hierarchy_right = (support_hierarchy_right + 2)", "support_hierarchy_right > #{sup.support_hierarchy_right}") 
+    self.class.update_all("support_hierarchy_left = (support_hierarchy_left + 2)", "support_hierarchy_left > #{self.support_hierarchy_left}") 
+    self.class.update_all("support_hierarchy_right = (support_hierarchy_right + 2)", "support_hierarchy_right >= #{self.support_hierarchy_right}") 
+    self.save
+    sup.save
   end
 
   ####################################################################################
