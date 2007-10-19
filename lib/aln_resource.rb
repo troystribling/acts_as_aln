@@ -11,18 +11,20 @@ class AlnResource < ActiveRecord::Base
   ####################################################################################
   ##### declare instance attributes
   ####################################################################################
-  attr_accesor :supporter
+  attr_accessor :supporter
+  attr_reader :supported
 
   ####################################################################################
-  def supporter=(sup)
+  def supporter= (sup)
     @supporter = sup
     self.supporter_id = @supporter.id
   end
          
   ####################################################################################
   ##### initialize model
-  def initialize
-    @supported = AlnSupported.new
+  def initialize (*args)
+    super(*args)
+    @supported = AlnSupported.new(self)
   end
   
   ####################################################################################
@@ -98,14 +100,26 @@ class AlnResource < ActiveRecord::Base
   end
   
   ####################################################################################
+  #### increment meta data for all impacted models and save updates to database
   def increment_metadata(sup)
+    
+    #### determine update increment
+    update_increment = 2
+    
+    #### update meta data for all affected models
+    self.class.update_all("support_hierarchy_left = (support_hierarchy_left + #{update_increment})", "support_hierarchy_left > #{self.support_hierarchy_left}") 
+    self.class.update_all("support_hierarchy_right = (support_hierarchy_right + #{update_increment})", "support_hierarchy_right > #{self.support_hierarchy_right}") 
+
+    ### update new supported metadata
     sup.support_hierarchy_left = self.support_hierarchy_left + 1
-    sup.support_hierarchy_right = sup.support_hierarchy_left + 2
-    self.support_hierarchy_root.nil? ? sup.support_hierarchy_root = self.id : sup.support_hierarchy_root = self.support_hierarchy_root
-    self.class.update_all("support_hierarchy_left = (support_hierarchy_left + 2)", "support_hierarchy_left > #{self.support_hierarchy_left}") 
-    self.class.update_all("support_hierarchy_right = (support_hierarchy_right + 2)", "support_hierarchy_right >= #{self.support_hierarchy_right}") 
-    self.save
+    sup.support_hierarchy_right = self.support_hierarchy_left + 2
+    self.support_hierarchy_root_id.nil? ? sup.support_hierarchy_root_id = self.id : sup.support_hierarchy_root_id = self.support_hierarchy_root_id
     sup.save
+    
+    ### update model meta data and save
+    self.support_hierarchy_right += update_increment
+    self.save
+    
   end
 
   ####################################################################################

@@ -3,7 +3,8 @@
 ####################################################################################
 class AlnSupported
 
-  def initialize
+  def initialize(supporter)
+    @supporter = supporter
     @supported = []
     @loaded = false
   end
@@ -13,7 +14,12 @@ class AlnSupported
   end
   
   def << (sup)
-    sup = [sup] unless sup.class.eql?(Array)
+    if sup.class.eql?(Array)
+      sup.each{|s| s.supporter = @supporter}
+    else
+      sup.supporter = @supporter
+      sup = [sup]
+    end
     @supported + sup
   end
   
