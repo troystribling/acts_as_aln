@@ -12,7 +12,6 @@ class AlnResource < ActiveRecord::Base
   ##### declare instance attributes
   ####################################################################################
   attr_accessor :supporter
-  attr_reader :supported
 
   ####################################################################################
   def supporter= (sup)
@@ -20,11 +19,10 @@ class AlnResource < ActiveRecord::Base
     self.supporter_id = @supporter.id
   end
          
-  ####################################################################################
-  ##### initialize model
-  def initialize (*args)
-    super(*args)
-    @supported = AlnSupported.new(self)
+  #### supported
+  def supported
+    @supported = AlnSupported.new(self) if @supported.nil?
+    @supported.load
   end
   
   ####################################################################################
@@ -83,22 +81,17 @@ class AlnResource < ActiveRecord::Base
   ####################################################################################
   #### add supported model to model instance
   def << (sup)
+  p "<<"
     sup.class.eql?(Array) ? sup.each{|s| increment_metadata(s)} : increment_metadata(sup)
-    @supported << sup
+    supported << sup
   end  
 
   #### add supported model to model instance
   def move_supported (sup)
     sup.class.eql?(Array) ? sup.each{|s| increment_metadata(s)} : increment_metadata(sup)
-    @supported << sup
+    supported << sup
   end  
 
-  #### supported
-  def supported
-    @supported.load(self) unless @supported.loaded?
-    @supported
-  end
-  
   ####################################################################################
   #### increment meta data for all impacted models and save updates to database
   def increment_metadata(sup)
@@ -113,6 +106,7 @@ class AlnResource < ActiveRecord::Base
     ### update new supported metadata
     sup.support_hierarchy_left = self.support_hierarchy_left + 1
     sup.support_hierarchy_right = self.support_hierarchy_left + 2
+    sup.supporter = self
     self.support_hierarchy_root_id.nil? ? sup.support_hierarchy_root_id = self.id : sup.support_hierarchy_root_id = self.support_hierarchy_root_id
     sup.save
     

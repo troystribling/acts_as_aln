@@ -68,7 +68,9 @@ describe "updates to preordered tree meta data when a supported with no supporte
     root << new_supported
 
     root = AlnResource.get_as_aln_resource(root)
+    root = AlnResource.find(root.id)
     new_supported = AlnResource.get_as_aln_resource(new_supported)
+    new_supported = AlnResource.find(new_supported.id)
 
     root.support_hierarchy_left.should eql(1)  
     root.support_hierarchy_right.should eql(4)  
