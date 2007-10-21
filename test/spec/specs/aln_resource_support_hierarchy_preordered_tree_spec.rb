@@ -104,7 +104,7 @@ describe "updates to preordered tree meta data when an aln_resource descendant w
     @test_class = AlnTermination
   end
   
-  it_should_behave_like "updates to preordered tree meta data when a supported with no supported is added to a support hierarchy"
+#  it_should_behave_like "updates to preordered tree meta data when a supported with no supported is added to a support hierarchy"
   
 end
 
