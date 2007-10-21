@@ -38,7 +38,7 @@ class AlnSupported
       sup.supporter = @supporter
       sup = [sup]
     end
-    @supported + sup
+    @supported += sup
   end
   
   ##################################################################################
@@ -49,8 +49,8 @@ class AlnSupported
   ##################################################################################
   def load
     unless loaded?
-      load = @supporter.class.find_by_supporter_id(@supporter.id) || []
-      @supported = [load] unless load.class.eql?(Array)      
+      mods = @supporter.class.find_by_supporter_id(@supporter.id) || []
+      @supported = [load] unless mods.class.eql?(Array)      
       @loaded = true
     end
     self
