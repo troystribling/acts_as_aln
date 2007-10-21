@@ -38,35 +38,35 @@ describe "supporter model and supported model lifecyle relative to supporter mod
     @root.destroy
   end
 
-#  it "should delete multiple specified supported models without deleting supporter or unintended supported" do 
-#    @root << [@s1, @s2, @s3]
-#    @root.save    
-#    @root.should persist 
-#    @s1.should persist   
-#    @s2.should persist   
-#    @s3.should persist   
-#    @root.destroy_supported_by_model(@s1.class, :all, :conditions => "aln_resources.resource_name = '#{@s1.resource_name}'")
-#    @root.should persist 
-#    @s1.should_not persist   
-#    @s2.should_not persist   
-#    @s3.should persist   
-#    @root.destroy
-#  end
-#
-#  it "should be able to delete all supported models without deleting supporter" do 
-#    @root << [@s1, @s2, @s3]
-#    @root.save    
-#    @root.should persist 
-#    @s1.should persist   
-#    @s2.should persist   
-#    @s3.should persist   
-#    @root.destroy_supported
-#    @root.should persist 
-#    @s1.should_not persist   
-#    @s2.should_not persist   
-#    @s3.should_not persist   
-#    @root.destroy
-#  end
+  it "should delete multiple specified supported models without deleting supporter or unintended supported" do 
+    @root << [@s1, @s2, @s3]
+    @root.save    
+    @root.should persist 
+    @s1.should persist   
+    @s2.should persist   
+    @s3.should persist   
+    @root.destroy_supported_by_model(@s1.class, :all, :conditions => "aln_resources.resource_name = '#{@s1.resource_name}'")
+    @root.should persist 
+    @s1.should_not persist   
+    @s2.should_not persist   
+    @s3.should persist   
+    @root.destroy
+  end
+
+  it "should be able to delete all supported models without deleting supporter" do 
+    @root << [@s1, @s2, @s3]
+    @root.save    
+    @root.should persist 
+    @s1.should persist   
+    @s2.should persist   
+    @s3.should persist   
+    @root.destroy_supported
+    @root.should persist 
+    @s1.should_not persist   
+    @s2.should_not persist   
+    @s3.should_not persist   
+    @root.destroy
+  end
 
 end
 
@@ -94,7 +94,7 @@ describe "save and destroy when aln_resource descendant is root" do
     @s3 = AlnTermination.new(model_data[:aln_termination_supported_2])
   end
   
-#  it_should_behave_like "supporter model and supported model lifecyle relative to supporter model"
+  it_should_behave_like "supporter model and supported model lifecyle relative to supporter model"
 
 end
 
@@ -107,24 +107,24 @@ describe "supporter model and supported model lifecyle relations relative to sup
     @root << @s1
   end
 
-#  it "should save supporter when supported is saved" do 
-#   @s1.save
-#   @s1.should persist
-#   @root.should persist
-#   @s1.destroy
-#   @root.destroy
-#  end
-#
-#  it "should not destroy supporter when supported is destroyed" do 
-#   @root.save
-#   @s1.should persist
-#   @root.should persist
-#   @s1.destroy
-#   @s1.should_not persist
-#   @root.should persist
-#   @root.destroy
-#  end
-#
+  it "should save supporter when supported is saved" do 
+   @s1.save
+   @s1.should persist
+   @root.should persist
+   @s1.destroy
+   @root.destroy
+  end
+
+  it "should not destroy supporter when supported is destroyed" do 
+   @root.save
+   @s1.should persist
+   @root.should persist
+   @s1.destroy
+   @s1.should_not persist
+   @root.should persist
+   @root.destroy
+  end
+
 end
 
 #########################################################################################################
@@ -158,34 +158,34 @@ describe "support hierarchy lifecycle when hierarchy depth is greater than 1", :
     @s21.should_not persist
   end
 
-#  it "should save and destroy entire hierarchy and root when called from hierarchy root" do
-#    build_hierarchy
-#    @root.save_hierarchy
-#    verify_persistence
-#    @root.destroy
-#    @root.should_not persist
-#    verify_nonpersistence
-#  end
-#
-#  it "should destroy entire hierarchy and root when destroy method that updates hierarchy metadata is called from hierarchy root" do
-#    build_hierarchy
-#    @root.save_hierarchy
-#    verify_persistence
-#    @root.destroy_support_hierarchy
-#    @root.should_not persist
-#    verify_nonpersistence
-#  end
-#
-#  it "should destroy entire hierarchy but not root when called from hierarchy root" do
-#    build_hierarchy
-#    @root.save_hierarchy
-#    verify_persistence
-#    @root.destroy_supported
-#    @root.should persist
-#    verify_nonpersistence
-#    @root.destroy
-#  end
-#    
+  it "should save and destroy entire hierarchy and root when called from hierarchy root" do
+    build_hierarchy
+    @root.save_hierarchy
+    verify_persistence
+    @root.destroy
+    @root.should_not persist
+    verify_nonpersistence
+  end
+
+  it "should destroy entire hierarchy and root when destroy method that updates hierarchy metadata is called from hierarchy root" do
+    build_hierarchy
+    @root.save_hierarchy
+    verify_persistence
+    @root.destroy_support_hierarchy
+    @root.should_not persist
+    verify_nonpersistence
+  end
+
+  it "should destroy entire hierarchy but not root when called from hierarchy root" do
+    build_hierarchy
+    @root.save_hierarchy
+    verify_persistence
+    @root.destroy_supported
+    @root.should persist
+    verify_nonpersistence
+    @root.destroy
+  end
+    
 end
 
 #########################################################################################################
@@ -202,7 +202,7 @@ describe "support hierarchy lifecycle for aln_resource root when hierarchy depth
     @s21 = AlnResource.new(model_data[:aln_resource_supported_2])
   end
 
-#  it_should_behave_like "support hierarchy lifecycle when hierarchy depth is greater than 1"
+  it_should_behave_like "support hierarchy lifecycle when hierarchy depth is greater than 1"
 
 end
 
@@ -220,7 +220,7 @@ describe "support hierarchy lifecycle for aln_resource descendant root when hier
     @s21 = AlnTermination.new(model_data[:aln_termination_supported_2])
   end
 
-#  it_should_behave_like "support hierarchy lifecycle when hierarchy depth is greater than 1"
+  it_should_behave_like "support hierarchy lifecycle when hierarchy depth is greater than 1"
 
 end
 

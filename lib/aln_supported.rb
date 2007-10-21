@@ -6,6 +6,7 @@ class AlnSupported
   ##################################################################################
   def initialize(supporter)
     @supporter = supporter
+    @supporter.save if @supporter.new_record?
     @supported = []
     @loaded = false
   end
@@ -50,7 +51,7 @@ class AlnSupported
   def load
     unless loaded?
       mods = @supporter.class.find_by_supporter_id(@supporter.id) || []
-      @supported = [load] unless mods.class.eql?(Array)      
+      @supported = [mods] unless mods.class.eql?(Array)      
       @loaded = true
     end
     self
