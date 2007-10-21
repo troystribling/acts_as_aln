@@ -16,6 +16,16 @@ class AlnSupported
   end
 
   ##################################################################################
+  def delete(sup)
+    @supported.delete(sup)
+  end
+
+  ##################################################################################
+  def clear
+    @supported.clear
+  end
+
+  ##################################################################################
   def each
     @supported.each{|s| yield(s)}
   end
@@ -39,10 +49,11 @@ class AlnSupported
   ##################################################################################
   def load
     unless loaded?
-      @supported = @supporter.class.find_by_supporter_id(@supporter.id)
+      load = @supporter.class.find_by_supporter_id(@supporter.id) || []
+      @supported = [load] unless load.class.eql?(Array)      
       @loaded = true
     end
-    @supported.nil? ? [] : @supported
+    self
   end
   
 end
