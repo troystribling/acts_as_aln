@@ -42,7 +42,7 @@ class AlnResource < ActiveRecord::Base
   def destroy_supported
     self.supported.each {|s| s.to_descendant.destroy}
     self.supported.clear
-    decrement_depth
+    decrement_metadata
   end
 
   #### destroy specified supporter and update meta data
@@ -57,7 +57,7 @@ class AlnResource < ActiveRecord::Base
     else
       destroy_element[goner] unless goner.nil? 
     end
-    decrement_depth
+    decrement_metadata
   end
 
   #### destroy model and support hierarchy and update metadata
@@ -65,7 +65,7 @@ class AlnResource < ActiveRecord::Base
     self.to_descendant.destroy
     unless supporter.nil?
       supporter.supported.delete(self.class.get_as_aln_resource(self))
-      supporter.decrement_depth
+      supporter.decrement_metadata
     end 
   end
   
@@ -81,15 +81,14 @@ class AlnResource < ActiveRecord::Base
   ####################################################################################
   #### add supported model to model instance
   def << (sup)
-  p "<<"
-    sup.class.eql?(Array) ? sup.each{|s| increment_metadata(s)} : increment_metadata(sup)
     supported << sup
+    sup.class.eql?(Array) ? sup.each{|s| increment_metadata(s)} : increment_metadata(sup)
   end  
 
   #### add supported model to model instance
   def move_supported (sup)
-    sup.class.eql?(Array) ? sup.each{|s| increment_metadata(s)} : increment_metadata(sup)
     supported << sup
+    sup.class.eql?(Array) ? sup.each{|s| increment_metadata(s)} : increment_metadata(sup)
   end  
 
   ####################################################################################
@@ -106,7 +105,6 @@ class AlnResource < ActiveRecord::Base
     ### update new supported metadata
     sup.support_hierarchy_left = self.support_hierarchy_left + 1
     sup.support_hierarchy_right = self.support_hierarchy_left + 2
-    sup.supporter = self
     self.support_hierarchy_root_id.nil? ? sup.support_hierarchy_root_id = self.id : sup.support_hierarchy_root_id = self.support_hierarchy_root_id
     sup.save
     
@@ -117,7 +115,7 @@ class AlnResource < ActiveRecord::Base
   end
 
   ####################################################################################
-  def decrement_metadata(sup)
+  def decrement_metadata
   end
   
   ####################################################################################
