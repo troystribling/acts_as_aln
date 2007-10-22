@@ -9,14 +9,16 @@ class AlnResource < ActiveRecord::Base
   has_descendants
   
   ####################################################################################
-  ##### declare instance attributes
-  ####################################################################################
-  attr_accessor :supporter
-
+  ##### instance attributes
   ####################################################################################
   def supporter= (sup)
     @supporter = sup
     self.supporter_id = @supporter.id
+  end
+
+  ####################################################################################
+  def supporter
+    @supporter
   end
          
   #### supported
@@ -100,7 +102,7 @@ class AlnResource < ActiveRecord::Base
     
     #### update meta data for all affected models
     self.class.update_all("support_hierarchy_left = (support_hierarchy_left + #{update_increment})", "support_hierarchy_left > #{self.support_hierarchy_left}") 
-    self.class.update_all("support_hierarchy_right = (support_hierarchy_right + #{update_increment})", "support_hierarchy_right > #{self.support_hierarchy_right}") 
+    self.class.update_all("support_hierarchy_right = (support_hierarchy_right + #{update_increment})", "support_hierarchy_right > #{self.support_hierarchy_left + 1}") 
 
     ### update new supported metadata
     sup.support_hierarchy_left = self.support_hierarchy_left + 1

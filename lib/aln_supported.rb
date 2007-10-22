@@ -11,26 +11,40 @@ class AlnSupported
     @loaded = false
   end
   
-  ##################################################################################
-  def [](index)
-    @supported[index]
-  end
-
-  ##################################################################################
-  def delete(sup)
-    @supported.delete(sup)
-  end
-
-  ##################################################################################
-  def clear
-    @supported.clear
-  end
-
-  ##################################################################################
-  def each
-    @supported.each{|s| yield(s)}
-  end
+#  ##################################################################################
+#  def [](index)
+#    @supported[index]
+#  end
+#
+#  ##################################################################################
+#  def delete(sup)
+#    @supported.delete(sup)
+#  end
+#
+#  ##################################################################################
+#  def clear
+#    @supported.clear
+#  end
+#
+#  ##################################################################################
+#  def each
+#    @supported.each{|s| yield(s)}
+#  end
   
+  ##################################################################################
+  def method_missing(meth, *args, &blk)
+    begin
+      super
+    rescue NoMethodError
+      @supported.send(meth, *args, &blk)
+    end
+  end
+
+  ##################################################################################
+  def count
+    load.length
+  end
+
   ##################################################################################
   def << (sup)
     if sup.class.eql?(Array)
@@ -50,8 +64,7 @@ class AlnSupported
   ##################################################################################
   def load
     unless loaded?
-      mods = @supporter.class.find_by_supporter_id(@supporter.id) || []
-      @supported = [mods] unless mods.class.eql?(Array)      
+      @supported = @supporter.class.find_all_by_supporter_id(@supporter.id)
       @loaded = true
     end
     self
