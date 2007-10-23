@@ -29,8 +29,8 @@ class AlnResource < ActiveRecord::Base
   end
   
   ####################################################################################
-  ##### save entire hierarchy
-  def save_hierarchy
+  ##### update entire hierarchy
+  def update_hierarchy
     save
     supported.each {|sup| sup.save_hierarchy}
   end
