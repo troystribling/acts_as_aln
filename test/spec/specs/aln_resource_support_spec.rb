@@ -111,18 +111,19 @@ describe "access to supporter from supported", :shared => true do
 
   it "should be possible to access supporter from supported that is not persistent" do
     @root << [@s1, @s2, @s3]
-    p @s1.supporter.id
-    @s1.supporter.id.should eql(@root)
-#    @s2.supporter.should eql(@root)
-#    @s3.supporter.should eql(@root)
+    @s1.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
+    @s2.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
+    @s3.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
   end
 
   it "should be possible to access supporter from supported is not persistent" do
     @root << [@s1, @s2, @s3]
-    @root_chk = AlnResource.find(AlnResource.get_as_aln_resource(@root).id)
-    @ar_s1 = AlnResource.get_as_aln_resource(@s1)
-    @ar_s2 = AlnResource.get_as_aln_resource(@s2)
-    @ar_s3 = AlnResource.get_as_aln_resource(@s3)
+    @chk_s1 = AlnResource.find(AlnResource.get_as_aln_resource(@s1).id)
+    @chk_s2 = AlnResource.find(AlnResource.get_as_aln_resource(@s2).id)
+    @chk_s3 = AlnResource.find(AlnResource.get_as_aln_resource(@s3).id)
+    @chk_s1.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
+    @chk_s2.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
+    @chk_s3.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
   end
 
 end

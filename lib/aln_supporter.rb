@@ -41,7 +41,7 @@ class AlnSupporter
   
   ##################################################################################
   def load
-    unless loaded? or @supporter.nil?
+    unless loaded? or @supported.supporter_id.nil?
       @supporter = @supported.class.find(@supported.supporter_id)
       @loaded = true
     end
