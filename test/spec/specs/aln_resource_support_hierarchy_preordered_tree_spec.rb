@@ -118,25 +118,35 @@ describe "incrementing preordered tree meta data by adding a supported with no s
     
   end
 
-#  it "should update root of hiearchy, self and other supported when hierachy originally contains a root with supported 1 level deep as supported is added to a leaf of hierarchy" do
-#
-#    new_supported_3 = @test_class.new
-#    new_supported_3.should_not persist   
-#
-#    add_first_supported
-#    add_second_supported
-#
-#    @root = AlnResource.get_as_aln_resource(@root)
-#    @root = AlnResource.find(@root.id)
-#    @new_supported_1 = AlnResource.get_as_aln_resource(@new_supported_1)
-#    @new_supported_1 = AlnResource.find(@new_supported_1.id)
-#    @new_supported_2 = AlnResource.get_as_aln_resource(@new_supported_2)
-#    @new_supported_2 = AlnResource.find(@new_supported_2.id)
-#
-#    @root.to_descendant.destroy
-#    
-#  end
-#
+  it "should update root of hiearchy, self and other supported when hierachy originally contains a root with supported 1 level deep as supported is added to a leaf of hierarchy" do
+
+    new_supported_3 = @test_class.new
+    new_supported_3.should_not persist   
+
+    add_first_supported
+    add_second_supported
+    @new_supported_2 << new_supported_3
+
+    @root = AlnResource.get_as_aln_resource(@root)
+    @root = AlnResource.find(@root.id)
+    @new_supported_1 = AlnResource.get_as_aln_resource(@new_supported_1)
+    @new_supported_1 = AlnResource.find(@new_supported_1.id)
+    @new_supported_2 = AlnResource.get_as_aln_resource(@new_supported_2)
+    @new_supported_2 = AlnResource.find(@new_supported_2.id)
+        
+    @root.support_hierarchy_left.should eql(1)  
+    @root.support_hierarchy_right.should eql(8)  
+    @new_supported_2.support_hierarchy_left.should eql(2)  
+    @new_supported_2.support_hierarchy_right.should eql(5)  
+    new_supported_3.support_hierarchy_left.should eql(3)  
+    new_supported_3.support_hierarchy_right.should eql(4)  
+    @new_supported_1.support_hierarchy_left.should eql(6)  
+    @new_supported_1.support_hierarchy_right.should eql(7)  
+
+    @root.to_descendant.destroy
+    
+  end
+
 
 end
 
