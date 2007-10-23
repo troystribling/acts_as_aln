@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 #########################################################################################################
-describe "adding supported to supporter and accessing supported from supporter before saving to database", :shared => true do
+describe "adding supported to supporter and accessing supported from supporter that is not persistent", :shared => true do
 
   it "should be possible add supported individally" do
     @root << @s1
@@ -57,11 +57,10 @@ describe "removing supported from supporter", :shared => true do
 end
 
 #########################################################################################################
-describe "accessing supported from supporter retrieved from database", :shared => true do
+describe "accessing supported from supporter that is persistent", :shared => true do
 
   def save_root
     @root << [@s1, @s2, @s3]
-    @root.save        
     @root_chk = AlnResource.find(AlnResource.get_as_aln_resource(@root).id)
     @ar_s1 = AlnResource.get_as_aln_resource(@s1)
     @ar_s2 = AlnResource.get_as_aln_resource(@s2)
@@ -101,10 +100,29 @@ end
 #########################################################################################################
 describe "access to supporter from supported", :shared => true do
 
-  it "should be possible to access supporter from supported not saved to database" do
+  it "should not exist for root that is not persistent" do
+    @root.supporter.exists?.should be_false
   end
 
-  it "should be possible to access supporter from supported retrieved from database" do
+  it "should not exist for root that is persistent" do
+    @root.save
+    AlnResource.find(AlnResource.get_as_aln_resource(@root).id).supporter.exists?.should be_false
+  end
+
+  it "should be possible to access supporter from supported that is not persistent" do
+    @root << [@s1, @s2, @s3]
+    p @s1.supporter.id
+    @s1.supporter.id.should eql(@root)
+#    @s2.supporter.should eql(@root)
+#    @s3.supporter.should eql(@root)
+  end
+
+  it "should be possible to access supporter from supported is not persistent" do
+    @root << [@s1, @s2, @s3]
+    @root_chk = AlnResource.find(AlnResource.get_as_aln_resource(@root).id)
+    @ar_s1 = AlnResource.get_as_aln_resource(@s1)
+    @ar_s2 = AlnResource.get_as_aln_resource(@s2)
+    @ar_s3 = AlnResource.get_as_aln_resource(@s3)
   end
 
 end
@@ -126,13 +144,15 @@ describe "accessing supported from aln_resource supporter" do
     @s3.destroy
   end  
     
-  it_should_behave_like "adding supported to supporter and accessing supported from supporter before saving to database"
+  it_should_behave_like "adding supported to supporter and accessing supported from supporter that is not persistent"
 
   it_should_behave_like "removing supported from supporter"
 
-  it_should_behave_like "accessing supported from supporter retrieved from database"
+  it_should_behave_like "accessing supported from supporter that is persistent"
 
   it_should_behave_like "retrieving supported count"
+
+  it_should_behave_like "access to supporter from supported"
 
 end
 
@@ -153,13 +173,15 @@ describe "accessing supported from aln_resource descendant supporter" do
     @s3.destroy
   end  
 
-  it_should_behave_like "adding supported to supporter and accessing supported from supporter before saving to database"
+  it_should_behave_like "adding supported to supporter and accessing supported from supporter that is not persistent"
 
   it_should_behave_like "removing supported from supporter"
 
-  it_should_behave_like "accessing supported from supporter retrieved from database"
+  it_should_behave_like "accessing supported from supporter that is persistent"
 
   it_should_behave_like "retrieving supported count"
+
+  it_should_behave_like "access to supporter from supported"
 
 end
 

@@ -9,16 +9,17 @@ class AlnResource < ActiveRecord::Base
   has_descendants
   
   ####################################################################################
-  ##### instance attributes
+  #### instance attributes
   ####################################################################################
-  def supporter= (sup)
-    @supporter = sup
-    self.supporter_id = @supporter.id
+  #### supporter
+  def supporter
+    @supporter = AlnSupporter.new(self) if @supporter.nil?
+    @supporter.load
   end
 
-  ####################################################################################
-  def supporter
-    @supporter
+  #### sign supporter
+  def supporter= (supporter)
+    self.supporter_id = supporter.id
   end
          
   #### supported
@@ -65,7 +66,7 @@ class AlnResource < ActiveRecord::Base
   #### destroy model and support hierarchy and update metadata
   def destroy_support_hierarchy
     self.to_descendant.destroy
-    unless supporter.nil?
+    if supporter.exists?
       supporter.supported.delete(self.class.get_as_aln_resource(self))
       supporter.decrement_metadata
     end 
