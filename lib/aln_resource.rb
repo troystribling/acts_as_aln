@@ -127,6 +127,12 @@ class AlnResource < ActiveRecord::Base
 
   ####################################################################################
   def decrement_metadata
+
+    #### determine update increment and hierarchy root
+    self.support_hierarchy_root_id.nil? ? root_id = self.id : root_id = self.support_hierarchy_root_id
+    update_increment = 2
+
+    
   end
   
   ####################################################################################

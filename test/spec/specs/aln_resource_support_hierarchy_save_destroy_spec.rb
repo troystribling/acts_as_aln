@@ -36,7 +36,8 @@ describe "supporter model and supported model lifecyle relative to supporter mod
     @s2.should persist   
     @root.destroy_supported_by_model(@s1.class, :first, :conditions => "aln_resources.resource_name = '#{@s1.resource_name}'")
     @root.should persist 
-    @s1.should_not persist   
+    @s1.should_not persist  
+    @root.supported.should_not include(AlnResource.get_as_aln_resource(@s1)) 
     @s2.should persist   
     @root.destroy
   end
@@ -51,6 +52,8 @@ describe "supporter model and supported model lifecyle relative to supporter mod
     @root.should persist 
     @s1.should_not persist   
     @s2.should_not persist   
+    @root.supported.should_not include(AlnResource.get_as_aln_resource(@s1)) 
+    @root.supported.should_not include(AlnResource.get_as_aln_resource(@s2)) 
     @s3.should persist   
     @root.destroy
   end
@@ -66,6 +69,9 @@ describe "supporter model and supported model lifecyle relative to supporter mod
     @s1.should_not persist   
     @s2.should_not persist   
     @s3.should_not persist   
+    @root.supported.should_not include(AlnResource.get_as_aln_resource(@s1)) 
+    @root.supported.should_not include(AlnResource.get_as_aln_resource(@s2)) 
+    @root.supported.should_not include(AlnResource.get_as_aln_resource(@s3)) 
     @root.destroy
   end
 
@@ -140,7 +146,6 @@ describe "supporter model and supported model lifecyle relative to aln_resource 
 
 end
 
-#########################################################################################################
 #########################################################################################################
 describe "support hierarchy destroy when hierarchy depth is greater than 1", :shared => true do
 

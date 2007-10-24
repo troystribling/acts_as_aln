@@ -74,7 +74,7 @@ describe "incrementing preordered tree meta data by adding a supported with no s
   def add_second_layer
     @new_supported_3 = @test_class.new
     @new_supported_3.should_not persist   
-    @new_supported_2 << new_supported_3
+    @new_supported_2 << @new_supported_3
   end 
   
   def verify_hierarchy_with_depth_greater_than_1
@@ -158,7 +158,7 @@ describe "incrementing preordered tree meta data by adding a supported with no s
     
   end
 
-  it "should update only specified hierarchy when hierarchies woth multiple roots are contained in database" do
+  it "should update only specified hierarchy when hierarchies with multiple roots are contained in database" do
 
     #### build control hiearchy
     add_first_supported
@@ -180,6 +180,26 @@ describe "incrementing preordered tree meta data by adding a supported with no s
     another_supported_2 = @test_class.new
     another_supported_2.should_not persist   
     another_root << another_supported_2    
+
+    another_supported_3 = @test_class.new
+    another_supported_3.should_not persist   
+    another_supported_2 << another_supported_3
+
+    #### verify updated hierarchy
+    another_root = AlnResource.get_as_aln_resource(another_root)
+    another_root = AlnResource.find(another_root.id)
+    another_supported_1 = AlnResource.get_as_aln_resource(another_supported_1)
+    another_supported_1 = AlnResource.find(another_supported_1.id)
+    another_supported_2 = AlnResource.get_as_aln_resource(another_supported_2)
+    another_supported_2 = AlnResource.find(another_supported_2.id)        
+    another_root.support_hierarchy_left.should eql(1)  
+    another_root.support_hierarchy_right.should eql(8)  
+    another_supported_2.support_hierarchy_left.should eql(2)  
+    another_supported_2.support_hierarchy_right.should eql(5)  
+    another_supported_3.support_hierarchy_left.should eql(3)  
+    another_supported_3.support_hierarchy_right.should eql(4)  
+    another_supported_1.support_hierarchy_left.should eql(6)  
+    another_supported_1.support_hierarchy_right.should eql(7)  
 
     ### verify that control hierachy was not modified
     verify_hierarchy_with_depth_greater_than_1
