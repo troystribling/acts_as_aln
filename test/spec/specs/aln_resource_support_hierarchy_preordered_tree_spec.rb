@@ -228,16 +228,16 @@ describe "decrementing preordered tree meta data by destroying a supported with 
   end
   
   def verify_first_supported 
-    @root = AlnResource.get_as_aln_resource(@root)
-    @root = AlnResource.find(@root.id)
-    @new_supported_1 = AlnResource.get_as_aln_resource(@new_supported_1)
-    @new_supported_1 = AlnResource.find(@new_supported_1.id)
-    @root.support_hierarchy_left.should eql(1)  
-    @root.support_hierarchy_right.should eql(4)  
-    @new_supported_1.support_hierarchy_left.should eql(2)  
-    @new_supported_1.support_hierarchy_right.should eql(3)  
-    @new_supported_1.support_hierarchy_root_id.should eql(@root.id) 
-    @new_supported_1.supporter_id.should eql(@root.id)
+    root_chk = AlnResource.get_as_aln_resource(@root)
+    root_chk = AlnResource.find(root_chk.id)
+    new_supported_1_chk = AlnResource.get_as_aln_resource(@new_supported_1)
+    new_supported_1_chk = AlnResource.find(new_supported_1_chk.id)
+    root_chk.support_hierarchy_left.should eql(1)  
+    root_chk.support_hierarchy_right.should eql(4)  
+    new_supported_1_chk.support_hierarchy_left.should eql(2)  
+    new_supported_1_chk.support_hierarchy_right.should eql(3)  
+    new_supported_1_chk.support_hierarchy_root_id.should eql(root_chk.id) 
+    new_supported_1_chk.supporter_id.should eql(root_chk.id)
   end 
   
   def build_hierarchy_with_1_suported
@@ -280,7 +280,7 @@ describe "decrementing preordered tree meta data by destroying a supported with 
     build_hierarchy_with_1_suported
     
     #### destroy supported
-    @new_supported_1.destroy_supported
+    @new_supported_1.to_descendant.destroy_supported
 
     #### validate database changes
     @root.should persist   
@@ -292,7 +292,7 @@ describe "decrementing preordered tree meta data by destroying a supported with 
     @root.support_hierarchy_left.should eql(1)  
     @root.support_hierarchy_right.should eql(2)  
 
-    @root.to_descendant.destroy
+    @root.destroy
     
   end
 
@@ -314,7 +314,7 @@ describe "updates to preordered tree meta data for aln_resource supported and al
     @test_class = AlnResource
   end
   
-  it_should_behave_like "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy"
+#  it_should_behave_like "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy"
 
   it_should_behave_like "decrementing preordered tree meta data by destroying a supported with no supported which belongs to a support hierarchy"
   
@@ -327,7 +327,7 @@ describe "updates to preordered tree meta data for aln_resource descendant suppo
     @test_class = AlnTermination
   end
   
-  it_should_behave_like "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy"
+#  it_should_behave_like "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy"
 
   it_should_behave_like "decrementing preordered tree meta data by destroying a supported with no supported which belongs to a support hierarchy"
   
