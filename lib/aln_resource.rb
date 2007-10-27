@@ -132,14 +132,8 @@ class AlnResource < ActiveRecord::Base
 
     #### update meta data for all affected models
     self.class.update_all("support_hierarchy_left = (support_hierarchy_left - #{update_increment})", "support_hierarchy_left > #{self.support_hierarchy_left + 1} AND support_hierarchy_root_id = #{root_id}") 
-    self.class.update_all("support_hierarchy_right = (support_hierarchy_right - #{update_increment})", "support_hierarchy_right > #{self.support_hierarchy_left + 2} AND support_hierarchy_root_id = #{root_id}") 
+    self.class.update_all("support_hierarchy_right = (support_hierarchy_right - #{update_increment})", "support_hierarchy_right > #{self.support_hierarchy_left + 1} AND support_hierarchy_root_id = #{root_id}") 
     
-    ### update model meta data and save if model is not root of hierarchy
-    unless self.supporter_id.nil?
-      self.support_hierarchy_right -= update_increment
-      self.save
-    end
-
     ### if model is not hierahcy root also update root
     unless root_id.eql?(self.id)
       hierarchy_root = AlnResource.find(root_id)
@@ -148,7 +142,7 @@ class AlnResource < ActiveRecord::Base
     end 
 
     ### destroy supported
-    self.destroy
+    self.to_descendant.destroy
        
   end
   
