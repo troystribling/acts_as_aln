@@ -28,6 +28,11 @@ class AlnResource < ActiveRecord::Base
     @supported.load
   end
   
+  #### get support_hierarchy_root_id
+  def get_support_hierarchy_root_id
+    self.support_hierarchy_root_id.nil? ? self.id : self.support_hierarchy_root_id
+  end
+  
   ####################################################################################
   ##### update entire hierarchy
   def update_hierarchy
@@ -97,7 +102,7 @@ class AlnResource < ActiveRecord::Base
   def increment_metadata(sup)
     
     #### determine update increment and hierarchy root
-    self.support_hierarchy_root_id.nil? ? root_id = self.id : root_id = self.support_hierarchy_root_id
+    root_id = self.get_support_hierarchy_root_id
     update_increment = 2
     
     #### update meta data for all affected models
@@ -163,16 +168,22 @@ class AlnResource < ActiveRecord::Base
   end
 
   ####################################################################################
-  #### find specified supported
+  #### find specified directly supported
   def find_supported_by_model(model, *args)
     self.class.find_by_model_and_condition("aln_resources.supporter_id = #{self.id}", model, *args)
   end
 
-  #### find specified supporter
+  #### find specified supporter by specified model
   def find_supporter_by_model(model)
     self.class.find_by_model_and_condition("aln_resources.aln_resource_id = #{self.supporter_id}", model, :first)
   end
 
+  #### find specified supporter within entier hierarchy
+  def find_in_support_hierarchy_by_model(model, *args)
+    cond = "aln_resources.support_hierarchy_left between #{self.support_hierarchy_left} and #{self.support_hierarchy_right} and aln_resources.support_hierarchy_root_id = #{self.get_support_hierarchy_root_id}"
+    self.class.find_by_model_and_condition(cond, model, *args)
+  end
+  
   ####################################################################################
   class << self
 
