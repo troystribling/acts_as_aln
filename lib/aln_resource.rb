@@ -42,15 +42,21 @@ class AlnResource < ActiveRecord::Base
   end
 
   #### destroy model and update meta data
-  def destroy_supported
+  def destroy_as_supported
     decrement_metadata
+  end
+
+  #### destroy all supported models and update meta data
+  def destroy_all_supported
+    supported.each {|sup| sup.destroy_as_supported}
+    self.supported.clear
   end
 
   #### destroy specified supporter and update meta data
   def destroy_supported_by_model(model, *args)
     goner = find_supported_by_model(model, *args)
     destroy_element = lambda do |e|
-      e.destroy
+      e.destroy_as_supported
       self.supported.delete(self.class.get_as_aln_resource(e))
     end
     if goner.class.eql?(Array)
@@ -58,16 +64,10 @@ class AlnResource < ActiveRecord::Base
     else
       destroy_element[goner] unless goner.nil? 
     end
-    decrement_metadata
   end
 
   #### destroy model and support hierarchy and update metadata
   def destroy_support_hierarchy
-    self.to_descendant.destroy
-    if supporter.exists?
-      supporter.supported.delete(self.class.get_as_aln_resource(self))
-      supporter.decrement_metadata
-    end 
   end
   
   ####################################################################################

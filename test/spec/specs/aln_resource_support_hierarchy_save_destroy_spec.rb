@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 #########################################################################################################
 #########################################################################################################
-describe "supporter model and supported model lifecyle relative to supporter model", :shared => true do
+describe "supporter model and supported model lifecyle operations relative to supporter model", :shared => true do
 
   it "should create supported and supporter when supported is added and destroy supported when supporter is destroyed" do 
     @root.should_not persist 
@@ -38,6 +38,7 @@ describe "supporter model and supported model lifecyle relative to supporter mod
     @root.should persist 
     @s1.should_not persist  
     @root.supported.should_not include(AlnResource.get_as_aln_resource(@s1)) 
+    @root.supported.should_not be_empty 
     @s2.should persist   
     @root.destroy
   end
@@ -54,6 +55,7 @@ describe "supporter model and supported model lifecyle relative to supporter mod
     @s2.should_not persist   
     @root.supported.should_not include(AlnResource.get_as_aln_resource(@s1)) 
     @root.supported.should_not include(AlnResource.get_as_aln_resource(@s2)) 
+    @root.supported.should_not be_empty 
     @s3.should persist   
     @root.destroy
   end
@@ -64,7 +66,7 @@ describe "supporter model and supported model lifecyle relative to supporter mod
     @s1.should persist   
     @s2.should persist   
     @s3.should persist   
-    @root.destroy_supported
+    @root.destroy_all_supported
     @root.should persist 
     @s1.should_not persist   
     @s2.should_not persist   
@@ -72,6 +74,7 @@ describe "supporter model and supported model lifecyle relative to supporter mod
     @root.supported.should_not include(AlnResource.get_as_aln_resource(@s1)) 
     @root.supported.should_not include(AlnResource.get_as_aln_resource(@s2)) 
     @root.supported.should_not include(AlnResource.get_as_aln_resource(@s3)) 
+    @root.supported.should be_empty 
     @root.destroy
   end
 
@@ -87,7 +90,7 @@ describe "supporter model and supported model lifecyle relative to supporter mod
     @s3 = AlnResource.new(model_data[:aln_resource_supported_2])
   end
   
-  it_should_behave_like "supporter model and supported model lifecyle relative to supporter model"
+  it_should_behave_like "supporter model and supported model lifecyle operations relative to supporter model"
   
 end
 
@@ -101,13 +104,13 @@ describe "supporter model and supported model lifecyle relative to supporter mod
     @s3 = AlnTermination.new(model_data[:aln_termination_supported_2])
   end
   
-  it_should_behave_like "supporter model and supported model lifecyle relative to supporter model"
+  it_should_behave_like "supporter model and supported model lifecyle operations relative to supporter model"
 
 end
 
-#########################################################################################################
 ##########################################################################################################
-describe "supporter model and supported model lifecyle relative to supported", :shared => true do
+##########################################################################################################
+describe "supporter model and supported model lifecyle operations relative to supported", :shared => true do
 
   it "should not destroy supporter when supported is destroyed" do 
    @s1.should persist
@@ -129,7 +132,7 @@ describe "supporter model and supported model lifecyle relative to aln_resource 
     @root << @s1
   end
 
-  it_should_behave_like "supporter model and supported model lifecyle relative to supported"
+  it_should_behave_like "supporter model and supported model lifecyle operations relative to supported"
 
 end
 
@@ -142,7 +145,7 @@ describe "supporter model and supported model lifecyle relative to aln_resource 
     @root << @s1
   end
 
-  it_should_behave_like "supporter model and supported model lifecyle relative to supported"
+  it_should_behave_like "supporter model and supported model lifecyle operations relative to supported"
 
 end
 
@@ -186,17 +189,17 @@ describe "support hierarchy destroy when hierarchy depth is greater than 1", :sh
   end
 
   it "should destroy entire hierarchy and root when destroy method that updates hierarchy metadata is called from hierarchy root" do
-    build_hierarchy
-    verify_persistence
-    @root.destroy_support_hierarchy
-    @root.should_not persist
-    verify_nonpersistence
+#    build_hierarchy
+#    verify_persistence
+#    @root.destroy_support_hierarchy
+#    @root.should_not persist
+#    verify_nonpersistence
   end
 
   it "should be possible to destroy entire hierarchy but not root from hierarchy root" do
     build_hierarchy
     verify_persistence
-    @root.destroy_supported
+    @root.destroy_all_supported
     @root.should persist
     verify_nonpersistence
     @root.destroy

@@ -1,6 +1,43 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 ##########################################################################################################
+module HierarchyHelper
+
+   def add_first_supported(root, sup)
+    root.save
+    root.support_hierarchy_root_id.should be_nil  
+    root.supporter_id.should be_nil  
+    root.support_hierarchy_left.should eql(1)  
+    root.support_hierarchy_right.should eql(2)  
+    root.should persist   
+    add_supported(root, sup)
+  end
+
+  def add_supported(root, sup)
+    sup.should_not persist   
+    root << sup
+    sup.should persist   
+  end
+   
+  def verify_root(root, left, right)
+    root_chk = AlnResource.get_as_aln_resource(root)
+    root_chk = AlnResource.find(root_chk.id)
+    root_chk.support_hierarchy_left.should eql(left)  
+    root_chk.support_hierarchy_right.should eql(right) 
+    root_chk 
+  end
+
+  def verify_supported(hierachy_root, root, sup, left, right)
+    sub_chk = verify_root(sup, left, right)
+    root_chk = AlnResource.get_as_aln_resource(root)
+    hierachy_root_chk = AlnResource.get_as_aln_resource(hierachy_root)
+    sub_chk.support_hierarchy_root_id.should eql(hierachy_root_chk.id) 
+    sub_chk.supporter_id.should eql(root_chk.id) 
+  end
+  
+end
+
+##########################################################################################################
 describe "initial values of preordered tree metadata for models with no supported or supporter", :shared => true do
 
   it "should be 1 for support_hierarchy_left" do
@@ -52,162 +89,87 @@ end
 ##########################################################################################################
 describe "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy", :shared => true do
 
-  def add_first_supported 
-    @root = @test_class.new
-    @root.save
-    @root.support_hierarchy_root_id.should be_nil  
-    @root.supporter_id.should be_nil  
-    @root.support_hierarchy_left.should eql(1)  
-    @root.support_hierarchy_right.should eql(2)  
-    @root.should persist   
-    @new_supported_1 = @test_class.new
-    @new_supported_1.should_not persist       
-    @root << @new_supported_1
-  end
-  
-  def add_second_supported
-    @new_supported_2 = @test_class.new
-    @new_supported_2.should_not persist   
-    @root << @new_supported_2
-  end
-  
-  def add_second_layer
-    @new_supported_3 = @test_class.new
-    @new_supported_3.should_not persist   
-    @new_supported_2 << @new_supported_3
-  end 
-  
-  def verify_hierarchy_with_depth_greater_than_1
-    @root = AlnResource.get_as_aln_resource(@root)
-    @root = AlnResource.find(@root.id)
-    @new_supported_1 = AlnResource.get_as_aln_resource(@new_supported_1)
-    @new_supported_1 = AlnResource.find(@new_supported_1.id)
-    @new_supported_2 = AlnResource.get_as_aln_resource(@new_supported_2)
-    @new_supported_2 = AlnResource.find(@new_supported_2.id)        
-    @root.support_hierarchy_left.should eql(1)  
-    @root.support_hierarchy_right.should eql(8)  
-    @new_supported_2.support_hierarchy_left.should eql(2)  
-    @new_supported_2.support_hierarchy_right.should eql(5)  
-    @new_supported_3.support_hierarchy_left.should eql(3)  
-    @new_supported_3.support_hierarchy_right.should eql(4)  
-    @new_supported_1.support_hierarchy_left.should eql(6)  
-    @new_supported_1.support_hierarchy_right.should eql(7)  
-    @new_supported_3.support_hierarchy_root_id.should eql(@root.id) 
-    @new_supported_3.supporter_id.should eql(@new_supported_2.id) 
-  end
-
   it "should update root of hiearchy and self when hierachy originally contains only root as supported is added to root" do
 
     #### build hierarchy
-    add_first_supported
+    add_first_supported(@root, @s1)
 
     #### verify hierachy meta data
-    @root = AlnResource.get_as_aln_resource(@root)
-    @root = AlnResource.find(@root.id)
-    @new_supported_1 = AlnResource.get_as_aln_resource(@new_supported_1)
-    @new_supported_1 = AlnResource.find(@new_supported_1.id)
+    verify_root(@root, 1, 4)
+    verify_supported(@root, @root, @s1, 2, 3)
 
-    @root.support_hierarchy_left.should eql(1)  
-    @root.support_hierarchy_right.should eql(4)  
-    @new_supported_1.support_hierarchy_left.should eql(2)  
-    @new_supported_1.support_hierarchy_right.should eql(3)  
-    @new_supported_1.support_hierarchy_root_id.should eql(@root.id) 
-    @new_supported_1.supporter_id.should eql(@root.id) 
-    
-    @root.to_descendant.destroy
-    
+    #### clean up
+    @root.destroy
+
   end
 
   it "should update root of hiearchy, self and other supported when hierachy originally contains a root with supported 1 level deep as supported is added to root" do
 
     #### build hierarchy
-    add_first_supported
-    add_second_supported
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
 
     #### verify hierachy meta data
-    @root = AlnResource.get_as_aln_resource(@root)
-    @root = AlnResource.find(@root.id)
-    @new_supported_1 = AlnResource.get_as_aln_resource(@new_supported_1)
-    @new_supported_1 = AlnResource.find(@new_supported_1.id)
+    verify_root(@root, 1, 6)
+    verify_supported(@root, @root, @s1, 4, 5)
+    verify_supported(@root, @root, @s2, 2, 3)
 
-    @root.support_hierarchy_left.should eql(1)  
-    @root.support_hierarchy_right.should eql(6)  
-    @new_supported_1.support_hierarchy_left.should eql(4)  
-    @new_supported_1.support_hierarchy_right.should eql(5)  
-
-    @new_supported_2 = AlnResource.get_as_aln_resource(@new_supported_2)
-    @new_supported_2 = AlnResource.find(@new_supported_2.id)
-
-    @new_supported_2.support_hierarchy_left.should eql(2)  
-    @new_supported_2.support_hierarchy_right.should eql(3)  
-    @new_supported_2.support_hierarchy_root_id.should eql(@root.id) 
-    @new_supported_2.supporter_id.should eql(@root.id) 
-
-    @root.to_descendant.destroy
+    #### clean up
+    @root.destroy
     
   end
 
   it "should update root of hiearchy, self and other supported when hierachy originally contains a root with supported 1 level deep as supported is added to a leaf of hierarchy" do
 
     #### build hierarchy
-    add_first_supported
-    add_second_supported
-    add_second_layer
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
+    add_supported(@s2, @s3)
 
     #### verify hierachy meta data
-    verify_hierarchy_with_depth_greater_than_1
-    @root.to_descendant.destroy
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 2, 5)
+    verify_supported(@root, @s2, @s3, 3, 4)
+
+    #### clean up
+    @root.destroy
     
   end
 
   it "should update only specified hierarchy when hierarchies with multiple roots are contained in database" do
 
     #### build control hiearchy
-    add_first_supported
-    add_second_supported
-    add_second_layer
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
+    add_supported(@s2, @s3)
 
-    #### second build hierarchy to be updated
-    another_root = @test_class.new
-    another_root.save
-    another_supported_1 = @test_class.new
-    another_root.support_hierarchy_root_id.should be_nil  
-    another_root.supporter_id.should be_nil  
-    another_root.support_hierarchy_left.should eql(1)  
-    another_root.support_hierarchy_right.should eql(2)  
-    another_root.should persist   
-    another_supported_1.should_not persist       
-    another_root << another_supported_1
+    #### verify control hierachy meta data
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 2, 5)
+    verify_supported(@root, @s2, @s3, 3, 4)
 
-    another_supported_2 = @test_class.new
-    another_supported_2.should_not persist   
-    another_root << another_supported_2    
-
-    another_supported_3 = @test_class.new
-    another_supported_3.should_not persist   
-    another_supported_2 << another_supported_3
+    #### build second hierarchy to be updated
+    add_first_supported(@root2, @s21)
+    add_supported(@root2, @s22)
+    add_supported(@s22, @s23)
 
     #### verify updated hierarchy
-    another_root = AlnResource.get_as_aln_resource(another_root)
-    another_root = AlnResource.find(another_root.id)
-    another_supported_1 = AlnResource.get_as_aln_resource(another_supported_1)
-    another_supported_1 = AlnResource.find(another_supported_1.id)
-    another_supported_2 = AlnResource.get_as_aln_resource(another_supported_2)
-    another_supported_2 = AlnResource.find(another_supported_2.id)        
-    another_root.support_hierarchy_left.should eql(1)  
-    another_root.support_hierarchy_right.should eql(8)  
-    another_supported_2.support_hierarchy_left.should eql(2)  
-    another_supported_2.support_hierarchy_right.should eql(5)  
-    another_supported_3.support_hierarchy_left.should eql(3)  
-    another_supported_3.support_hierarchy_right.should eql(4)  
-    another_supported_1.support_hierarchy_left.should eql(6)  
-    another_supported_1.support_hierarchy_right.should eql(7)  
+    verify_root(@root2, 1, 8)
+    verify_supported(@root2, @root2, @s21, 6, 7)
+    verify_supported(@root2, @root2, @s22, 2, 5)
+    verify_supported(@root2, @s22, @s23, 3, 4)
 
     ### verify that control hierachy was not modified
-    verify_hierarchy_with_depth_greater_than_1
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 2, 5)
+    verify_supported(@root, @s2, @s3, 3, 4)
 
-    @root.to_descendant.destroy
-    another_root.to_descendant.destroy
+    #### clean up
+    @root.destroy
+    @root2.destroy
 
   end
   
@@ -216,212 +178,326 @@ end
 ##########################################################################################################
 describe "decrementing preordered tree meta data by destroying a supported with no supported which belongs to a support hierarchy", :shared => true do
 
-  #### add and verify hierarchy for first supported
-  def add_first_supported 
-    @root = @test_class.new
-    @root.save
-    @root.support_hierarchy_root_id.should be_nil  
-    @root.supporter_id.should be_nil  
-    @root.support_hierarchy_left.should eql(1)  
-    @root.support_hierarchy_right.should eql(2)  
-    @root.should persist   
-    @new_supported_1 = @test_class.new
-    @new_supported_1.should_not persist       
-    @root << @new_supported_1
-  end
-  
-  def verify_first_supported 
-    root_chk = AlnResource.get_as_aln_resource(@root)
-    new_supported_1_chk = AlnResource.get_as_aln_resource(@new_supported_1)
-    root_chk = AlnResource.find(root_chk.id)
-    new_supported_1_chk = AlnResource.find(new_supported_1_chk.id)
-    root_chk.support_hierarchy_left.should eql(1)  
-    root_chk.support_hierarchy_right.should eql(4)  
-    new_supported_1_chk.support_hierarchy_left.should eql(2)  
-    new_supported_1_chk.support_hierarchy_right.should eql(3)  
-    new_supported_1_chk.support_hierarchy_root_id.should eql(root_chk.id) 
-    new_supported_1_chk.supporter_id.should eql(root_chk.id)
-  end 
-  
-  def build_hierarchy_with_1_supported
-    add_first_supported
-    verify_first_supported
-  end
-  
-  #### add and verify hierarchy for second supported
-  def add_second_supported
-    @new_supported_2 = @test_class.new
-    @new_supported_2.should_not persist   
-    @root << @new_supported_2
-  end
-
-  def verify_second_supported 
-    root_chk = AlnResource.get_as_aln_resource(@root)
-    new_supported_1_chk = AlnResource.get_as_aln_resource(@new_supported_1)
-    new_supported_2_chk = AlnResource.get_as_aln_resource(@new_supported_2)
-    root_chk = AlnResource.find(root_chk.id)
-    new_supported_1_chk = AlnResource.find(new_supported_1_chk.id)
-    root_chk.support_hierarchy_left.should eql(1)  
-    root_chk.support_hierarchy_right.should eql(6)  
-    new_supported_1_chk.support_hierarchy_left.should eql(4)  
-    new_supported_1_chk.support_hierarchy_right.should eql(5)  
-    new_supported_2_chk = AlnResource.find(new_supported_2_chk.id)
-    new_supported_2_chk.support_hierarchy_left.should eql(2)  
-    new_supported_2_chk.support_hierarchy_right.should eql(3)  
-    new_supported_2_chk.support_hierarchy_root_id.should eql(root_chk.id) 
-    new_supported_2_chk.supporter_id.should eql(root_chk.id) 
-  end
-
-  def build_hierarchy_with_2_supported
-    add_first_supported
-    verify_first_supported
-    add_second_supported
-    verify_second_supported
-  end
-  
-  #### add and verify hierarchy for second layer
-  def add_second_layer
-    @new_supported_3 = @test_class.new
-    @new_supported_3.should_not persist   
-    @new_supported_2 << @new_supported_3
-  end 
-  
-  def verify_second_layer
-    root_chk = AlnResource.get_as_aln_resource(@root)
-    new_supported_1_chk = AlnResource.get_as_aln_resource(@new_supported_1)
-    new_supported_2_chk = AlnResource.get_as_aln_resource(@new_supported_2)
-    new_supported_3_chk = AlnResource.get_as_aln_resource(@new_supported_3)
-    root_chk = AlnResource.find(root_chk.id)
-    new_supported_1_chk = AlnResource.find(new_supported_1_chk.id)
-    new_supported_2_chk = AlnResource.find(new_supported_2_chk.id)        
-    root_chk.support_hierarchy_left.should eql(1)  
-    root_chk.support_hierarchy_right.should eql(8)  
-    new_supported_2_chk.support_hierarchy_left.should eql(2)  
-    new_supported_2_chk.support_hierarchy_right.should eql(5)  
-    new_supported_3_chk.support_hierarchy_left.should eql(3)  
-    new_supported_3_chk.support_hierarchy_right.should eql(4)  
-    new_supported_1_chk.support_hierarchy_left.should eql(6)  
-    new_supported_1_chk.support_hierarchy_right.should eql(7)  
-  end
-
-  def build_hierarchy_with_2_layer
-    add_first_supported
-    verify_first_supported
-    add_second_supported
-    verify_second_supported
-    add_second_layer
-    verify_second_layer
-  end
-
   it "should update root of hiearchy hierachy originally contains only root and one supported when supported is destroyed" do
 
-    #### construct hierarchy
-    build_hierarchy_with_1_supported
-    
+    #### build hierarchy
+    add_first_supported(@root, @s1)
+
+    #### verify hierachy meta data
+    verify_root(@root, 1, 4)
+    verify_supported(@root, @root, @s1, 2, 3)
+
     #### destroy supported
-    @new_supported_1.destroy_supported
+    @s1.destroy_as_supported
 
     #### validate database changes
     @root.should persist   
-    @new_supported_1.should_not persist   
-        
-    #### validate changes to metadata
-    @root = AlnResource.get_as_aln_resource(@root)
-    @root = AlnResource.find(@root.id)
-    @root.support_hierarchy_left.should eql(1)  
-    @root.support_hierarchy_right.should eql(2)  
+    @s1.should_not persist   
 
-    @root.to_descendant.destroy
-    
+    #### validate changes to metadata
+    verify_root(@root, 1, 2)
+
+    #### clean up
+    @root.destroy
+
   end
 
   it "should update root of hiearchy, self and other supported when hierachy originally contains a root with supported 1 level deep as supported is removed from root" do
 
-    #### construct hierarchy
-    build_hierarchy_with_2_supported
-    
+    #### build hierarchy
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
+
+    #### verify hierachy meta data
+    verify_root(@root, 1, 6)
+    verify_supported(@root, @root, @s1, 4, 5)
+    verify_supported(@root, @root, @s2, 2, 3)
+
     #### destroy supported
-    @new_supported_2.destroy_supported
+    @s2.destroy_as_supported
 
     #### validate database changes
     @root.should persist   
-    @new_supported_1.should persist   
-    @new_supported_2.should_not persist   
+    @s1.should persist   
+    @s2.should_not persist   
         
     #### validate changes to metadata
-    @root = AlnResource.get_as_aln_resource(@root)
-    @root = AlnResource.find(@root.id)
-    @new_supported_1 = AlnResource.get_as_aln_resource(@new_supported_1)
-    @new_supported_1 = AlnResource.find(@new_supported_1.id)
-    @root.support_hierarchy_left.should eql(1)  
-    @root.support_hierarchy_right.should eql(4)  
-    @new_supported_1.support_hierarchy_left.should eql(2)  
-    @new_supported_1.support_hierarchy_right.should eql(3)  
+    verify_root(@root, 1, 4)
+    verify_supported(@root, @root, @s1, 2, 3)
 
-    @root.to_descendant.destroy
+    #### clean up
+    @root.destroy
     
   end
 
   it "should update root of hiearchy, self and other supported when hierachy originally contains a root with supported 1 level deep as supported is removed from a leaf of hierarchy" do
 
     #### construct hierarchy
-    build_hierarchy_with_2_layer
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
+    add_supported(@s2, @s3)
+
+    #### verify hierachy meta data
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 2, 5)
+    verify_supported(@root, @s2, @s3, 3, 4)
 
     #### destroy supported
-    @new_supported_3.destroy_supported
+    @s3.destroy_as_supported
 
     #### validate database changes
     @root.should persist   
-    @new_supported_1.should persist   
-    @new_supported_2.should persist   
-    @new_supported_3.should_not persist   
+    @s1.should persist   
+    @s2.should persist   
+    @s3.should_not persist   
 
     #### validate changes to metadata
-    @root = AlnResource.get_as_aln_resource(@root)
-    @root = AlnResource.find(@root.id)
-    @new_supported_1 = AlnResource.get_as_aln_resource(@new_supported_1)
-    @new_supported_1 = AlnResource.find(@new_supported_1.id)
-    @new_supported_2 = AlnResource.get_as_aln_resource(@new_supported_2)
-    @new_supported_2 = AlnResource.find(@new_supported_2.id)
-    @root.support_hierarchy_left.should eql(1)  
-    @root.support_hierarchy_right.should eql(6)  
-    @new_supported_1.support_hierarchy_left.should eql(4)  
-    @new_supported_1.support_hierarchy_right.should eql(5)  
-    @new_supported_2.support_hierarchy_left.should eql(2)  
-    @new_supported_2.support_hierarchy_right.should eql(3)  
+    verify_root(@root, 1, 6)
+    verify_supported(@root, @root, @s1, 4, 5)
+    verify_supported(@root, @root, @s2, 2, 3)
 
-    @root.to_descendant.destroy
+    #### clean up
+    @root.destroy
 
   end
 
   it "should update only specified hierarchy when hierarchies with multiple roots are contained in database" do
+
+    #### build control hiearchy
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
+    add_supported(@s2, @s3)
+
+    #### verify control hierachy meta data
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 2, 5)
+    verify_supported(@root, @s2, @s3, 3, 4)
+
+    #### build second hierarchy to be updated
+    add_first_supported(@root2, @s21)
+    add_supported(@root2, @s22)
+    add_supported(@s22, @s23)
+
+    #### verify updated hierarchy metadata
+    verify_root(@root2, 1, 8)
+    verify_supported(@root2, @root2, @s21, 6, 7)
+    verify_supported(@root2, @root2, @s22, 2, 5)
+    verify_supported(@root2, @s22, @s23, 3, 4)
+
+    #### destroy supported in updated hierarchy
+    @s23.destroy_as_supported
+
+    #### validate database changes
+    @root.should persist   
+    @s1.should persist   
+    @s2.should persist   
+    @s3.should persist   
+    @root2.should persist   
+    @s21.should persist   
+    @s22.should persist   
+    @s23.should_not persist   
+
+    ### verify that control hierachy was not modified
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 2, 5)
+    verify_supported(@root, @s2, @s3, 3, 4)
+
+    #### verify meta data for updated hierarchy
+    verify_root(@root2, 1, 6)
+    verify_supported(@root2, @root2, @s21, 4, 5)
+    verify_supported(@root2, @root2, @s22, 2, 3)
+
+    #### clean up
+    @root.destroy
+    @root2.destroy
+
   end
   
 end
 
 ##########################################################################################################
+describe "decrementing preordered tree meta data for all model destroy methods", :shared => true do
+
+  it "should update hierarchy metadata when destroy_as_supported is called" do
+
+    #### construct hierarchy
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
+    add_supported(@s2, @s3)
+
+    #### verify hierachy meta data
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 2, 5)
+    verify_supported(@root, @s2, @s3, 3, 4)
+
+    #### destroy
+    @s3.destroy_as_supported
+
+    #### validate database changes
+    @root.should persist   
+    @s1.should persist   
+    @s2.should persist   
+    @s3.should_not persist   
+
+    #### validate changes to metadata
+    verify_root(@root, 1, 6)
+    verify_supported(@root, @root, @s1, 4, 5)
+    verify_supported(@root, @root, @s2, 2, 3)
+
+    #### clean up
+    @root.destroy
+
+  end
+
+  it "should update hierarchy metadata when destroy_all_supported is called" do
+
+    #### construct hierarchy
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
+    add_supported(@root, @s3)
+
+    #### verify hierachy meta data
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 4, 5)
+    verify_supported(@root, @root, @s3, 2, 3)
+
+    #### destroy 
+    @root.destroy_all_supported
+
+    #### validate database changes
+    @root.should persist   
+    @s1.should_not persist   
+    @s2.should_not persist   
+    @s3.should_not persist   
+
+    #### validate changes to metadata
+    verify_root(@root, 1, 2)
+
+    #### clean up
+    @root.destroy
+
+  end
+
+  it "should update hierarchy metadata when destroy_supported_by_model with :first option is called" do
+
+    #### construct hierarchy
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
+    add_supported(@root, @s3)
+
+    #### verify hierachy meta data
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 4, 5)
+    verify_supported(@root, @root, @s3, 2, 3)
+
+    #### destroy
+    @root.destroy_supported_by_model(@s1.class, :first, :conditions => "aln_resources.resource_name = '#{@s1.resource_name}'")
+
+    #### validate database changes
+    @root.should persist   
+    @s1.should_not persist   
+    @s2.should persist   
+    @s3.should persist   
+
+    #### validate changes to metadata
+    verify_root(@root, 1, 6)
+    verify_supported(@root, @root, @s2, 4, 5)
+    verify_supported(@root, @root, @s3, 2, 3)
+
+    #### clean up
+    @root.destroy
+
+  end
+
+  it "should update hierarchy metadata when destroy_supported_by_model with :all option is called" do
+
+    #### construct hierarchy
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
+    add_supported(@root, @s3)
+
+    #### verify hierachy meta data
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 4, 5)
+    verify_supported(@root, @root, @s3, 2, 3)
+
+    #### destroy
+    @root.destroy_supported_by_model(@s1.class, :all, :conditions => "aln_resources.resource_name = '#{@s1.resource_name}'")
+
+    #### validate database changes
+    @root.should persist   
+    @s1.should_not persist   
+    @s2.should_not persist   
+    @s3.should persist   
+
+    #### validate changes to metadata
+    verify_root(@root, 1, 4)
+    verify_supported(@root, @root, @s3, 2, 3)
+
+    #### clean up
+    @root.destroy
+
+  end
+    
+end
+##########################################################################################################
 describe "updates to preordered tree meta data for aln_resource supported and aln_resource support hierarchy root" do
 
-  before(:all) do
-    @test_class = AlnResource
+  include HierarchyHelper
+
+  before(:each) do
+    
+    @root = AlnResource.new(model_data[:aln_resource])
+    @s1 = AlnResource.new(model_data[:aln_resource_supported_1])
+    @s2 = AlnResource.new(model_data[:aln_resource_supported_1])
+    @s3 = AlnResource.new(model_data[:aln_resource_supported_2])
+
+    @root2 = AlnResource.new(model_data[:aln_resource])
+    @s21 = AlnResource.new(model_data[:aln_resource_supported_1])
+    @s22 = AlnResource.new(model_data[:aln_resource_supported_1])
+    @s23 = AlnResource.new(model_data[:aln_resource_supported_2])
+
   end
   
   it_should_behave_like "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy"
 
   it_should_behave_like "decrementing preordered tree meta data by destroying a supported with no supported which belongs to a support hierarchy"
+
+  it_should_behave_like "decrementing preordered tree meta data for all model destroy methods"
   
 end
 
 ##########################################################################################################
 describe "updates to preordered tree meta data for aln_resource descendant supported and aln_resource descendant support hierarchy root" do
 
-  before(:all) do
-    @test_class = AlnTermination
+  include HierarchyHelper
+  
+  before(:each) do
+
+    @root = AlnTermination.new(model_data[:aln_termination])
+    @s1 = AlnTermination.new(model_data[:aln_termination_supported_1])
+    @s2 = AlnTermination.new(model_data[:aln_termination_supported_1])
+    @s3 = AlnTermination.new(model_data[:aln_termination_supported_2])
+
+    @root2 = AlnTermination.new(model_data[:aln_termination])
+    @s21 = AlnTermination.new(model_data[:aln_termination_supported_1])
+    @s22 = AlnTermination.new(model_data[:aln_termination_supported_1])
+    @s23 = AlnTermination.new(model_data[:aln_termination_supported_2])
+
   end
   
   it_should_behave_like "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy"
 
   it_should_behave_like "decrementing preordered tree meta data by destroying a supported with no supported which belongs to a support hierarchy"
+
+  it_should_behave_like "decrementing preordered tree meta data for all model destroy methods"
   
 end
 
