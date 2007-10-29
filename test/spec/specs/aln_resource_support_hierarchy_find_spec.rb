@@ -186,6 +186,11 @@ require File.dirname(__FILE__) + '/../spec_helper'
 ##########################################################################################################
 describe "queries for supported within hierachy from hierarchy root when hiearchy depth is greater than 1", :shared => true  do
 
+  def verify_metadata(mod,l,r)
+    mod.support_hierarchy_left.should eql(l)
+    mod.support_hierarchy_right.should eql(r)
+  end
+  
   it "should find first supported for aln_resource models" do
     mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first) 
     mod.support_hierarchy_left.should eql(24)
@@ -203,7 +208,7 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
   it "should find all supported aln_resource models" do 
     mods = @root.find_in_support_hierarchy_by_model(AlnResource, :all)
     mods.length.should eql(20)
-    puts "AlnResource"
+
     mods.each {|m| puts "left=#{m.support_hierarchy_left}, right=#{m.support_hierarchy_right}"}
   end
 
