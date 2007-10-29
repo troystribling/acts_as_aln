@@ -42,9 +42,10 @@ class AlnSupported
   end
   
   ##################################################################################
-  def load
-    unless loaded?
-      @supported = @supporter.class.find_all_by_supporter_id(@supporter.id)
+  def load(*args)
+    args[0].nil? ? force = false : force = args[0]
+    unless loaded? and not force
+      @supported = AlnResource.find_all_by_supporter_id(@supporter.id, :order => "support_hierarchy_left DESC")
       @loaded = true
     end
     self

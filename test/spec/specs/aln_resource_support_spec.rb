@@ -98,6 +98,21 @@ describe "retrieving supported count", :shared => true do
 end
 
 #########################################################################################################
+describe "force load of array of supported from database", :shared => true do
+
+  it "should be and option when an element of supported updated" do
+    @root << [@s1, @s2, @s3]
+    s1_update = AlnResource.find(AlnResource.get_as_aln_resource(@s1).id)
+    @root.supported.first.resource_name.should eql(s1_update.resource_name)
+    s1_update.resource_name = 'new_name'
+    s1_update.save
+    @root.supported.first.resource_name.should_not eql(s1_update.resource_name)
+    @root.supported(true).first.resource_name.should eql(s1_update.resource_name)
+  end
+
+end
+
+#########################################################################################################
 describe "access to supporter from supported", :shared => true do
 
   it "should not exist for root that is not persistent" do
@@ -155,6 +170,8 @@ describe "accessing supported from aln_resource supporter" do
 
   it_should_behave_like "access to supporter from supported"
 
+  it_should_behave_like "force load of array of supported from database"
+
 end
 
 #########################################################################################################
@@ -183,6 +200,8 @@ describe "accessing supported from aln_resource descendant supporter" do
   it_should_behave_like "retrieving supported count"
 
   it_should_behave_like "access to supporter from supported"
+
+  it_should_behave_like "force load of array of supported from database"
 
 end
 
