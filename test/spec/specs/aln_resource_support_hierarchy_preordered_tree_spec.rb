@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 ##########################################################################################################
-module HierarchyHelper
+module PreorderedTreeHierarchyHelper
 
    def add_first_supported(root, sup)
     root.save
@@ -450,7 +450,7 @@ end
 ##########################################################################################################
 describe "updates to preordered tree meta data for aln_resource supported and aln_resource support hierarchy root" do
 
-  include HierarchyHelper
+  include PreorderedTreeHierarchyHelper
 
   before(:each) do
     
@@ -477,7 +477,7 @@ end
 ##########################################################################################################
 describe "updates to preordered tree meta data for aln_resource descendant supported and aln_resource descendant support hierarchy root" do
 
-  include HierarchyHelper
+  include PreorderedTreeHierarchyHelper
   
   before(:each) do
 
