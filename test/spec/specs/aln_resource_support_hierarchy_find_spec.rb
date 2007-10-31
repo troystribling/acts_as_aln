@@ -206,10 +206,24 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
     mod.class.should eql(AlnResource)
   end
 
+  it "should find first supported matching specified condition for aln_resource models" do
+    mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'") 
+    mod.support_hierarchy_left.should eql(20)
+    mod.support_hierarchy_right.should eql(21)
+    mod.class.should eql(AlnResource)
+  end
+
   it "should find first supported of the specified aln_resource descendant model" do 
     mod = @root.find_in_support_hierarchy_by_model(AlnTermination, :first) 
     mod.support_hierarchy_left.should eql(24)
     mod.support_hierarchy_right.should eql(41)
+    mod.class.should eql(AlnTermination)
+  end
+
+  it "should find first supported matching specified condition for the specified aln_resource descendant model" do
+    mod = @root.find_in_support_hierarchy_by_model(AlnTermination, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_2]['resource_name']}'") 
+    mod.support_hierarchy_left.should eql(22)
+    mod.support_hierarchy_right.should eql(23)
     mod.class.should eql(AlnTermination)
   end
   
