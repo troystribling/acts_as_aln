@@ -153,4 +153,48 @@ find_by_model_aln_termination_depth_1:
   -
    - 6
    - 7
+
+find_by_model_with_condition_aln_resource_depth_greater_1:
+  -
+   - 35
+   - 36
+  -
+   - 28
+   - 29
+  -
+   - 20
+   - 21
+  -
+   - 13
+   - 14
+  -
+   - 6
+   - 7
+
+find_by_model_with_condition_aln_termination_depth_greater_1:
+  -
+   - 37
+   - 38
+  -
+   - 30
+   - 31
+  -
+   - 22
+   - 23
+  -
+   - 15
+   - 16
+  -
+   - 8
+   - 9
+
+find_by_model_with_condition_aln_resource_depth_1:
+  -
+   - 4
+   - 5
+
+find_by_model_with_condition_aln_termination_depth_1:
+  -
+   - 6
+   - 7
          
