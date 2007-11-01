@@ -124,13 +124,13 @@ end
 #########################################################################################################
 describe "access to supporter from supported", :shared => true do
 
-  it "should not exist for root that is not persistent" do
-    @root.supporter.exists?.should be_false
+  it "should be nil for root that is not persistent" do
+    @root.supporter.should be_nil
   end
 
   it "should not exist for root that is persistent" do
     @root.save
-    AlnResource.find(AlnResource.get_as_aln_resource(@root).id).supporter.exists?.should be_false
+    AlnResource.find(AlnResource.get_as_aln_resource(@root).id).supporter.should be_nil
   end
 
   it "should be possible to access supporter from supported that is not persistent" do

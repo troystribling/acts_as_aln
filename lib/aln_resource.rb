@@ -13,8 +13,10 @@ class AlnResource < ActiveRecord::Base
   ####################################################################################
   #### supporter
   def supporter
-    @supporter = AlnSupporter.new(self) if @supporter.nil?
-    @supporter.load
+    unless self.supporter_id.nil?
+      @supporter = AlnSupporter.new(self) if @supporter.nil?
+      @supporter.load
+    end
   end
 
   #### sign supporter
@@ -197,7 +199,7 @@ class AlnResource < ActiveRecord::Base
   class << self
 
     #### return roots of support hierachy
-    def find_support_root_by_model(model, *args)
+    def find_support_hierarchy_root_by_model(model, *args)
       find_by_model_and_condition("aln_resources.supporter_id is NULL", model, *args)
     end
 
