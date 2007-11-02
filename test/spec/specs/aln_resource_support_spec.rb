@@ -32,6 +32,10 @@ describe "adding supported to supporter and accessing supported from supporter t
     @root.supported.detect{|s| AlnResource.get_as_aln_resource(@s2).eql?(s)}.should eql(AlnResource.get_as_aln_resource(@s2))
     @root.supported.detect{|s| AlnResource.get_as_aln_resource(@s3).eql?(s)}.should eql(AlnResource.get_as_aln_resource(@s3))
   end
+
+  it "should be possible to convert supported to array" do
+    @root.supported.to_array.class.should eql(Array)
+  end
   
 end
 

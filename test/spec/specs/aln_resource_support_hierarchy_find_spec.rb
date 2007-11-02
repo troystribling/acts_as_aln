@@ -153,7 +153,7 @@ describe "queries for directly supported from aln_resource supporter" do
     @root.destroy   
   end
   
-#  it_should_behave_like "queries for directly supported from supporter"
+  it_should_behave_like "queries for directly supported from supporter"
     
 end
 
