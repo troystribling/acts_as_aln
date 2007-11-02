@@ -108,8 +108,8 @@ end
 describe "queries for directly supported from supporter", :shared => true do
 
   it "should find all supported of specified return models as aln_reasource" do 
-    @root.supported.should have_attributes_with_values([model_data[:aln_termination_resource_supported_1], model_data[:aln_termination_resource_supported_2], model_data[:aln_resource_supported_1], model_data[:aln_resource_supported_2]])
-    @root.supported.should be_class(AlnResource)
+    @root.supported.to_array.should have_attributes_with_values([model_data[:aln_termination_resource_supported_1], model_data[:aln_termination_resource_supported_2], model_data[:aln_resource_supported_1], model_data[:aln_resource_supported_2]])
+    @root.supported.to_array.should be_class(AlnResource)
   end
 
   it "should find first supported of specified model" do 

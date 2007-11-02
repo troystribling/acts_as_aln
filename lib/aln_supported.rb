@@ -26,6 +26,12 @@ class AlnSupported
   end
 
   ##################################################################################
+  def to_array
+    @supported
+  end
+
+
+  ##################################################################################
   def << (sup)
     if sup.class.eql?(Array)
       sup.each{|s| s.supporter = @supporter}
