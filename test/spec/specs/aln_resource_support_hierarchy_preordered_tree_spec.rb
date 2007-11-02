@@ -58,33 +58,33 @@ describe "initial values of preordered tree metadata for models with no supporte
 
 end
 
-##########################################################################################################
-describe "initial values of preordered tree metadata for aln_resource with no supported or supporter" do
-
-  before(:each) do
-    @mod = AlnResource.new
-  end
-  
-  after(:each) do
-  end
-  
-  it_should_behave_like "initial values of preordered tree metadata for models with no supported or supporter"
-  
-end
-
-##########################################################################################################
-describe "initial values of preordered tree metadata for aln_resource descendants with no supported or supporter" do
-
-  before(:each) do
-    @mod = AlnTermination.new
-  end
-  
-  after(:each) do
-  end
-  
-  it_should_behave_like "initial values of preordered tree metadata for models with no supported or supporter"
-  
-end
+###########################################################################################################
+#describe "initial values of preordered tree metadata for aln_resource with no supported or supporter" do
+#
+#  before(:each) do
+#    @mod = AlnResource.new
+#  end
+#  
+#  after(:each) do
+#  end
+#  
+#  it_should_behave_like "initial values of preordered tree metadata for models with no supported or supporter"
+#  
+#end
+#
+###########################################################################################################
+#describe "initial values of preordered tree metadata for aln_resource descendants with no supported or supporter" do
+#
+#  before(:each) do
+#    @mod = AlnTermination.new
+#  end
+#  
+#  after(:each) do
+#  end
+#  
+#  it_should_behave_like "initial values of preordered tree metadata for models with no supported or supporter"
+#  
+#end
 
 ##########################################################################################################
 describe "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy", :shared => true do
@@ -191,6 +191,24 @@ describe "incrementing preordered tree meta data by adding a supported that is a
     verify_supported(@root2, @root2, @s22, 4, 5)
     verify_supported(@root2, @root2, @s23, 2, 3)
 
+    #### verify root
+    @root.save
+    verify_root(@root, 1, 2)
+    
+    #### add subtree to root
+    @root << @root2
+    
+    #### verify metadata update    
+    verify_root(@root, 1, 10)
+    verify_supported(@root, @root, @root2, 2, 9)
+    verify_supported(@root, @root, @s21, 7, 8)
+    verify_supported(@root, @root, @s22, 5, 6)
+    verify_supported(@root, @root, @s23, 3, 4)
+    
+    #### clean up
+#    @root.destroy
+#    @root2.destroy
+    
   end
 
 end

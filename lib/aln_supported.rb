@@ -30,7 +30,6 @@ class AlnSupported
     @supported
   end
 
-
   ##################################################################################
   def << (sup)
     if sup.class.eql?(Array)

@@ -29,12 +29,7 @@ class AlnResource < ActiveRecord::Base
     @supported = AlnSupported.new(self) if @supported.nil?
     @supported.load(*args)
   end
-  
-  #### get support_hierarchy_root_id
-  def get_support_hierarchy_root_id
-    self.support_hierarchy_root_id.nil? ? self.id : self.support_hierarchy_root_id
-  end
-  
+    
   ####################################################################################
   ##### update entire hierarchy
   def update_hierarchy
@@ -105,16 +100,27 @@ class AlnResource < ActiveRecord::Base
   def increment_metadata(sup)
     
     #### determine update increment and hierarchy root
-    root_id = self.get_support_hierarchy_root_id
-    update_increment = 2
+    root_id = self.class.get_support_hierarchy_root_id(self)
+    sup_root_id = self.class.get_support_hierarchy_root_id(sup)
+    sup.supporter_id.nil? ? sup_supporter_id = sup.id : sup_supporter_id = sup.supporter_id
+    update_increment = sup.support_hierarchy_right
+    sup_update_increment = self.support_hierarchy_left
+    
+    p sup_supporter_id
+    p sup_root_id
     
     #### update meta data for all affected models
     self.class.update_all("support_hierarchy_left = (support_hierarchy_left + #{update_increment})", "support_hierarchy_left > #{self.support_hierarchy_left} AND support_hierarchy_root_id = #{root_id}") 
     self.class.update_all("support_hierarchy_right = (support_hierarchy_right + #{update_increment})", "support_hierarchy_right > #{self.support_hierarchy_left + 1} AND support_hierarchy_root_id = #{root_id}") 
 
+    ### update subtree
+    self.class.update_all("support_hierarchy_left = (support_hierarchy_left + #{sup_update_increment})", "support_hierarchy_root_id = #{sup_root_id} AND supporter_id = #{sup_supporter_id}") 
+    self.class.update_all("support_hierarchy_right = (support_hierarchy_right + #{sup_update_increment})", "support_hierarchy_root_id = #{sup_root_id} AND supporter_id = #{sup_supporter_id}") 
+    self.class.update_all("support_hierarchy_root_id = #{root_id}", "support_hierarchy_root_id = #{sup_root_id} AND supporter_id = #{sup_supporter_id}") 
+    
     ### update new supported metadata
-    sup.support_hierarchy_left = self.support_hierarchy_left + 1
-    sup.support_hierarchy_right = self.support_hierarchy_left + 2
+    sup.support_hierarchy_left += sup_update_increment
+    sup.support_hierarchy_right += sup_update_increment
     sup.support_hierarchy_root_id = root_id
     sup.save
     
@@ -255,6 +261,12 @@ class AlnResource < ActiveRecord::Base
     #### return roots of support hierachy
     def find_support_hierarchy_root_by_model(model, *args)
       find_by_model_and_condition("aln_resources.supporter_id is NULL", model, *args)
+    end
+
+    #### get support_hierarchy_root_id
+    def get_support_hierarchy_root_id(model)
+      model.save if model.id.nil?
+      model.support_hierarchy_root_id.nil? ? model.id : model.support_hierarchy_root_id
     end
 
     #### find model with specified condition
