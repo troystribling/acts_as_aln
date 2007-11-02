@@ -176,6 +176,26 @@ describe "incrementing preordered tree meta data by adding a supported with no s
 end
 
 ##########################################################################################################
+describe "incrementing preordered tree meta data by adding a supported that is a support hierarchy root to another support hierarchy", :shared => true do
+
+  it "should update root of hiearchy and self when hierachy originally contains only root as supported is added to root" do
+
+    #### build added hierarchy
+    add_first_supported(@root2, @s21)
+    add_supported(@root2, @s22)
+    add_supported(@root2, @s23)
+
+    #### verify added hierarchy
+    verify_root(@root2, 1, 8)
+    verify_supported(@root2, @root2, @s21, 6, 7)
+    verify_supported(@root2, @root2, @s22, 4, 5)
+    verify_supported(@root2, @root2, @s23, 2, 3)
+
+  end
+
+end
+
+##########################################################################################################
 describe "decrementing preordered tree meta data by destroying a supported with no supported which belongs to a support hierarchy", :shared => true do
 
   it "should update root of hiearchy hierachy originally contains only root and one supported when supported is destroyed" do
@@ -466,11 +486,13 @@ describe "updates to preordered tree meta data for aln_resource supported and al
 
   end
   
-  it_should_behave_like "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy"
+#  it_should_behave_like "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy"
+#
+#  it_should_behave_like "decrementing preordered tree meta data by destroying a supported with no supported which belongs to a support hierarchy"
+#
+#  it_should_behave_like "decrementing preordered tree meta data for all model destroy methods"
 
-  it_should_behave_like "decrementing preordered tree meta data by destroying a supported with no supported which belongs to a support hierarchy"
-
-  it_should_behave_like "decrementing preordered tree meta data for all model destroy methods"
+  it_should_behave_like "incrementing preordered tree meta data by adding a supported that is a support hierarchy root to another support hierarchy"
   
 end
 
@@ -493,11 +515,11 @@ describe "updates to preordered tree meta data for aln_resource descendant suppo
 
   end
   
-  it_should_behave_like "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy"
-
-  it_should_behave_like "decrementing preordered tree meta data by destroying a supported with no supported which belongs to a support hierarchy"
-
-  it_should_behave_like "decrementing preordered tree meta data for all model destroy methods"
+#  it_should_behave_like "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy"
+#
+#  it_should_behave_like "decrementing preordered tree meta data by destroying a supported with no supported which belongs to a support hierarchy"
+#
+#  it_should_behave_like "decrementing preordered tree meta data for all model destroy methods"
   
 end
 

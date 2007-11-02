@@ -153,6 +153,60 @@ class AlnResource < ActiveRecord::Base
     self.to_descendant.destroy
        
   end
+
+#  ####################################################################################
+#  #### increment meta data for all impacted models and save updates to database
+#  def increment_metadata(sup)
+#    
+#    #### determine update increment and hierarchy root
+#    root_id = self.get_support_hierarchy_root_id
+#    update_increment = 2
+#    
+#    #### update meta data for all affected models
+#    self.class.update_all("support_hierarchy_left = (support_hierarchy_left + #{update_increment})", "support_hierarchy_left > #{self.support_hierarchy_left} AND support_hierarchy_root_id = #{root_id}") 
+#    self.class.update_all("support_hierarchy_right = (support_hierarchy_right + #{update_increment})", "support_hierarchy_right > #{self.support_hierarchy_left + 1} AND support_hierarchy_root_id = #{root_id}") 
+#
+#    ### update new supported metadata
+#    sup.support_hierarchy_left = self.support_hierarchy_left + 1
+#    sup.support_hierarchy_right = self.support_hierarchy_left + 2
+#    sup.support_hierarchy_root_id = root_id
+#    sup.save
+#    
+#    ### update model meta data and save
+#    self.support_hierarchy_right += update_increment
+#    self.save
+#    
+#    ### if model is not hierahcy root also update root
+#    unless root_id.eql?(self.id)
+#      hierarchy_root = AlnResource.find(root_id)
+#      hierarchy_root.support_hierarchy_right += update_increment
+#      hierarchy_root.save
+#    end 
+#    
+#  end
+#
+#  ####################################################################################
+#  def decrement_metadata
+#
+#    #### determine update increment and hierarchy root
+#    self.support_hierarchy_root_id.nil? ? root_id = self.id : root_id = self.support_hierarchy_root_id
+#    update_increment = 2
+#
+#    #### update meta data for all affected models
+#    self.class.update_all("support_hierarchy_left = (support_hierarchy_left - #{update_increment})", "support_hierarchy_left > #{self.support_hierarchy_left + 1} AND support_hierarchy_root_id = #{root_id}") 
+#    self.class.update_all("support_hierarchy_right = (support_hierarchy_right - #{update_increment})", "support_hierarchy_right > #{self.support_hierarchy_left + 1} AND support_hierarchy_root_id = #{root_id}") 
+#    
+#    ### if model is not hierahcy root also update root
+#    unless root_id.eql?(self.id)
+#      hierarchy_root = AlnResource.find(root_id)
+#      hierarchy_root.support_hierarchy_right -= update_increment
+#      hierarchy_root.save
+#    end 
+#
+#    ### destroy supported
+#    self.to_descendant.destroy
+#       
+#  end
   
   ####################################################################################
   #### return model aln_resource supported
