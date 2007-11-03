@@ -11,11 +11,16 @@ class AlnSupporter
   end
   
   ##################################################################################
-  def supporter=(s)
+  def value=(s)
     @supporter = s
     @supporter.save if @supporter.new_record?
     @supported.supporter_id = @supporter.id
     @loaded = true
+  end
+
+  ##################################################################################
+  def value
+    @supporter
   end
   
   ##################################################################################

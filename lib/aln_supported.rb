@@ -51,6 +51,7 @@ class AlnSupported
     args[0].nil? ? force = false : force = args[0]
     unless loaded? and not force
       @supported = AlnResource.find_all_by_supporter_id(@supporter.id, :order => "support_hierarchy_left DESC")
+      @supported.each{|s| s.supporter = @supporter}
       @loaded = true
     end
     self

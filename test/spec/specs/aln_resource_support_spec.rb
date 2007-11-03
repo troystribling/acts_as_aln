@@ -70,7 +70,7 @@ describe "return value of supported from supported with no supported", :shared =
 end
 
 #########################################################################################################
-describe "accessing supported from supporter that is persistent", :shared => true do
+describe "access to supported from supporter that is persistent", :shared => true do
 
   def save_root
     @root << [@s1, @s2, @s3]
@@ -113,7 +113,7 @@ end
 #########################################################################################################
 describe "force load of array of supported from database", :shared => true do
 
-  it "should be and option when an element of supported is updated" do
+  it "should be an option when an element of supported retrieved" do
     @root << [@s1, @s2, @s3]
     s1_update = AlnResource.find(AlnResource.get_as_aln_resource(@s1).id)
     @root.supported.first.resource_name.should eql(s1_update.resource_name)
@@ -121,6 +121,20 @@ describe "force load of array of supported from database", :shared => true do
     s1_update.save
     @root.supported.first.resource_name.should_not eql(s1_update.resource_name)
     @root.supported(true).first.resource_name.should eql(s1_update.resource_name)
+  end
+
+end
+
+#########################################################################################################
+describe "force load of supporter from database", :shared => true do
+
+  it "should be an option when supporter is retrieved" do
+    @root << [@s1, @s2, @s3]
+    root_update = AlnResource.find(AlnResource.get_as_aln_resource(@root).id)
+    root_update.resource_name = 'new_name'
+    @s1.supporter.value.resource_name.should_not eql(root_update.resource_name)
+    root_update.save
+    @s1.supporter(true).value.resource_name.should eql(root_update.resource_name)
   end
 
 end
@@ -137,14 +151,17 @@ describe "value of supporter from supported", :shared => true do
     AlnResource.find(AlnResource.get_as_aln_resource(@root).id).supporter.should be_nil
   end
 
-  it "should be supporter for supported that is not persistent" do
+  it "should be assigned supporter instance for supported that is not persistent" do
     @root << [@s1, @s2, @s3]
     @s1.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
     @s2.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
     @s3.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
+    @s1.supporter.value.object_id.should eql(AlnResource.get_as_aln_resource(@root).object_id)
+    @s2.supporter.value.object_id.should eql(AlnResource.get_as_aln_resource(@root).object_id)
+    @s3.supporter.value.object_id.should eql(AlnResource.get_as_aln_resource(@root).object_id)
   end
 
-  it "should be supporter for supported is persistent" do
+  it "should be persistant supporter for supported that is persistent" do
     @root << [@s1, @s2, @s3]
     @chk_s1 = AlnResource.find(AlnResource.get_as_aln_resource(@s1).id)
     @chk_s2 = AlnResource.find(AlnResource.get_as_aln_resource(@s2).id)
@@ -152,6 +169,14 @@ describe "value of supporter from supported", :shared => true do
     @chk_s1.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
     @chk_s2.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
     @chk_s3.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
+  end
+
+  it "should be persistant supporter for supporter that is persistent" do
+    @root << [@s1, @s2, @s3]
+    @chk_root = AlnResource.find(AlnResource.get_as_aln_resource(@root).id)
+    @chk_root.supported[0].supporter.value.object_id.should eql(@chk_root.object_id)
+    @chk_root.supported[1].supporter.value.object_id.should eql(@chk_root.object_id)
+    @chk_root.supported[2].supporter.value.object_id.should eql(@chk_root.object_id)
   end
 
 end
@@ -177,13 +202,15 @@ describe "accessing supported from aln_resource supporter" do
 
   it_should_behave_like "removing supported from supporter"
 
-  it_should_behave_like "accessing supported from supporter that is persistent"
+  it_should_behave_like "access to supported from supporter that is persistent"
 
-  it_should_behave_like "retrieving supported count"
+  it_should_behave_like "value of supported count"
 
-  it_should_behave_like "access to supporter from supported"
+  it_should_behave_like "value of supporter from supported"
 
   it_should_behave_like "force load of array of supported from database"
+
+  it_should_behave_like "force load of supporter from database"
 
 end
 
@@ -208,13 +235,15 @@ describe "accessing supported from aln_resource descendant supporter" do
 
   it_should_behave_like "removing supported from supporter"
 
-  it_should_behave_like "accessing supported from supporter that is persistent"
+  it_should_behave_like "access to supported from supporter that is persistent"
 
-  it_should_behave_like "retrieving supported count"
+  it_should_behave_like "value of supported count"
 
-  it_should_behave_like "access to supporter from supported"
+  it_should_behave_like "value of supporter from supported"
 
   it_should_behave_like "force load of array of supported from database"
+
+  it_should_behave_like "force load of supporter from database"
 
 end
 

@@ -25,9 +25,9 @@ class AlnResource < ActiveRecord::Base
   end
   
   #### set supporter
-  def supporter=(supporter)
+  def supporter=(sup)
     self.create_supporter    
-    @supporter.supporter = supporter
+    @supporter.value = self.class.get_as_aln_resource(sup)
   end
          
   #### supported
@@ -90,6 +90,7 @@ class AlnResource < ActiveRecord::Base
   ####################################################################################
   #### add supported model to model instance
   def << (sup)
+    sup = sup.collect{|s| self.class.get_as_aln_resource(s)} if sup.class.eql?(Array)
     supported << sup
     sup.class.eql?(Array) ? sup.each{|s| increment_metadata(s)} : increment_metadata(sup)
     supported.load(true)
@@ -249,7 +250,7 @@ class AlnResource < ActiveRecord::Base
 
   #### find specified supporter within entier hierarchy
   def find_in_support_hierarchy_by_model(model, *args)
-    cond = "aln_resources.support_hierarchy_left between #{self.support_hierarchy_left} and #{self.support_hierarchy_right} and aln_resources.support_hierarchy_root_id = #{self.get_support_hierarchy_root_id}"
+    cond = "aln_resources.support_hierarchy_left between #{self.support_hierarchy_left} and #{self.support_hierarchy_right} and aln_resources.support_hierarchy_root_id = #{self.class.get_support_hierarchy_root_id(self)}"
     if args.first.eql?(:all)
       order = "aln_resources.support_hierarchy_left DESC"
       if args[1].nil?
