@@ -12,16 +12,22 @@ class AlnResource < ActiveRecord::Base
   #### instance attributes
   ####################################################################################
   #### supporter
-  def supporter
+  def supporter(*args)
     unless self.supporter_id.nil?
-      @supporter = AlnSupporter.new(self) if @supporter.nil?
-      @supporter.load
+       self.create_supporter    
+      @supporter.load(*args)
     end
   end
 
-  #### sign supporter
-  def supporter= (supporter)
-    self.supporter_id = supporter.id
+  #### set supporter
+  def create_supporter
+   @supporter = AlnSupporter.new(self) if @supporter.nil?
+  end
+  
+  #### set supporter
+  def supporter=(supporter)
+    self.create_supporter    
+    @supporter.supporter = supporter
   end
          
   #### supported
@@ -106,9 +112,9 @@ class AlnResource < ActiveRecord::Base
     update_increment = sup.support_hierarchy_right
     sup_update_increment = self.support_hierarchy_left
     
-    p sup_supporter_id
-    p sup_root_id
-    
+#    p sup_supporter_id
+#    p sup_root_id
+#    
     #### update meta data for all affected models
     self.class.update_all("support_hierarchy_left = (support_hierarchy_left + #{update_increment})", "support_hierarchy_left > #{self.support_hierarchy_left} AND support_hierarchy_root_id = #{root_id}") 
     self.class.update_all("support_hierarchy_right = (support_hierarchy_right + #{update_increment})", "support_hierarchy_right > #{self.support_hierarchy_left + 1} AND support_hierarchy_root_id = #{root_id}") 

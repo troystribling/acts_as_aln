@@ -42,7 +42,7 @@ end
 #########################################################################################################
 describe "removing supported from supporter", :shared => true do
 
-  it "should be possible to remove specified supported" do
+  it "should be possible when supported is specified" do
     @root << [@s1, @s2, @s3]
     @root.supported.delete(AlnResource.get_as_aln_resource(@s2))
     @root.supported.should include(AlnResource.get_as_aln_resource(@s1))
@@ -50,7 +50,7 @@ describe "removing supported from supporter", :shared => true do
     @root.supported.should include(AlnResource.get_as_aln_resource(@s3))
   end
 
-  it "should be possible to remove all supported" do
+  it "should be possible for all" do
     @root << [@s1, @s2, @s3]
     @root.supported.clear
     @root.supported.should_not include(AlnResource.get_as_aln_resource(@s1))
@@ -80,14 +80,14 @@ describe "accessing supported from supporter that is persistent", :shared => tru
     @ar_s3 = AlnResource.get_as_aln_resource(@s3)
   end
   
-  it "should be possible to access supported by index" do
+  it "should be possible by array index" do
     save_root
     @root_chk.supported[0].should eql(@ar_s1)
     @root_chk.supported[1].should eql(@ar_s2)
     @root_chk.supported[2].should eql(@ar_s3)
   end
 
-  it "should be possible to interate through supported" do
+  it "should be possible with interator" do
     save_root
     @root_chk.supported.detect{|s| @ar_s1.eql?(s)}.should eql(@ar_s1)
     @root_chk.supported.detect{|s| @ar_s1.eql?(s)}.should eql(@ar_s1)
@@ -97,13 +97,13 @@ describe "accessing supported from supporter that is persistent", :shared => tru
 end
 
 #########################################################################################################
-describe "retrieving supported count", :shared => true do
+describe "value of supported count", :shared => true do
 
   it "should be zero when there are no supported" do
     @root.supported.count.should eql(0)
   end
 
-  it "should equal supported count" do
+  it "should equal number of supported" do
     @root << [@s1, @s2, @s3]
     @root.supported.count.should eql(3)
   end
@@ -113,7 +113,7 @@ end
 #########################################################################################################
 describe "force load of array of supported from database", :shared => true do
 
-  it "should be and option when an element of supported updated" do
+  it "should be and option when an element of supported is updated" do
     @root << [@s1, @s2, @s3]
     s1_update = AlnResource.find(AlnResource.get_as_aln_resource(@s1).id)
     @root.supported.first.resource_name.should eql(s1_update.resource_name)
@@ -126,25 +126,25 @@ describe "force load of array of supported from database", :shared => true do
 end
 
 #########################################################################################################
-describe "access to supporter from supported", :shared => true do
+describe "value of supporter from supported", :shared => true do
 
   it "should be nil for root that is not persistent" do
     @root.supporter.should be_nil
   end
 
-  it "should not exist for root that is persistent" do
+  it "should be nil for root that is persistent" do
     @root.save
     AlnResource.find(AlnResource.get_as_aln_resource(@root).id).supporter.should be_nil
   end
 
-  it "should be possible to access supporter from supported that is not persistent" do
+  it "should be supporter for supported that is not persistent" do
     @root << [@s1, @s2, @s3]
     @s1.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
     @s2.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
     @s3.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
   end
 
-  it "should be possible to access supporter from supported is not persistent" do
+  it "should be supporter for supported is persistent" do
     @root << [@s1, @s2, @s3]
     @chk_s1 = AlnResource.find(AlnResource.get_as_aln_resource(@s1).id)
     @chk_s2 = AlnResource.find(AlnResource.get_as_aln_resource(@s2).id)
