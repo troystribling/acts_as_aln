@@ -20,7 +20,7 @@ module PreorderedTreeHierarchyHelper
   end
    
   def verify_root(root, left, right)
-    root_chk = AlnResource.get_as_aln_resource(root)
+    root_chk = AlnResource.to_aln_resource(root)
     root_chk = AlnResource.find(root_chk.id)
     root_chk.support_hierarchy_left.should eql(left)  
     root_chk.support_hierarchy_right.should eql(right) 
@@ -29,8 +29,8 @@ module PreorderedTreeHierarchyHelper
 
   def verify_supported(hierachy_root, root, sup, left, right)
     sub_chk = verify_root(sup, left, right)
-    root_chk = AlnResource.get_as_aln_resource(root)
-    hierachy_root_chk = AlnResource.get_as_aln_resource(hierachy_root)
+    root_chk = AlnResource.to_aln_resource(root)
+    hierachy_root_chk = AlnResource.to_aln_resource(hierachy_root)
     sub_chk.support_hierarchy_root_id.should eql(hierachy_root_chk.id) 
     sub_chk.supporter_id.should eql(root_chk.id) 
   end
@@ -58,38 +58,10 @@ describe "initial values of preordered tree metadata for models with no supporte
 
 end
 
-###########################################################################################################
-#describe "initial values of preordered tree metadata for aln_resource with no supported or supporter" do
-#
-#  before(:each) do
-#    @mod = AlnResource.new
-#  end
-#  
-#  after(:each) do
-#  end
-#  
-#  it_should_behave_like "initial values of preordered tree metadata for models with no supported or supporter"
-#  
-#end
-#
-###########################################################################################################
-#describe "initial values of preordered tree metadata for aln_resource descendants with no supported or supporter" do
-#
-#  before(:each) do
-#    @mod = AlnTermination.new
-#  end
-#  
-#  after(:each) do
-#  end
-#  
-#  it_should_behave_like "initial values of preordered tree metadata for models with no supported or supporter"
-#  
-#end
-
 ##########################################################################################################
-describe "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy", :shared => true do
+describe "update of preordered tree meta data by adding a supported with no supported to a support hierarchy", :shared => true do
 
-  it "should update root of hiearchy and self when hierachy originally contains only root as supported is added to root" do
+  it "should modify root of hiearchy if hierachy contains only root" do
 
     #### build hierarchy
     add_first_supported(@root, @s1)
@@ -103,7 +75,7 @@ describe "incrementing preordered tree meta data by adding a supported with no s
 
   end
 
-  it "should update root of hiearchy, self and other supported when hierachy originally contains a root with supported 1 level deep as supported is added to root" do
+  it "should modify root of hiearchy and other supported if hierachy contains a root with supported 1 level deep when adding supporting does not increase hierachy depth" do
 
     #### build hierarchy
     add_first_supported(@root, @s1)
@@ -119,7 +91,7 @@ describe "incrementing preordered tree meta data by adding a supported with no s
     
   end
 
-  it "should update root of hiearchy, self and other supported when hierachy originally contains a root with supported 1 level deep as supported is added to a leaf of hierarchy" do
+  it "should modify root of hiearchy and other supported if hierachy contains a root with supported 1 level deep when adding supporting increases hierachy depth" do
 
     #### build hierarchy
     add_first_supported(@root, @s1)
@@ -137,7 +109,7 @@ describe "incrementing preordered tree meta data by adding a supported with no s
     
   end
 
-  it "should update only specified hierarchy when hierarchies with multiple roots are contained in database" do
+  it "should modify only specified hierarchy when hierarchies with multiple roots are contained in database" do
 
     #### build control hiearchy
     add_first_supported(@root, @s1)
@@ -176,9 +148,9 @@ describe "incrementing preordered tree meta data by adding a supported with no s
 end
 
 ##########################################################################################################
-describe "incrementing preordered tree meta data by adding a supported that is a support hierarchy root to another support hierarchy", :shared => true do
+describe "update of preordered tree meta data when adding a supported that is a support hierarchy root", :shared => true do
 
-  it "should update root of hiearchy and self when hierachy originally contains only root as supported is added to root" do
+  it "should modify target hierarchy root and added support hierachy if target hierarchy consists only of a root" do
 
     #### build added hierarchy
     add_first_supported(@root2, @s21)
@@ -196,27 +168,142 @@ describe "incrementing preordered tree meta data by adding a supported that is a
     verify_root(@root, 1, 2)
     
     #### add subtree to root
-    @root << @root2
+    @root.add_support_hierarchy(@root2)
     
     #### verify metadata update    
     verify_root(@root, 1, 10)
     verify_supported(@root, @root, @root2, 2, 9)
-    verify_supported(@root, @root, @s21, 7, 8)
-    verify_supported(@root, @root, @s22, 5, 6)
-    verify_supported(@root, @root, @s23, 3, 4)
+    verify_supported(@root, @root2, @s21, 7, 8)
+    verify_supported(@root, @root2, @s22, 5, 6)
+    verify_supported(@root, @root2, @s23, 3, 4)
     
     #### clean up
-#    @root.destroy
-#    @root2.destroy
+    @root.destroy
+    @root2.destroy
     
+  end
+
+  it "should modify target hierarchy and added support hierachy if target hierarchy consists of root with supported" do
+
+    #### build added hierarchy
+    add_first_supported(@root2, @s21)
+    add_supported(@root2, @s22)
+    add_supported(@root2, @s23)
+
+    #### verify added hierarchy
+    verify_root(@root2, 1, 8)
+    verify_supported(@root2, @root2, @s21, 6, 7)
+    verify_supported(@root2, @root2, @s22, 4, 5)
+    verify_supported(@root2, @root2, @s23, 2, 3)
+
+    #### build target hierarchy
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
+    add_supported(@root, @s3)
+
+    #### verify target hierarchy
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 4, 5)
+    verify_supported(@root, @root, @s3, 2, 3)
+    
+    #### add subtree to root
+    @s3.add_support_hierarchy(@root2)
+    
+    #### verify metadata update    
+    verify_root(@root, 1, 16)
+    verify_supported(@root, @root, @s1, 14, 15)
+    verify_supported(@root, @root, @s2, 12, 13)
+    verify_supported(@root, @root, @s3, 2, 11)
+    verify_supported(@root, @s3, @root2, 3, 10)
+    verify_supported(@root, @root2, @s21, 8, 9)
+    verify_supported(@root, @root2, @s22, 6, 7)
+    verify_supported(@root, @root2, @s23, 4, 5)
+    
+    #### clean up
+    @root.destroy
+    @root2.destroy
+    
+  end
+
+  it "should modify only specified hierarchy if hierarchies with different roots are contained in database" do
+
+    #### build added hierarchy
+    add_first_supported(@root2, @s21)
+    add_supported(@root2, @s22)
+    add_supported(@root2, @s23)
+
+    #### verify added hierarchy
+    verify_root(@root2, 1, 8)
+    verify_supported(@root2, @root2, @s21, 6, 7)
+    verify_supported(@root2, @root2, @s22, 4, 5)
+    verify_supported(@root2, @root2, @s23, 2, 3)
+
+    #### build target hierarchy
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
+    add_supported(@root, @s3)
+
+    #### verify target hierarchy
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 4, 5)
+    verify_supported(@root, @root, @s3, 2, 3)
+
+    #### build control hierarchy
+    add_first_supported(@root3, @s31)
+    add_supported(@root3, @s32)
+    add_supported(@root3, @s33)
+
+    #### verify control hierarchy
+    verify_root(@root3, 1, 8)
+    verify_supported(@root3, @root3, @s31, 6, 7)
+    verify_supported(@root3, @root3, @s32, 4, 5)
+    verify_supported(@root3, @root3, @s33, 2, 3)
+    
+    #### add subtree to root
+    @s3.add_support_hierarchy(@root2)
+    
+    #### verify metadata update    
+    verify_root(@root, 1, 16)
+    verify_supported(@root, @root, @s1, 14, 15)
+    verify_supported(@root, @root, @s2, 12, 13)
+    verify_supported(@root, @root, @s3, 2, 11)
+    verify_supported(@root, @s3, @root2, 3, 10)
+    verify_supported(@root, @root2, @s21, 8, 9)
+    verify_supported(@root, @root2, @s22, 6, 7)
+    verify_supported(@root, @root2, @s23, 4, 5)
+
+    #### verify control hierarchy
+    verify_root(@root3, 1, 8)
+    verify_supported(@root3, @root3, @s31, 6, 7)
+    verify_supported(@root3, @root3, @s32, 4, 5)
+    verify_supported(@root3, @root3, @s33, 2, 3)
+    
+    #### clean up
+    @root.destroy
+    @root2.destroy
+    @root3.destroy
+
+  end
+  
+end
+
+##########################################################################################################
+describe "update of preordered tree meta data when removing a supported that is a support hierarchy root", :shared => true do
+
+  it "should modify target hierarchy root and removed support hierachy when target hiearchy consists only of a root" do
+  end
+
+  it "should modify target hierarchy root and removed support hierachy when target hiearchy consists of a root with supported" do
   end
 
 end
 
 ##########################################################################################################
-describe "decrementing preordered tree meta data by destroying a supported with no supported which belongs to a support hierarchy", :shared => true do
+describe "update of preordered tree meta data for support hiearchy by destroying a supported with no supported", :shared => true do
 
-  it "should update root of hiearchy hierachy originally contains only root and one supported when supported is destroyed" do
+  it "should modify meta data of hierarchy root if it originally contains only root and one supported when supported is destroyed" do
 
     #### build hierarchy
     add_first_supported(@root, @s1)
@@ -240,7 +327,7 @@ describe "decrementing preordered tree meta data by destroying a supported with 
 
   end
 
-  it "should update root of hiearchy, self and other supported when hierachy originally contains a root with supported 1 level deep as supported is removed from root" do
+  it "should modify root of hiearchy and other supported if hierachy contains a root with supported 1 level deep" do
 
     #### build hierarchy
     add_first_supported(@root, @s1)
@@ -268,7 +355,7 @@ describe "decrementing preordered tree meta data by destroying a supported with 
     
   end
 
-  it "should update root of hiearchy, self and other supported when hierachy originally contains a root with supported 1 level deep as supported is removed from a leaf of hierarchy" do
+  it "should modify root of hiearchy and other supported if hierachy contains a root with supported 2 levels deep" do
 
     #### construct hierarchy
     add_first_supported(@root, @s1)
@@ -300,7 +387,7 @@ describe "decrementing preordered tree meta data by destroying a supported with 
 
   end
 
-  it "should update only specified hierarchy when hierarchies with multiple roots are contained in database" do
+  it "should modify only specified hierarchies when hierarchies with different roots are contained in database" do
 
     #### build control hiearchy
     add_first_supported(@root, @s1)
@@ -357,9 +444,9 @@ describe "decrementing preordered tree meta data by destroying a supported with 
 end
 
 ##########################################################################################################
-describe "decrementing preordered tree meta data for all model destroy methods", :shared => true do
+describe "update of preordered tree meta data for all model destroy methods", :shared => true do
 
-  it "should update hierarchy metadata when destroy_as_supported is called" do
+  it "should modify hierarchy metadata when destroy_as_supported is called" do
 
     #### construct hierarchy
     add_first_supported(@root, @s1)
@@ -391,7 +478,7 @@ describe "decrementing preordered tree meta data for all model destroy methods",
 
   end
 
-  it "should update hierarchy metadata when destroy_all_supported is called" do
+  it "should modify hierarchy metadata when destroy_all_supported is called" do
 
     #### construct hierarchy
     add_first_supported(@root, @s1)
@@ -421,7 +508,7 @@ describe "decrementing preordered tree meta data for all model destroy methods",
 
   end
 
-  it "should update hierarchy metadata when destroy_supported_by_model with :first option is called" do
+  it "should modify hierarchy metadata when destroy_supported_by_model with :first option is called" do
 
     #### construct hierarchy
     add_first_supported(@root, @s1)
@@ -453,7 +540,7 @@ describe "decrementing preordered tree meta data for all model destroy methods",
 
   end
 
-  it "should update hierarchy metadata when destroy_supported_by_model with :all option is called" do
+  it "should modify hierarchy metadata when destroy_supported_by_model with :all option is called" do
 
     #### construct hierarchy
     add_first_supported(@root, @s1)
@@ -485,6 +572,36 @@ describe "decrementing preordered tree meta data for all model destroy methods",
   end
     
 end
+
+###########################################################################################################
+describe "initial values of preordered tree metadata for aln_resource with no supported or supporter" do
+
+  before(:each) do
+    @mod = AlnResource.new
+  end
+  
+  after(:each) do
+  end
+  
+  it_should_behave_like "initial values of preordered tree metadata for models with no supported or supporter"
+  
+end
+
+##########################################################################################################
+describe "initial values of preordered tree metadata for aln_resource descendants with no supported or supporter" do
+
+  before(:each) do
+    @mod = AlnTermination.new
+  end
+  
+  after(:each) do
+  end
+  
+  it_should_behave_like "initial values of preordered tree metadata for models with no supported or supporter"
+  
+end
+
+
 ##########################################################################################################
 describe "updates to preordered tree meta data for aln_resource supported and aln_resource support hierarchy root" do
 
@@ -502,15 +619,20 @@ describe "updates to preordered tree meta data for aln_resource supported and al
     @s22 = AlnResource.new(model_data[:aln_resource_supported_1])
     @s23 = AlnResource.new(model_data[:aln_resource_supported_2])
 
+    @root3 = AlnResource.new(model_data[:aln_resource])
+    @s31 = AlnResource.new(model_data[:aln_resource_supported_1])
+    @s32 = AlnResource.new(model_data[:aln_resource_supported_1])
+    @s33 = AlnResource.new(model_data[:aln_resource_supported_2])
+
   end
   
-#  it_should_behave_like "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy"
-#
-#  it_should_behave_like "decrementing preordered tree meta data by destroying a supported with no supported which belongs to a support hierarchy"
-#
-#  it_should_behave_like "decrementing preordered tree meta data for all model destroy methods"
+  it_should_behave_like "update of preordered tree meta data by adding a supported with no supported to a support hierarchy"
 
-  it_should_behave_like "incrementing preordered tree meta data by adding a supported that is a support hierarchy root to another support hierarchy"
+  it_should_behave_like "update of preordered tree meta data for support hiearchy by destroying a supported with no supported"
+
+  it_should_behave_like "update of preordered tree meta data for all model destroy methods"
+
+  it_should_behave_like "update of preordered tree meta data when adding a supported that is a support hierarchy root"
   
 end
 
@@ -531,13 +653,20 @@ describe "updates to preordered tree meta data for aln_resource descendant suppo
     @s22 = AlnTermination.new(model_data[:aln_termination_supported_1])
     @s23 = AlnTermination.new(model_data[:aln_termination_supported_2])
 
+    @root3 = AlnTermination.new(model_data[:aln_termination])
+    @s31 = AlnTermination.new(model_data[:aln_termination_supported_1])
+    @s32 = AlnTermination.new(model_data[:aln_termination_supported_1])
+    @s33 = AlnTermination.new(model_data[:aln_termination_supported_2])
+
   end
   
-#  it_should_behave_like "incrementing preordered tree meta data by adding a supported with no supported to a support hierarchy"
-#
-#  it_should_behave_like "decrementing preordered tree meta data by destroying a supported with no supported which belongs to a support hierarchy"
-#
-#  it_should_behave_like "decrementing preordered tree meta data for all model destroy methods"
+  it_should_behave_like "update of preordered tree meta data by adding a supported with no supported to a support hierarchy"
+
+  it_should_behave_like "update of preordered tree meta data for support hiearchy by destroying a supported with no supported"
+
+  it_should_behave_like "update of preordered tree meta data for all model destroy methods"
+
+  it_should_behave_like "update of preordered tree meta data when adding a supported that is a support hierarchy root"
   
 end
 

@@ -5,32 +5,32 @@ describe "adding supported to supporter and accessing supported from supporter t
 
   it "should be possible to add supported individally" do
     @root << @s1
-    @root.supported.should include(AlnResource.get_as_aln_resource(@s1))
+    @root.supported.should include(AlnResource.to_aln_resource(@s1))
     @root << @s2
-    @root.supported.should include(AlnResource.get_as_aln_resource(@s2))
+    @root.supported.should include(AlnResource.to_aln_resource(@s2))
     @root << @s3
-    @root.supported.should include(AlnResource.get_as_aln_resource(@s3))
+    @root.supported.should include(AlnResource.to_aln_resource(@s3))
   end
 
   it "should be possible to add array of supported" do
     @root << [@s1, @s2, @s3]
-    @root.supported.should include(AlnResource.get_as_aln_resource(@s1))
-    @root.supported.should include(AlnResource.get_as_aln_resource(@s2))
-    @root.supported.should include(AlnResource.get_as_aln_resource(@s3))
+    @root.supported.should include(AlnResource.to_aln_resource(@s1))
+    @root.supported.should include(AlnResource.to_aln_resource(@s2))
+    @root.supported.should include(AlnResource.to_aln_resource(@s3))
   end
 
   it "should be possible to access supported by index" do
     @root << [@s1, @s2, @s3]
-    @root.supported[0].should eql(AlnResource.get_as_aln_resource(@s1))
-    @root.supported[1].should eql(AlnResource.get_as_aln_resource(@s2))
-    @root.supported[2].should eql(AlnResource.get_as_aln_resource(@s3))
+    @root.supported[0].should eql(AlnResource.to_aln_resource(@s1))
+    @root.supported[1].should eql(AlnResource.to_aln_resource(@s2))
+    @root.supported[2].should eql(AlnResource.to_aln_resource(@s3))
   end
 
   it "should be possible to interate through supported" do
     @root << [@s1, @s2, @s3]
-    @root.supported.detect{|s| AlnResource.get_as_aln_resource(@s1).eql?(s)}.should eql(AlnResource.get_as_aln_resource(@s1))
-    @root.supported.detect{|s| AlnResource.get_as_aln_resource(@s2).eql?(s)}.should eql(AlnResource.get_as_aln_resource(@s2))
-    @root.supported.detect{|s| AlnResource.get_as_aln_resource(@s3).eql?(s)}.should eql(AlnResource.get_as_aln_resource(@s3))
+    @root.supported.detect{|s| AlnResource.to_aln_resource(@s1).eql?(s)}.should eql(AlnResource.to_aln_resource(@s1))
+    @root.supported.detect{|s| AlnResource.to_aln_resource(@s2).eql?(s)}.should eql(AlnResource.to_aln_resource(@s2))
+    @root.supported.detect{|s| AlnResource.to_aln_resource(@s3).eql?(s)}.should eql(AlnResource.to_aln_resource(@s3))
   end
 
   it "should be possible to convert supported to array" do
@@ -44,18 +44,18 @@ describe "removing supported from supporter", :shared => true do
 
   it "should be possible when supported is specified" do
     @root << [@s1, @s2, @s3]
-    @root.supported.delete(AlnResource.get_as_aln_resource(@s2))
-    @root.supported.should include(AlnResource.get_as_aln_resource(@s1))
-    @root.supported.should_not include(AlnResource.get_as_aln_resource(@s2))
-    @root.supported.should include(AlnResource.get_as_aln_resource(@s3))
+    @root.supported.delete(AlnResource.to_aln_resource(@s2))
+    @root.supported.should include(AlnResource.to_aln_resource(@s1))
+    @root.supported.should_not include(AlnResource.to_aln_resource(@s2))
+    @root.supported.should include(AlnResource.to_aln_resource(@s3))
   end
 
   it "should be possible for all" do
     @root << [@s1, @s2, @s3]
     @root.supported.clear
-    @root.supported.should_not include(AlnResource.get_as_aln_resource(@s1))
-    @root.supported.should_not include(AlnResource.get_as_aln_resource(@s2))
-    @root.supported.should_not include(AlnResource.get_as_aln_resource(@s3))
+    @root.supported.should_not include(AlnResource.to_aln_resource(@s1))
+    @root.supported.should_not include(AlnResource.to_aln_resource(@s2))
+    @root.supported.should_not include(AlnResource.to_aln_resource(@s3))
   end
 
 end
@@ -74,10 +74,10 @@ describe "access to supported from supporter that is persistent", :shared => tru
 
   def save_root
     @root << [@s1, @s2, @s3]
-    @root_chk = AlnResource.find(AlnResource.get_as_aln_resource(@root).id)
-    @ar_s1 = AlnResource.get_as_aln_resource(@s1)
-    @ar_s2 = AlnResource.get_as_aln_resource(@s2)
-    @ar_s3 = AlnResource.get_as_aln_resource(@s3)
+    @root_chk = AlnResource.find(AlnResource.to_aln_resource(@root).id)
+    @ar_s1 = AlnResource.to_aln_resource(@s1)
+    @ar_s2 = AlnResource.to_aln_resource(@s2)
+    @ar_s3 = AlnResource.to_aln_resource(@s3)
   end
   
   it "should be possible by array index" do
@@ -115,7 +115,7 @@ describe "force load of array of supported from database", :shared => true do
 
   it "should be an option when an element of supported retrieved" do
     @root << [@s1, @s2, @s3]
-    s1_update = AlnResource.find(AlnResource.get_as_aln_resource(@s1).id)
+    s1_update = AlnResource.find(AlnResource.to_aln_resource(@s1).id)
     @root.supported.first.resource_name.should eql(s1_update.resource_name)
     s1_update.resource_name = 'new_name'
     s1_update.save
@@ -130,7 +130,7 @@ describe "force load of supporter from database", :shared => true do
 
   it "should be an option when supporter is retrieved" do
     @root << [@s1, @s2, @s3]
-    root_update = AlnResource.find(AlnResource.get_as_aln_resource(@root).id)
+    root_update = AlnResource.find(AlnResource.to_aln_resource(@root).id)
     root_update.resource_name = 'new_name'
     @s1.supporter.value.resource_name.should_not eql(root_update.resource_name)
     root_update.save
@@ -148,32 +148,32 @@ describe "value of supporter from supported", :shared => true do
 
   it "should be nil for root that is persistent" do
     @root.save
-    AlnResource.find(AlnResource.get_as_aln_resource(@root).id).supporter.should be_nil
+    AlnResource.find(AlnResource.to_aln_resource(@root).id).supporter.should be_nil
   end
 
   it "should be assigned supporter instance for supported that is not persistent" do
     @root << [@s1, @s2, @s3]
-    @s1.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
-    @s2.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
-    @s3.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
-    @s1.supporter.value.object_id.should eql(AlnResource.get_as_aln_resource(@root).object_id)
-    @s2.supporter.value.object_id.should eql(AlnResource.get_as_aln_resource(@root).object_id)
-    @s3.supporter.value.object_id.should eql(AlnResource.get_as_aln_resource(@root).object_id)
+    @s1.supporter.id.should eql(AlnResource.to_aln_resource(@root).id)
+    @s2.supporter.id.should eql(AlnResource.to_aln_resource(@root).id)
+    @s3.supporter.id.should eql(AlnResource.to_aln_resource(@root).id)
+    @s1.supporter.value.object_id.should eql(AlnResource.to_aln_resource(@root).object_id)
+    @s2.supporter.value.object_id.should eql(AlnResource.to_aln_resource(@root).object_id)
+    @s3.supporter.value.object_id.should eql(AlnResource.to_aln_resource(@root).object_id)
   end
 
   it "should be persistant supporter for supported that is persistent" do
     @root << [@s1, @s2, @s3]
-    @chk_s1 = AlnResource.find(AlnResource.get_as_aln_resource(@s1).id)
-    @chk_s2 = AlnResource.find(AlnResource.get_as_aln_resource(@s2).id)
-    @chk_s3 = AlnResource.find(AlnResource.get_as_aln_resource(@s3).id)
-    @chk_s1.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
-    @chk_s2.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
-    @chk_s3.supporter.id.should eql(AlnResource.get_as_aln_resource(@root).id)
+    @chk_s1 = AlnResource.find(AlnResource.to_aln_resource(@s1).id)
+    @chk_s2 = AlnResource.find(AlnResource.to_aln_resource(@s2).id)
+    @chk_s3 = AlnResource.find(AlnResource.to_aln_resource(@s3).id)
+    @chk_s1.supporter.id.should eql(AlnResource.to_aln_resource(@root).id)
+    @chk_s2.supporter.id.should eql(AlnResource.to_aln_resource(@root).id)
+    @chk_s3.supporter.id.should eql(AlnResource.to_aln_resource(@root).id)
   end
 
   it "should be persistant supporter for supporter that is persistent" do
     @root << [@s1, @s2, @s3]
-    @chk_root = AlnResource.find(AlnResource.get_as_aln_resource(@root).id)
+    @chk_root = AlnResource.find(AlnResource.to_aln_resource(@root).id)
     @chk_root.supported[0].supporter.value.object_id.should eql(@chk_root.object_id)
     @chk_root.supported[1].supporter.value.object_id.should eql(@chk_root.object_id)
     @chk_root.supported[2].supporter.value.object_id.should eql(@chk_root.object_id)

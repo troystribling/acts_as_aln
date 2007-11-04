@@ -50,15 +50,15 @@ end
 describe "retrieval of aln_resource ancestor from aln_resource descendant model class" do
 
   it "should return aln_resource if model is aln_resource" do
-    AlnResource.get_as_aln_resource(AlnResource.new(model_data[:aln_resource])).class.should eql(AlnResource) 
+    AlnResource.to_aln_resource(AlnResource.new(model_data[:aln_resource])).class.should eql(AlnResource) 
   end
 
   it "should return aln_resource if model is a descendant of aln_resource" do 
-    AlnResource.get_as_aln_resource(AlnTermination.new(model_data[:aln_termination])).class.should eql(AlnResource) 
+    AlnResource.to_aln_resource(AlnTermination.new(model_data[:aln_termination])).class.should eql(AlnResource) 
   end
 
   it "should raise PlanB::InvalidType if model is not a descendant of aln_resource" do
-    lambda{AlnResource.get_as_aln_resource(Array.new)}.should raise_error(PlanB::InvalidClass) 
+    lambda{AlnResource.to_aln_resource(Array.new)}.should raise_error(PlanB::InvalidClass) 
   end
   
 end
