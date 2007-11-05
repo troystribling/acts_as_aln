@@ -148,7 +148,7 @@ describe "update of preordered tree meta data by adding a supported with no supp
 end
 
 ##########################################################################################################
-describe "update of preordered tree meta data when adding a supported that may be a support hierarchy root", :shared => true do
+describe "update of preordered tree meta data when adding a supported that may be a support hierarchy root to a support hierarchy", :shared => true do
 
   it "should modify target hierarchy root and added supported if target and supported hierarchy consists only of a root" do
 
@@ -311,7 +311,7 @@ describe "update of preordered tree meta data when adding a supported that may b
 end
 
 ##########################################################################################################
-describe "update of preordered tree meta data when removing a supported that may be a support hierarchy root", :shared => true do
+describe "update of preordered tree meta data when removing a supported that may be a support hierarchy root from a support hierarchy", :shared => true do
 
   it "should modify target hierarchy root and added supported if target and supported hierarchy consists only of a root" do
 
@@ -783,9 +783,9 @@ describe "updates to preordered tree meta data for aln_resource supported and al
 
   it_should_behave_like "update of preordered tree meta data for all model destroy methods"
 
-  it_should_behave_like "update of preordered tree meta data when adding a supported that may be a support hierarchy root"
+  it_should_behave_like "update of preordered tree meta data when adding a supported that may be a support hierarchy root to a support hierarchy"
   
-  it_should_behave_like "update of preordered tree meta data when removing a supported that may be a support hierarchy root"
+  it_should_behave_like "update of preordered tree meta data when removing a supported that may be a support hierarchy root from a support hierarchy"
   
 end
 
@@ -819,9 +819,9 @@ describe "updates to preordered tree meta data for aln_resource descendant suppo
 
   it_should_behave_like "update of preordered tree meta data for all model destroy methods"
 
-  it_should_behave_like "update of preordered tree meta data when adding a supported that may be a support hierarchy root"
+  it_should_behave_like "update of preordered tree meta data when adding a supported that may be a support hierarchy root to a support hierarchy"
 
-  it_should_behave_like "update of preordered tree meta data when removing a supported that may be a support hierarchy root"
+  it_should_behave_like "update of preordered tree meta data when removing a supported that may be a support hierarchy root from a support hierarchy"
   
 end
 
