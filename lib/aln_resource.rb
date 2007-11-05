@@ -38,42 +38,49 @@ class AlnResource < ActiveRecord::Base
     
   ####################################################################################
   ##### update entire hierarchy
-  def update_hierarchy
+  def save_hierarchy
     save
     supported.each {|sup| sup.save_hierarchy}
   end
 
+  ####################################################################################
   #### destroy model and all supported models
   def destroy
     self.supported.each {|s| s.to_descendant.destroy}
     super
   end
 
+  ####################################################################################
   #### destroy model and update meta data
   def destroy_as_supported
-    update_remove_metadata_for_supported
+    remove_update_metadata(2, self.support_hierarchy_left, self.class.get_support_hierarchy_root_id(self))
+    self.to_descendant.destroy
   end
 
+  ####################################################################################
   #### destroy all supported models and update meta data
   def destroy_all_supported
     supported.each {|sup| sup.destroy_as_supported}
-    self.supported.clear
   end
 
+  ####################################################################################
   #### destroy specified supporter and update meta data
   def destroy_supported_by_model(model, *args)
     goner = find_supported_by_model(model, *args)
-    destroy_element = lambda do |e|
-      e.destroy_as_supported
-      self.supported.delete(self.class.to_aln_resource(e))
-    end
     if goner.class.eql?(Array)
-      goner.each {|g| destroy_element[g]} 
+      goner.each {|g| g.destroy_as_supported} 
     else
-      destroy_element[goner] unless goner.nil? 
+      goner.destroy_as_supported unless goner.nil? 
     end
   end
 
+  ####################################################################################
+  #### destroy model and support hierarchy and update metadata
+  def destroy_support_hierarchy
+    detach_support_hierarchy
+    self.to_descendant.destroy
+  end
+    
   ####################################################################################
   #### interate through support hierarchy
   def each
@@ -86,9 +93,10 @@ class AlnResource < ActiveRecord::Base
   ####################################################################################
   #### add supported model to model instance
   def << (sup)
+    update_metadata = lambda{|m| add_update_metadata(m, 2, self.support_hierarchy_left, self.class.get_support_hierarchy_root_id(self))}
     sup.class.eql?(Array) ? sup = sup.collect{|s| self.class.to_aln_resource(s)} : sup = self.class.to_aln_resource(sup)
     supported << sup
-    sup.class.eql?(Array) ? sup.each{|s| add_update_metadata_for_supported(s)} : add_update_metadata_for_supported(sup)
+    sup.class.eql?(Array) ? sup.each{|s| update_metadata[s]} : update_metadata[sup]
     supported.load(true)
   end  
 
@@ -97,8 +105,8 @@ class AlnResource < ActiveRecord::Base
   def add_support_hierarchy(sup)
     sup = self.class.to_aln_resource(sup)
     supported << sup
-    add_update_metadata_for_supported_hierarchy(sup)
-    add_update_metadata_for_supported_with_supported(sup)
+    add_update_all(self.support_hierarchy_left-sup.support_hierarchy_left+1, sup.support_hierarchy_left, self.class.get_support_hierarchy_root_id(sup))
+    add_update_metadata(sup, sup.support_hierarchy_right-sup.support_hierarchy_left+1, self.support_hierarchy_left, self.class.get_support_hierarchy_root_id(self))
     self.class.update_all("support_hierarchy_root_id = #{self.class.get_support_hierarchy_root_id(self)}", "supporter_id = #{sup.id}") 
     supported.load(true)
   end  
@@ -137,50 +145,33 @@ class AlnResource < ActiveRecord::Base
     self.class.update_all("support_hierarchy_left = (support_hierarchy_left + #{update_increment})", "support_hierarchy_left > #{left_lower_bound} AND support_hierarchy_root_id = #{root_id}") 
     self.class.update_all("support_hierarchy_right = (support_hierarchy_right + #{update_increment})", "support_hierarchy_right > #{left_lower_bound + 1} AND support_hierarchy_root_id = #{root_id}") 
   end
-
-  ####################################################################################
-  #### update meta data for all impacted models when a supported with no supported 
-  #### is added to hierarchy and save updates to database
-  def add_update_metadata_for_supported(sup)
-    update_increment = 2
-    left_lower_bound = self.support_hierarchy_left
-    root_id = self.class.get_support_hierarchy_root_id(self)
-    add_update_metadata(sup, update_increment, left_lower_bound, root_id)
-  end
-
-  ####################################################################################
-  #### update meta data for all impacted models when a supported with supported 
-  #### is added to hierarchy and save updates to database
-  def add_update_metadata_for_supported_with_supported(sup)
-    update_increment = sup.support_hierarchy_right - sup.support_hierarchy_left + 1
-    left_lower_bound = self.support_hierarchy_left
-    root_id = self.class.get_support_hierarchy_root_id(self)
-    add_update_metadata(sup, update_increment, left_lower_bound, root_id)
-  end
-
-  ####################################################################################
-  #### update meta data for all impacted models in added hierarchy when a  
-  #### supported with supported is added to hierarchy and save updates to database
-  def add_update_metadata_for_supported_hierarchy(sup)
-    update_increment = self.support_hierarchy_left - sup.support_hierarchy_left + 1
-    left_lower_bound = sup.support_hierarchy_left
-    sup_root_id = self.class.get_support_hierarchy_root_id(sup)
-    add_update_all(update_increment, left_lower_bound, sup_root_id)
-  end
   
+  ####################################################################################
   ####################################################################################
   #### detach from support hierarchy
   def detach_support_hierarchy
+  
+    right = self.support_hierarchy_right
+    left = self.support_hierarchy_left
+    root_id = self.class.get_support_hierarchy_root_id(self)
+
+    self.support_hierarchy_root_id = nil
+    self.supporter_id = nil
+    self.support_hierarchy_right += 1 - left
+    self.support_hierarchy_left = 1
+    self.save
+
+    self.class.update_all("support_hierarchy_root_id = #{self.id}", "supporter_id = #{self.id}") 
+    remove_update_metadata(right-left+1, left, root_id)
+    remove_update_metadata(left-1, 1, self.id)
+
+    supported.load(true)
+    
   end  
 
   ####################################################################################
-  #### destroy model and support hierarchy and update metadata
-  def destroy_support_hierarchy
-  end
-    
-  ####################################################################################
   #### update meta data for all impacted models and save updates to database
-  def update_remove_metadata(update_increment, left_lower_bound, root_id)
+  def remove_update_metadata(update_increment, left_lower_bound, root_id)
 
     #### update meta data for all affected models
     self.class.update_all("support_hierarchy_left = (support_hierarchy_left - #{update_increment})", "support_hierarchy_left > #{left_lower_bound + 1} AND support_hierarchy_root_id = #{root_id}") 
@@ -192,86 +183,8 @@ class AlnResource < ActiveRecord::Base
       hierarchy_root.support_hierarchy_right -= update_increment
       hierarchy_root.save
     end 
-
-    ### destroy supported
-    self.to_descendant.destroy
        
   end
-
-  ####################################################################################
-  #### increment meta data for all impacted models and save updates to database
-  def update_remove_metadata_for_supported
-    update_increment = 2
-    left_lower_bound = self.support_hierarchy_left
-    root_id = self.class.get_support_hierarchy_root_id(self)
-    update_remove_metadata(update_increment, left_lower_bound, root_id)
-  end
-
-#  ####################################################################################
-#  #### increment meta data for all impacted models and save updates to database
-#  def increment_metadata(sup)
-#    
-#    #### determine update increment and hierarchy root
-#    root_id = self.class.get_support_hierarchy_root_id(self)
-#    sup_root_id = self.class.get_support_hierarchy_root_id(sup)
-#    sup.supporter_id.nil? ? sup_supporter_id = sup.id : sup_supporter_id = sup.supporter_id
-#    update_increment = sup.support_hierarchy_right
-#    sup_update_increment = self.support_hierarchy_left
-#    
-##    p sup_supporter_id
-##    p sup_root_id
-##    
-#    #### update meta data for all affected models
-#    self.class.update_all("support_hierarchy_left = (support_hierarchy_left + #{update_increment})", "support_hierarchy_left > #{self.support_hierarchy_left} AND support_hierarchy_root_id = #{root_id}") 
-#    self.class.update_all("support_hierarchy_right = (support_hierarchy_right + #{update_increment})", "support_hierarchy_right > #{self.support_hierarchy_left + 1} AND support_hierarchy_root_id = #{root_id}") 
-#
-#    ### update subtree
-#    self.class.update_all("support_hierarchy_left = (support_hierarchy_left + #{sup_update_increment})", "support_hierarchy_root_id = #{sup_root_id} AND supporter_id = #{sup_supporter_id}") 
-#    self.class.update_all("support_hierarchy_right = (support_hierarchy_right + #{sup_update_increment})", "support_hierarchy_root_id = #{sup_root_id} AND supporter_id = #{sup_supporter_id}") 
-#    self.class.update_all("support_hierarchy_root_id = #{root_id}", "support_hierarchy_root_id = #{sup_root_id} AND supporter_id = #{sup_supporter_id}") 
-#    
-#    ### update new supported metadata
-#    sup.support_hierarchy_left += sup_update_increment
-#    sup.support_hierarchy_right += sup_update_increment
-#    sup.support_hierarchy_root_id = root_id
-#    sup.save
-#    
-#    ### update model meta data and save
-#    self.support_hierarchy_right += update_increment
-#    self.save
-#    
-#    ### if model is not hierahcy root also update root
-#    unless root_id.eql?(self.id)
-#      hierarchy_root = AlnResource.find(root_id)
-#      hierarchy_root.support_hierarchy_right += update_increment
-#      hierarchy_root.save
-#    end 
-#    
-#  end
-#
-#  ####################################################################################
-#  def decrement_metadata
-#
-#    #### determine update increment and hierarchy root
-#    self.support_hierarchy_root_id.nil? ? root_id = self.id : root_id = self.support_hierarchy_root_id
-#    update_increment = 2
-#
-#    #### update meta data for all affected models
-#    self.class.update_all("support_hierarchy_left = (support_hierarchy_left - #{update_increment})", "support_hierarchy_left > #{self.support_hierarchy_left + 1} AND support_hierarchy_root_id = #{root_id}") 
-#    self.class.update_all("support_hierarchy_right = (support_hierarchy_right - #{update_increment})", "support_hierarchy_right > #{self.support_hierarchy_left + 1} AND support_hierarchy_root_id = #{root_id}") 
-#    
-#    ### if model is not hierahcy root also update root
-#    unless root_id.eql?(self.id)
-#      hierarchy_root = AlnResource.find(root_id)
-#      hierarchy_root.support_hierarchy_right -= update_increment
-#      hierarchy_root.save
-#    end 
-#
-#    ### destroy supported
-#    self.to_descendant.destroy
-#       
-#  end
-
   
   ####################################################################################
   #### return model aln_resource supported
