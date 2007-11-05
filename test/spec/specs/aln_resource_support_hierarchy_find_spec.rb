@@ -107,7 +107,7 @@ end
 #########################################################################################################
 describe "queries for directly supported from supporter", :shared => true do
 
-  it "should find all supported of specified return models as aln_reasource" do 
+  it "should find all supported and return models as aln_reasource" do 
     @root.supported.to_array.should have_attributes_with_values([model_data[:aln_termination_resource_supported_1], model_data[:aln_termination_resource_supported_2], model_data[:aln_resource_supported_1], model_data[:aln_resource_supported_2]])
     @root.supported.to_array.should be_class(AlnResource)
   end
@@ -118,19 +118,19 @@ describe "queries for directly supported from supporter", :shared => true do
     mod.should be_class(AlnTermination)
   end
 
-  it "should find first supported of specified model that matches a specified condition and return models as specified class" do 
+  it "should find first supported of specified model that matches a specified condition" do 
     mod = @root.find_supported_by_model(AlnTermination, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_2]['resource_name']}'")
     mod.should have_attributes_with_values(model_data[:aln_termination_supported_2])
     mod.should be_class(AlnTermination)
   end
 
-  it "should find all supported of specified model and return models as specified type" do 
+  it "should find all supported of specified model" do 
     mods = @root.find_supported_by_model(AlnTermination, :all)
     mods.should have_attributes_with_values([model_data[:aln_termination_supported_1], model_data[:aln_termination_supported_2]])
     mods.should be_class(AlnTermination)
   end
 
-  it "should find all supported of specified model that matche a specified condition and return models as specified class" do 
+  it "should find all supported of specified model that matches a specified condition " do 
     mods = @root.find_supported_by_model(AlnTermination, :all, :conditions => "aln_terminations.directionality = '#{model_data[:aln_termination_supported_2]['directionality']}'")
     mods.should have_attributes_with_values([model_data[:aln_termination_supported_1], model_data[:aln_termination_supported_2]])
     mods.should be_class(AlnTermination)
@@ -179,14 +179,14 @@ end
 #########################################################################################################
 describe "queries for supported within hierachy from hierarchy root when hiearchy depth is greater than 1", :shared => true  do
 
-  it "should find first supported for aln_resource models" do
+  it "should find first supported for aln_resource model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first) 
     mod.support_hierarchy_left.should eql(24)
     mod.support_hierarchy_right.should eql(41)
     mod.class.should eql(AlnResource)
   end
 
-  it "should find first supported matching specified condition for aln_resource models" do
+  it "should find first supported matching specified condition for aln_resource model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'") 
     mod.support_hierarchy_left.should eql(20)
     mod.support_hierarchy_right.should eql(21)
@@ -212,17 +212,17 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
     verify_hierarchy_metadata(mods, @root, AlnResource, model_data[:find_by_model_aln_resource_depth_greater_than_1])
   end
 
-  it "should find all supported matching specified condition for aln_resource models" do
+  it "should find all supported matching specified condition for aln_resource model" do
     mods = @root.find_in_support_hierarchy_by_model(AlnResource, :all, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'") 
     verify_hierarchy_metadata(mods, @root, AlnResource, model_data[:find_by_model_with_condition_aln_resource_depth_greater_1])
   end
 
-  it "should find all supported of the specified aln_resource descendant models" do 
+  it "should find all supported of the specified aln_resource descendant model" do 
     mods = @root.find_in_support_hierarchy_by_model(AlnTermination, :all)
     verify_hierarchy_metadata(mods, @root, AlnTermination, model_data[:find_by_model_aln_termination_depth_greater_than_1])
   end
 
-  it "should find all supported matching specified condition for aln_resource descendant models" do
+  it "should find all supported matching specified condition for aln_resource descendant model" do
     mods = @root.find_in_support_hierarchy_by_model(AlnTermination, :all, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_2]['resource_name']}'") 
     verify_hierarchy_metadata(mods, @root, AlnTermination, model_data[:find_by_model_with_condition_aln_termination_depth_greater_1])
   end
@@ -232,14 +232,14 @@ end
 ##########################################################################################################
 describe "queries for supported within hierachy from hierarchy root when hiearchy depth is 1", :shared => true  do
 
-  it "should find first supported for aln_resource models" do
+  it "should find first supported for aln_resource model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first) 
     mod.support_hierarchy_left.should eql(8)
     mod.support_hierarchy_right.should eql(9)
     mod.class.should eql(AlnResource)
   end
 
-  it "should find first supported matching specified condition for aln_resource models" do
+  it "should find first supported matching specified condition for aln_resource model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'") 
     mod.support_hierarchy_left.should eql(4)
     mod.support_hierarchy_right.should eql(5)
@@ -253,7 +253,7 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
     mod.class.should eql(AlnTermination)
   end
 
-  it "should find first supported matching specified condition for aln_resource models" do
+  it "should find first supported matching specified condition for aln_resource model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnTermination, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_2]['resource_name']}'") 
     mod.support_hierarchy_left.should eql(6)
     mod.support_hierarchy_right.should eql(7)
@@ -265,7 +265,7 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
     verify_hierarchy_metadata(mods, @root, AlnResource, model_data[:find_by_model_aln_resource_depth_1])
   end
 
-  it "should find all supported matching specified condition for aln_resource models" do
+  it "should find all supported matching specified condition for aln_resource model" do
     mods = @root.find_in_support_hierarchy_by_model(AlnResource, :all, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'") 
     verify_hierarchy_metadata(mods, @root, AlnResource, model_data[:find_by_model_with_condition_aln_resource_depth_1])
   end
@@ -283,9 +283,9 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
 end
 
 ##########################################################################################################
-describe "queries for supported within hierachy from hierarchy root and supported when hiearchy depth is 1 and database contains multiple hierarchy roots", :shared => true  do
+describe "queries for supported within hierachy from hierarchy root when hiearchy depth is 1 and database contains multiple hierarchy roots", :shared => true  do
 
-  it "should find first supported for aln_resource models" do
+  it "should find first supported for aln_resource model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first) 
     mod.support_hierarchy_left.should eql(24)
     mod.support_hierarchy_right.should eql(41)
@@ -293,7 +293,7 @@ describe "queries for supported within hierachy from hierarchy root and supporte
     mod.class.should eql(AlnResource)
   end
 
-  it "should find first supported matching specified condition for aln_resource models" do
+  it "should find first supported matching specified condition for aln_resource model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'") 
     mod.support_hierarchy_left.should eql(20)
     mod.support_hierarchy_right.should eql(21)
@@ -322,17 +322,17 @@ describe "queries for supported within hierachy from hierarchy root and supporte
     verify_hierarchy_metadata(mods, @root, AlnResource, model_data[:find_by_model_aln_resource_depth_greater_than_1])
   end
 
-  it "should find all supported matching specified condition for aln_resource models" do
+  it "should find all supported matching specified condition for aln_resource model" do
     mods = @root.find_in_support_hierarchy_by_model(AlnResource, :all, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'") 
     verify_hierarchy_metadata(mods, @root, AlnResource, model_data[:find_by_model_with_condition_aln_resource_depth_greater_1])
   end
 
-  it "should find all supported of the specified aln_resource descendant models" do 
+  it "should find all supported of the specified aln_resource descendant model" do 
     mods = @root.find_in_support_hierarchy_by_model(AlnTermination, :all)
     verify_hierarchy_metadata(mods, @root, AlnTermination, model_data[:find_by_model_aln_termination_depth_greater_than_1])
   end
 
-  it "should find all supported matching specified condition for aln_resource descendant models" do
+  it "should find all supported matching specified condition for aln_resource descendant model" do
     mods = @root.find_in_support_hierarchy_by_model(AlnTermination, :all, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_2]['resource_name']}'") 
     verify_hierarchy_metadata(mods, @root, AlnTermination, model_data[:find_by_model_with_condition_aln_termination_depth_greater_1])
   end
@@ -403,7 +403,7 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
     @control_root.destroy
   end
   
-  it_should_behave_like "queries for supported within hierachy from hierarchy root and supported when hiearchy depth is 1 and database contains multiple hierarchy roots"
+  it_should_behave_like "queries for supported within hierachy from hierarchy root when hiearchy depth is 1 and database contains multiple hierarchy roots"
   
 end
 
