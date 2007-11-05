@@ -26,7 +26,7 @@ describe "queries for root of support hierarcy" do
     root_chk.class.should be(AlnResource)
     root_chk.should have_attributes_with_values(model_data[:aln_resource])
     root_chk.supporter.should be_nil
-    root_chk.destroy
+    root_chk.to_descendant.destroy
   end
 
   it "should find root when root is an aln_resource descendant model" do 
@@ -37,7 +37,7 @@ describe "queries for root of support hierarcy" do
     root_chk.class.should be(AlnTermination)
     root_chk.should have_attributes_with_values(model_data[:aln_termination])
     root_chk.supporter.should be_nil
-    root_chk.destroy
+    root_chk.to_descendant.destroy
   end
 
   it "should find root as aln_resource when root is an aln_resource descendant model" do 
@@ -48,7 +48,7 @@ describe "queries for root of support hierarcy" do
     root_chk.class.should be(AlnResource)
     root_chk.to_descendant.should have_attributes_with_values(model_data[:aln_termination])
     root_chk.supporter.should be_nil
-    root_chk.destroy
+    root_chk.to_descendant.destroy
   end
 
   it "should find all roots when multiple aln_resource roots exist" do 
@@ -62,7 +62,7 @@ describe "queries for root of support hierarcy" do
       r.should have_attributes_with_values(model_data[:aln_resource])
       r.supporter.should be_nil
       r.class.should be(AlnResource)
-      r.destroy
+      r.to_descendant.destroy
     end
   end
 
@@ -80,7 +80,7 @@ describe "queries for root of support hierarcy" do
       r.should have_attributes_with_values(model_data[:aln_connection_resource]) if r.descendant.class.eql?(AlnConnection)
       r.supporter.should be_nil
       r.class.should be(AlnResource)
-      r.destroy
+      r.to_descendant.destroy
     end
   end
 
@@ -97,9 +97,9 @@ describe "queries for root of support hierarcy" do
       r.should have_attributes_with_values(model_data[:aln_termination])
       r.supporter.should be_nil
       r.class.should be(AlnTermination)
-      r.destroy
+      r.to_descendant.destroy
     end
-    root_con.destroy
+    root_con.to_descendant.destroy
   end
 
 end
@@ -118,19 +118,19 @@ describe "queries for directly supported from supporter", :shared => true do
     mod.should be_class(AlnTermination)
   end
 
-  it "should find first supported of specified model type that matches a specified attribute and return models as specified type" do 
+  it "should find first supported of specified model that matches a specified condition and return models as specified class" do 
     mod = @root.find_supported_by_model(AlnTermination, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_2]['resource_name']}'")
     mod.should have_attributes_with_values(model_data[:aln_termination_supported_2])
     mod.should be_class(AlnTermination)
   end
 
-  it "should find all supported of specified model type and return models as specified type" do 
+  it "should find all supported of specified model and return models as specified type" do 
     mods = @root.find_supported_by_model(AlnTermination, :all)
     mods.should have_attributes_with_values([model_data[:aln_termination_supported_1], model_data[:aln_termination_supported_2]])
     mods.should be_class(AlnTermination)
   end
 
-  it "should find all supported of specified model type that matches a specified condition and return models as specified type" do 
+  it "should find all supported of specified model that matche a specified condition and return models as specified class" do 
     mods = @root.find_supported_by_model(AlnTermination, :all, :conditions => "aln_terminations.directionality = '#{model_data[:aln_termination_supported_2]['directionality']}'")
     mods.should have_attributes_with_values([model_data[:aln_termination_supported_1], model_data[:aln_termination_supported_2]])
     mods.should be_class(AlnTermination)

@@ -148,9 +148,30 @@ describe "update of preordered tree meta data by adding a supported with no supp
 end
 
 ##########################################################################################################
-describe "update of preordered tree meta data when adding a supported that is a support hierarchy root", :shared => true do
+describe "update of preordered tree meta data when adding a supported that may be a support hierarchy root", :shared => true do
 
-  it "should modify target hierarchy root and added support hierachy if target hierarchy consists only of a root" do
+  it "should modify target hierarchy root and added supported if target and supported hierarchy consists only of a root" do
+
+    #### verify roots
+    @root.save
+    verify_root(@root, 1, 2)
+    @root2.save
+    verify_root(@root2, 1, 2)
+    
+    #### add subtree to root
+    @root.add_support_hierarchy(@root2)
+    
+    #### verify metadata update    
+    verify_root(@root, 1, 4)
+    verify_supported(@root, @root, @root2, 2, 3)
+    
+    #### clean up
+    @root.destroy
+    @root2.destroy
+    
+  end
+
+  it "should modify target hierarchy root and added support hierachy if target hierarchy consists only of a root and supported hierarchy has supported" do
 
     #### build added hierarchy
     add_first_supported(@root2, @s21)
@@ -183,7 +204,7 @@ describe "update of preordered tree meta data when adding a supported that is a 
     
   end
 
-  it "should modify target hierarchy and added support hierachy if target hierarchy consists of root with supported" do
+  it "should modify target hierarchy and added support hierachy if target hierarchy consists of root with supported and supported hierarchy has supported" do
 
     #### build added hierarchy
     add_first_supported(@root2, @s21)
@@ -290,12 +311,97 @@ describe "update of preordered tree meta data when adding a supported that is a 
 end
 
 ##########################################################################################################
-describe "update of preordered tree meta data when removing a supported that is a support hierarchy root", :shared => true do
+describe "update of preordered tree meta data when removing a supported that may be a support hierarchy root", :shared => true do
+
+  it "should modify target hierarchy root and added supported if target and supported hierarchy consists only of a root" do
+
+    #### verify roots
+    add_first_supported(@root, @root2)
+    verify_root(@root, 1, 4)
+    verify_supported(@root, @root, @root2, 2, 3)
+    
+    #### detach subtree from root
+    @root2.detach_support_hierarchy
+    
+    #### verify metadata update    
+    verify_root(@root, 1, 2)
+    verify_root(@root2, 1, 2)
+    
+    #### clean up
+    @root.destroy
+    @root2.destroy
+    
+  end
 
   it "should modify target hierarchy root and removed support hierachy when target hiearchy consists only of a root" do
+
+    #### build hierarchy
+    add_first_supported(@root, @root2)
+    add_supported(@root2, @s21)
+    add_supported(@root2, @s22)
+    add_supported(@root2, @s23)
+
+    #### verify hierarchy
+    verify_root(@root, 1, 10)
+    verify_supported(@root, @root, @root2, 2, 9)
+    verify_supported(@root, @root2, @s21, 7, 8)
+    verify_supported(@root, @root2, @s22, 5, 6)
+    verify_supported(@root, @root2, @s23, 3, 4)
+
+    #### detach hiearachy
+    @root2.detach_support_hierarchy
+        
+    #### verify metadata update    
+    verify_root(@root, 1, 2)
+    verify_root(@root2, 1, 8)
+    verify_supported(@root2, @root2, @s21, 6, 7)
+    verify_supported(@root2, @root2, @s22, 4, 5)
+    verify_supported(@root2, @root2, @s23, 2, 3)
+    
+    #### clean up
+    @root.destroy
+    @root2.destroy
+
   end
 
   it "should modify target hierarchy root and removed support hierachy when target hiearchy consists of a root with supported" do
+
+    #### build hierarchy
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
+    add_supported(@root, @s3)
+    add_supported(@s3, @root2)
+    add_supported(@root2, @s21)
+    add_supported(@root2, @s22)
+    add_supported(@root2, @s23)
+
+    #### verify hierarchy
+    verify_root(@root, 1, 16)
+    verify_supported(@root, @root, @s1, 14, 15)
+    verify_supported(@root, @root, @s2, 12, 13)
+    verify_supported(@root, @root, @s3, 2, 11)
+    verify_supported(@root, @s3, @root2, 3, 10)
+    verify_supported(@root, @root2, @s21, 8, 9)
+    verify_supported(@root, @root2, @s22, 6, 7)
+    verify_supported(@root, @root2, @s23, 4, 5)
+
+    #### detach hiearachy
+    @root2.detach_support_hierarchy
+        
+    #### verify metadata update    
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 4, 5)
+    verify_supported(@root, @root, @s3, 2, 3)
+    verify_root(@root2, 1, 8)
+    verify_supported(@root2, @root2, @s21, 6, 7)
+    verify_supported(@root2, @root2, @s22, 4, 5)
+    verify_supported(@root2, @root2, @s23, 2, 3)
+    
+    #### clean up
+    @root.destroy
+    @root2.destroy
+
   end
 
 end
@@ -570,7 +676,52 @@ describe "update of preordered tree meta data for all model destroy methods", :s
     @root.destroy
 
   end
+
+  it "should modify hierarchy metadata when destroy_support_hierarchy is called" do
+
+    #### build hierarchy
+    add_first_supported(@root, @s1)
+    add_supported(@root, @s2)
+    add_supported(@root, @s3)
+    add_supported(@s3, @root2)
+    add_supported(@root2, @s21)
+    add_supported(@root2, @s22)
+    add_supported(@root2, @s23)
+
+    #### verify hierarchy
+    verify_root(@root, 1, 16)
+    verify_supported(@root, @root, @s1, 14, 15)
+    verify_supported(@root, @root, @s2, 12, 13)
+    verify_supported(@root, @root, @s3, 2, 11)
+    verify_supported(@root, @s3, @root2, 3, 10)
+    verify_supported(@root, @root2, @s21, 8, 9)
+    verify_supported(@root, @root2, @s22, 6, 7)
+    verify_supported(@root, @root2, @s23, 4, 5)
+
+    #### destroy hiearachy
+    @root2.destroy_support_hierarchy
+
+    #### verify database changes
+    @root.should persist   
+    @s1.should persist   
+    @s2.should persist   
+    @s3.should persist   
+    @root2.should_not persist   
+    @s21.should_not persist   
+    @s22.should_not persist   
+    @s23.should_not persist   
+        
+    #### verify metadata update    
+    verify_root(@root, 1, 8)
+    verify_supported(@root, @root, @s1, 6, 7)
+    verify_supported(@root, @root, @s2, 4, 5)
+    verify_supported(@root, @root, @s3, 2, 3)
     
+    #### clean up
+    @root.destroy
+
+  end
+      
 end
 
 ###########################################################################################################
@@ -632,7 +783,9 @@ describe "updates to preordered tree meta data for aln_resource supported and al
 
   it_should_behave_like "update of preordered tree meta data for all model destroy methods"
 
-  it_should_behave_like "update of preordered tree meta data when adding a supported that is a support hierarchy root"
+  it_should_behave_like "update of preordered tree meta data when adding a supported that may be a support hierarchy root"
+  
+  it_should_behave_like "update of preordered tree meta data when removing a supported that may be a support hierarchy root"
   
 end
 
@@ -666,7 +819,9 @@ describe "updates to preordered tree meta data for aln_resource descendant suppo
 
   it_should_behave_like "update of preordered tree meta data for all model destroy methods"
 
-  it_should_behave_like "update of preordered tree meta data when adding a supported that is a support hierarchy root"
+  it_should_behave_like "update of preordered tree meta data when adding a supported that may be a support hierarchy root"
+
+  it_should_behave_like "update of preordered tree meta data when removing a supported that may be a support hierarchy root"
   
 end
 

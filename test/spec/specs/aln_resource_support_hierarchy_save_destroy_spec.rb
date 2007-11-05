@@ -37,7 +37,7 @@ describe "supporter model and supported model lifecyle operations relative to su
     @root.destroy_supported_by_model(@s1.class, :first, :conditions => "aln_resources.resource_name = '#{@s1.resource_name}'")
     @root.should persist 
     @s1.should_not persist  
-    @root.supported.should_not include(AlnResource.to_aln_resource(@s1)) 
+    @root.supported(true).should_not include(AlnResource.to_aln_resource(@s1)) 
     @root.supported.should_not be_empty 
     @s2.should persist   
     @root.destroy
@@ -53,7 +53,7 @@ describe "supporter model and supported model lifecyle operations relative to su
     @root.should persist 
     @s1.should_not persist   
     @s2.should_not persist   
-    @root.supported.should_not include(AlnResource.to_aln_resource(@s1)) 
+    @root.supported(true).should_not include(AlnResource.to_aln_resource(@s1)) 
     @root.supported.should_not include(AlnResource.to_aln_resource(@s2)) 
     @root.supported.should_not be_empty 
     @s3.should persist   
@@ -71,7 +71,7 @@ describe "supporter model and supported model lifecyle operations relative to su
     @s1.should_not persist   
     @s2.should_not persist   
     @s3.should_not persist   
-    @root.supported.should_not include(AlnResource.to_aln_resource(@s1)) 
+    @root.supported(true).should_not include(AlnResource.to_aln_resource(@s1)) 
     @root.supported.should_not include(AlnResource.to_aln_resource(@s2)) 
     @root.supported.should_not include(AlnResource.to_aln_resource(@s3)) 
     @root.supported.should be_empty 
@@ -81,7 +81,7 @@ describe "supporter model and supported model lifecyle operations relative to su
 end
 
 #########################################################################################################
-describe "supporter model and supported model lifecyle relative to supporter model supporter aln_resource is root" do
+describe "supporter model and supported model lifecyle relative to supporter model when supporter aln_resource is root" do
 
   before(:each) do
     @root = AlnResource.new(model_data[:aln_resource])
@@ -95,7 +95,7 @@ describe "supporter model and supported model lifecyle relative to supporter mod
 end
 
 #########################################################################################################
-describe "supporter model and supported model lifecyle relative to supporter model supporter aln_resource descendant is root" do
+describe "supporter model and supported model lifecyle relative to supporter model supporter when aln_resource descendant is root" do
 
   before(:each) do
     @root = AlnTermination.new(model_data[:aln_termination])
@@ -124,7 +124,7 @@ describe "supporter model and supported model lifecyle operations relative to su
 end
 
 ##########################################################################################################
-describe "supporter model and supported model lifecyle relative to aln_resource supported" do
+describe "supporter model and supported model lifecyle operations relative to aln_resource supported" do
 
   before(:each) do
     @root = AlnResource.new(model_data[:aln_resource])
@@ -137,7 +137,7 @@ describe "supporter model and supported model lifecyle relative to aln_resource 
 end
 
 ##########################################################################################################
-describe "supporter model and supported model lifecyle relative to aln_resource descendent supported" do
+describe "supporter model and supported model lifecyle operations relative to aln_resource descendent supported" do
 
   before(:each) do
     @root = AlnTermination.new(model_data[:aln_termination])
@@ -150,7 +150,7 @@ describe "supporter model and supported model lifecyle relative to aln_resource 
 end
 
 #########################################################################################################
-describe "support hierarchy destroy when hierarchy depth is greater than 1", :shared => true do
+describe "support hierarchy destroy operations when hierarchy depth is greater than 1", :shared => true do
 
   def build_hierarchy
     @root << [@s1, @s2]
@@ -180,7 +180,7 @@ describe "support hierarchy destroy when hierarchy depth is greater than 1", :sh
     @s21.should_not persist
   end
 
-  it "should be possible to destroy entire hierarchy and root from hierarchy root" do
+  it "should destroy entire hierarchy and root from hierarchy root" do
     build_hierarchy
     verify_persistence
     @root.destroy
@@ -188,15 +188,15 @@ describe "support hierarchy destroy when hierarchy depth is greater than 1", :sh
     verify_nonpersistence
   end
 
-  it "should destroy entire hierarchy and root when destroy method that updates hierarchy metadata is called from hierarchy root" do
-#    build_hierarchy
-#    verify_persistence
-#    @root.destroy_support_hierarchy
-#    @root.should_not persist
-#    verify_nonpersistence
+  it "should destroy entire hierarchy and root from hierarchy root for destroy method that updates support hierarchy metadata" do
+    build_hierarchy
+    verify_persistence
+    @root.destroy_support_hierarchy
+    @root.should_not persist
+    verify_nonpersistence
   end
 
-  it "should be possible to destroy entire hierarchy but not root from hierarchy root" do
+  it "should destroy entire hierarchy but not root from hierarchy root" do
     build_hierarchy
     verify_persistence
     @root.destroy_all_supported
@@ -208,7 +208,7 @@ describe "support hierarchy destroy when hierarchy depth is greater than 1", :sh
 end
 
 #########################################################################################################
-describe "support hierarchy lifecycle for aln_resource root when hierarchy depth is greater than 1" do
+describe "support hierarchy lifecycle operations for aln_resource root when hierarchy depth is greater than 1" do
 
   before(:each) do
     @root = AlnResource.new(model_data[:aln_resource])
@@ -221,12 +221,12 @@ describe "support hierarchy lifecycle for aln_resource root when hierarchy depth
     @s21 = AlnResource.new(model_data[:aln_resource_supported_2])
   end
 
-  it_should_behave_like "support hierarchy destroy when hierarchy depth is greater than 1"
+  it_should_behave_like "support hierarchy destroy operations when hierarchy depth is greater than 1"
 
 end
 
 #########################################################################################################
-describe "support hierarchy lifecycle for aln_resource descendant root when hierarchy depth is greater than 1" do
+describe "support hierarchy lifecycle operations for aln_resource descendant root when hierarchy depth is greater than 1" do
 
   before(:each) do
     @root = AlnTermination.new(model_data[:aln_termination])
@@ -239,7 +239,7 @@ describe "support hierarchy lifecycle for aln_resource descendant root when hier
     @s21 = AlnTermination.new(model_data[:aln_termination_supported_2])
   end
 
-  it_should_behave_like "support hierarchy destroy when hierarchy depth is greater than 1"
+  it_should_behave_like "support hierarchy destroy operations when hierarchy depth is greater than 1"
 
 end
 
