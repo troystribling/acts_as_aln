@@ -4,11 +4,11 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "aln_termination inheritance associations" do
 
   it "should declare descendant association" do 
-    AlnTermination.new().should declare_descendant_association
+    AlnTermination.should declare_descendant_association
   end
 
   it "should have aln_resource as ancestor association" do 
-    AlnTermination.new().should be_descendant_of(AlnResource)
+    AlnTermination.should be_descendant_of(AlnResource)
   end
 
 end
@@ -17,7 +17,24 @@ end
 describe "aln_termination connection associations" do
 
   it "should be able to be in a single connection" do 
-    AlnTermination.new().should respond_to(:aln_connection_id)
+    AlnTermination.should have_attribute(:aln_connection_id, :integer)
+  end
+
+end
+
+##########################################################################################################
+describe "attributes supported by aln_termination models" do
+
+  it "should include network identifier" do 
+    AlnTermination.should have_attribute(:network_id, :integer)
+  end
+
+  it "should include layer identifier" do 
+    AlnTermination.should have_attribute(:layer_id, :integer)
+  end
+
+  it "should include path identifier" do 
+    AlnTermination.should have_attribute(:path_id, :integer)
   end
 
 end

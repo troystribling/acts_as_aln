@@ -20,12 +20,14 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
       t.column :aln_connection_descendant_id, :integer
       t.column :aln_connection_descendant_type, :string
       t.column :directionality, :string
+      t.column :network_id, :integer   
     end
   
     create_table :aln_terminations, :force => true, :primary_key => :aln_termination_id do |t|
       t.column :aln_termination_descendant_id, :integer
       t.column :aln_termination_descendant_type, :string
       t.column :aln_connection_id, :integer   
+      t.column :network_id, :integer   
       t.column :directionality, :string
       t.column :direction, :string
     end
@@ -47,11 +49,11 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
   
     #############################################################################################################
     #### application unit test objects
-    create_table :app_mains, :force => true, :primary_key => :process_id do |t|
+    create_table :application_mains, :force => true, :primary_key => :application_main_id do |t|
       t.column :pid, :integer
     end
   
-    create_table :app_main_components, :force => true, :primary_key => :process_component_id do |t|
+    create_table :application_components, :force => true, :primary_key => :application_component_id do |t|
     end
   
     #############################################################################################################

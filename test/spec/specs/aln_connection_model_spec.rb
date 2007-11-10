@@ -4,11 +4,11 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "aln_connection inheritance associations" do
 
   it "should declare descendant association" do 
-    AlnConnection.new().should declare_descendant_association
+    AlnConnection.should declare_descendant_association
   end
 
   it "should have aln_resource ancestor association" do 
-    AlnConnection.new().should be_descendant_of(AlnResource)
+    AlnConnection.should be_descendant_of(AlnResource)
   end
 
 end
@@ -17,10 +17,28 @@ end
 describe "aln_connection termination associations" do
 
   it "should have many terminations" do 
-    AlnConnection.new().should respond_to(:aln_terminations)
+    AlnConnection.should have_attribute(:aln_terminations, :integer)
   end
 
 end
+
+##########################################################################################################
+describe "attributes supported by aln_connection models" do
+
+  it "should include network identifier" do 
+    AlnConnection.should have_attribute(:network_id, :integer)
+  end
+
+  it "should include layer identifier" do 
+    AlnConnection.should have_attribute(:layer_id, :integer)
+  end
+
+  it "should include path identifier" do 
+    AlnConnection.should have_attribute(:path_id, :integer)
+  end
+
+end
+
 
 #########################################################################################################
 describe "aln_connection directionality attribute" do
