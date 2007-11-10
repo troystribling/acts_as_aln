@@ -17,7 +17,7 @@ end
 describe "aln_connection termination associations" do
 
   it "should have many terminations" do 
-    AlnConnection.should have_attribute(:aln_terminations, :integer)
+    AlnConnection.new.should have_method(:aln_terminations)
   end
 
 end
