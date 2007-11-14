@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 #########################################################################################################
-describe "assignement of network ID for two terminations when a support relationship is established where the terminations are not involved in a connection or other support relations", :shared => true do
+describe "assignement of network ID for terminations when a support relationship is established where the terminations are not involved in a connection or other support relations with terminations", :shared => true do
 
   it "should be nil for termination prior to establishment of support relationship" do 
   end
@@ -12,7 +12,7 @@ describe "assignement of network ID for two terminations when a support relation
 end
 
 #########################################################################################################
-describe "assignement of network ID for two terminations when a support relationship is established where the terminations are not involved in a connection but either or both may be in other prior support relations", :shared => true do
+describe "assignement of network ID for terminations when a support relationship is established where the terminations are not involved in a connection but either or both may be in other prior support relations with terminations", :shared => true do
 
   it "should be aln_termination_id of supporter when supported is not in a prior support relationship and supporter is in a prior supporting relationship" do 
   end
@@ -26,7 +26,7 @@ describe "assignement of network ID for two terminations when a support relation
 end
 
 #########################################################################################################
-describe "assignement of network ID for two terminations when a support relationship is established if either or both terminations are in a connection but neither are in other prior support relations", :shared => true do
+describe "assignement of network ID for terminations when a support relationship is established if either or both terminations are in a connection but neither are in other prior support relations with terminations", :shared => true do
 
   it "should be aln_termination_id of supporter when supporter is not in a prior connection and supported is in a prior connection" do 
   end
@@ -40,7 +40,7 @@ describe "assignement of network ID for two terminations when a support relation
 end
 
 #########################################################################################################
-describe "assignement of network ID for two terminations when a support relationship is established if either or both terminations are in a connection and either are in other prior support relations", :shared => true do
+describe "assignement of network ID for terminations when a support relationship is established if either or both terminations are in a connection and either are in other prior support relations with terminations", :shared => true do
 
   it "should be aln_termination_id of supporter when supporter is not in a prior connection or support relationship and supported is in a prior connection and support relationship" do 
   end
@@ -66,7 +66,7 @@ describe "assignement of network ID for two terminations when a support relation
 end
 
 #########################################################################################################
-describe "assignement of network ID for terminations when added to a connection where the terminations are not involved in other prior connections or other prior support relations", :shared => true do
+describe "assignement of network ID terminations when added to a connection where the terminations are not involved in other prior connections or other prior support relations", :shared => true do
 
   it "should be nil for termination prior to establishing connection" do 
   end
@@ -80,7 +80,7 @@ describe "assignement of network ID for terminations when added to a connection 
 end
 
 #########################################################################################################
-describe "assignement of network ID for terminations when added to a connection if either or both terminations are involved in a connection but neither are in other prior support relations", :shared => true do
+describe "assignement of network ID terminations when added to a connection if either or both terminations are involved in a connection but neither are in other prior support relations with terminations", :shared => true do
 
   it "should be network ID of first termination in connection, which has a prior connection, as termination without connection is added to connection" do 
   end
@@ -94,7 +94,7 @@ describe "assignement of network ID for terminations when added to a connection 
 end
 
 #########################################################################################################
-describe "assignement of network ID for terminations when added to a connection if either or both terminations are involved in a connection and either or both are in other prior support relations", :shared => true do
+describe "assignement of network ID terminations when added to a connection if either or both terminations are involved in a connection and either or both are in other prior support relations with terminations", :shared => true do
 
   it "should be network ID of termination, which has a supported but no prior connection, as termination is added to connection that contains no terminations" do 
   end
