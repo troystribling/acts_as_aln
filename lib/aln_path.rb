@@ -1,4 +1,4 @@
-class AlnConnection < ActiveRecord::Base
+class AlnPath < ActiveRecord::Base
 
    ###############################################################
    #### declare descendant associations and ancestor association

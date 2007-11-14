@@ -10,7 +10,7 @@ class AlnTermination < ActiveRecord::Base
    ###############################################################
    #### declare terminates association with aln_connection
    ###############################################################
-   belongs_to :aln_connection  
+   belongs_to :aln_termination_set  
 
    ###############################################################
    #### attribute validators
@@ -21,7 +21,7 @@ class AlnTermination < ActiveRecord::Base
                           :allow_nil => true
 
    validates_inclusion_of :direction,
-                          :in => ['client', 'server', 'peer'],
-                          :message => "should be client, server or peer",
+                          :in => ['client', 'server'],
+                          :message => "should be client or server",
                           :allow_nil => true
 end

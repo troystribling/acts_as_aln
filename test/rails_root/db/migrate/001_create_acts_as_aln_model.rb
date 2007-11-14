@@ -16,24 +16,30 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
       t.column :resource_name, :string
     end
    
+    create_table :aln_termination_sets, :force => true, :primary_key => :aln_termination_set_id do |t|
+      t.column :aln_termination_set_descendant_id, :integer
+      t.column :aln_termination_set_descendant_type, :string
+    end
+  
+    create_table :aln_paths, :force => true, :primary_key => :aln_path_id do |t|
+      t.column :aln_path_descendant_id, :integer
+      t.column :aln_path_descendant_type, :string
+    end
+  
     create_table :aln_connections, :force => true, :primary_key => :aln_connection_id do |t|
       t.column :aln_connection_descendant_id, :integer
       t.column :aln_connection_descendant_type, :string
-      t.column :directionality, :string
-      t.column :network_id, :integer   
-      t.column :path_id, :integer   
-      t.column :layer_id, :integer   
     end
   
     create_table :aln_terminations, :force => true, :primary_key => :aln_termination_id do |t|
       t.column :aln_termination_descendant_id, :integer
       t.column :aln_termination_descendant_type, :string
       t.column :aln_connection_id, :integer   
+      t.column :aln_path_id, :integer   
+      t.column :network_id, :integer   
+      t.column :layer_id, :integer   
       t.column :directionality, :string
       t.column :direction, :string
-      t.column :network_id, :integer   
-      t.column :path_id, :integer   
-      t.column :layer_id, :integer   
     end
   
     #############################################################################################################
@@ -70,22 +76,12 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
       t.column :ip_addr, :string
     end
   
-    create_table :ip_connections, :force => true, :primary_key => :ip_connection_id do |t|
-    end
-  
     create_table :tcp_socket_terminations, :force => true, :primary_key => :ip_termination_id do |t|
+      t.column :port, :integer
     end
   
-    create_table :tcp_socket_connections, :force => true, :primary_key => :ethernet_connection_id do |t|
-      t.column :port, :integer
-      t.column :foreign_addr, :string
-    end
-      
     create_table :ethernet_terminations, :force => true, :primary_key => :ethernet_termination_id do |t|
       t.column :mac_addr, :string
-    end
-  
-    create_table :ethernet_connections, :force => true, :primary_key => :ethernet_connection_id do |t|
     end
   
     #############################################################################################################
@@ -97,9 +93,6 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
     create_table :user_terminations, :force => true, :primary_key => :user_termination_id do |t|
     end
   
-    create_table :user_connections, :force => true, :primary_key => :user_connection_id do |t|
-    end
-    
   end
   
   def self.down
@@ -115,14 +108,10 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
     drop_table :app_main_components
     drop_table :nics
     drop_table :ip_terminations
-    drop_table :ip_connections
     drop_table :tcp_socket_terminations
-    drop_table :tcp_socket_connections
-    drop_table :ethernet_terminations
     drop_table :ethernet_terminations
     drop_table :users
     drop_table :user_terminations
-    drop_table :user_connections
     
   end
   
