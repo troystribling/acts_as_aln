@@ -34,7 +34,7 @@ describe "attributes supported by aln_termination models" do
   end
 
   it "should include path identifier" do 
-    AlnTermination.should have_attribute(:path_id, :integer)
+    AlnTermination.should have_attribute(:aln_path_id, :integer)
   end
 
 end
@@ -75,12 +75,25 @@ describe "aln_termination direction attribute" do
     AlnTermination.new(:direction => 'server').should be_valid
  end
 
-  it "should be valid for value peer" do 
-    AlnTermination.new(:direction => 'peer').should be_valid
- end
-
   it "should be inavlid for value different from nil, client, server and peer" do 
     AlnTermination.new(:direction => 'invalid_value').should_not be_valid
  end
 
+end
+
+##########################################################################################################
+describe "retrieval of aln_termination ancestor from aln_termination descendant model class" do
+
+  it "should return aln_termination if model is aln_termination" do
+    AlnTermination.to_aln_termination(AlnTermination.new(model_data[:aln_termination])).class.should eql(AlnTermination) 
+  end
+
+  it "should return aln_resource if model is a descendant of aln_resource" do 
+    AlnTermination.to_aln_termination(EthernetTermination.new(model_data[:aln_termination])).class.should eql(AlnTermination) 
+  end
+
+  it "should raise PlanB::InvalidType if model is not a descendant of aln_resource" do
+    lambda{AlnTermination.to_aln_termination(Array.new)}.should raise_error(PlanB::InvalidClass) 
+  end
+  
 end

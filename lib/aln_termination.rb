@@ -24,4 +24,46 @@ class AlnTermination < ActiveRecord::Base
                           :in => ['client', 'server'],
                           :message => "should be client or server",
                           :allow_nil => true
+
+  ####################################################################################
+  #### add supported model to model instance and update meta data
+  def << (sup)
+    sup.class.eql?(Array) ? sup.each{|s| update_network_id(s)} : update_network_id(sup)
+    self.aln_resource << sup
+  end  
+
+  ####################################################################################
+  #### update network id for supported
+  def update_network_id(sup)
+    sup_network_id = AlnTermination.get_network_id(sup)
+    new_network_id = AlnTermination.get_network_id(self)
+    self.class.update_all("nework_id = #{new_network_id}", "nework_id = #{sup_network_id}")     
+  end
+            
+  ####################################################################################
+  # class methods
+  class << self
+
+    ####################################################################################
+    #### get network id
+    def get_network_id(model)
+      model.save if model.id.nil?
+      model.network_id.nil? ? model.id : model.network_id
+    end
+                   
+    #### return model aln_termination
+    def to_aln_termination(mod)
+      if mod.class.eql?(AlnTermination)
+        mod
+      else
+        if mod.respond_to?(:aln_termination)  
+          mod.aln_termination
+        else
+          raise(PlanB::InvalidClass, "target model is invalid")
+        end
+      end
+    end
+          
+  end
+                          
 end

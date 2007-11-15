@@ -228,6 +228,7 @@ class AlnResource < ActiveRecord::Base
   end
   
   ####################################################################################
+  # class methods
   class << self
 
     #### return roots of support hierachy

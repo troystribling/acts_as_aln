@@ -1,12 +1,19 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
+##########################################################################################################
+module NetworkIdHelper
+
+end
+
 #########################################################################################################
 describe "assignement of network ID for terminations when a support relationship is established where the terminations are not involved in a connection or other support relations with terminations" do
 
   it "should be nil for termination prior to establishment of support relationship" do 
+    EthernetTermination.new.network_id.should be_nil
   end
 
-  it "should be aln_termination_id of supporter after support relationship is established" do 
+  it "should be nil after support relationship is established" do 
+    EthernetTermination.new.network_id.should be_nil
   end
 
 end
