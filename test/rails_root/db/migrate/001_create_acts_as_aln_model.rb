@@ -72,16 +72,16 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
       t.column :slot, :integer
     end
   
+    create_table :ethernet_terminations, :force => true, :primary_key => :ethernet_termination_id do |t|
+      t.column :mac_addr, :string
+    end
+  
     create_table :ip_terminations, :force => true, :primary_key => :ip_termination_id do |t|
       t.column :ip_addr, :string
     end
   
     create_table :tcp_socket_terminations, :force => true, :primary_key => :ip_termination_id do |t|
       t.column :port, :integer
-    end
-  
-    create_table :ethernet_terminations, :force => true, :primary_key => :ethernet_termination_id do |t|
-      t.column :mac_addr, :string
     end
   
     #############################################################################################################

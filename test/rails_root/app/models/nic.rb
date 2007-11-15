@@ -5,9 +5,4 @@ class Nic < ActiveRecord::Base
   ###############################################################
   has_ancestor :named => :inventory_item     
 
-  ###############################################################
-  #### declare supported association ethernet_termination
-  ###############################################################
-  acts_as_supporter :of => :ethernet_termination
-
 end
