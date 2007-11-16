@@ -40,6 +40,10 @@ aln_connection_resource:
 aln_path:
   resource_name: Path-1
 
+datacenter:
+  resource_name: datacenter
+  location: Nowhere
+
 server_1:
   resource_name: Server-1
   model: KickAss
@@ -67,6 +71,16 @@ nic_2:
   resource_name: NIC-2
   serial_number: A789101112
   slot: 1
+
+nic_3:
+  resource_name: NIC-3
+  serial_number: A6543
+  slot: 1
+
+nic_4:
+  resource_name: NIC-3
+  serial_number: A7543
+  slot: 2
   
 ethernet_termination_1:
   resource_name: Ethernet-1
@@ -92,25 +106,37 @@ ip_termination_2:
   direction: server 
   ip_addr: 10.10.10.2
 
-tcp_termination_1:
+ip_termination_3:
+  resource_name: IP-3
+  directionality: bidirectional
+  direction: server 
+  ip_addr: 10.10.10.3
+
+ip_termination_4:
+  resource_name: IP-4
+  directionality: bidirectional
+  direction: server 
+  ip_addr: 10.10.10.4
+
+tcp_socket_termination_1:
   resource_name: TCP-1
   directionality: bidirectional
   direction: server 
   tcp_port: 1
 
-tcp_termination_2:
+tcp_socket_termination_2:
   resource_name: TCP-2
   directionality: bidirectional
   direction: client 
   tcp_port: 1
 
-tcp_termination_3:
+tcp_socket_termination_3:
   resource_name: TCP-3
   directionality: bidirectional
   direction: server 
   tcp_port: 2
 
-tcp_termination_4:
+tcp_socket_termination_4:
   resource_name: TCP-4
   directionality: bidirectional
   direction: client 
@@ -132,7 +158,7 @@ application_main_2:
 
 application_main_3:
   resource_name: Application-Main-3
-  pid: 3
+  pid: 2
   
 find_by_model_aln_resource_depth_greater_than_1:
   -

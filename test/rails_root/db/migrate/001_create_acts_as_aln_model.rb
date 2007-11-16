@@ -43,22 +43,34 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
     end
   
     #############################################################################################################
-    #### server unit test objects
+    #### hardware test objects
     create_table :inventory_items, :force => true, :primary_key => :inventory_item_id do |t|
       t.column :inventory_item_descendant_id, :integer
       t.column :inventory_item_descendant_type, :string
       t.column :serial_number, :string
     end
   
+    create_table :datacenters, :force => true, :primary_key => :datacenter_id do |t|
+      t.column :location, :string
+    end
+
+    create_table :switches, :force => true, :primary_key => :switch_id do |t|
+      t.column :model, :string
+    end
+
     create_table :servers, :force => true, :primary_key => :server_id do |t|
       t.column :model, :string
+    end
+  
+    create_table :nics, :force => true, :primary_key => :nic_id do |t|
+      t.column :slot, :integer
     end
   
     create_table :hardware_components, :force => true, :primary_key => :hardware_component_id do |t|
     end
   
     #############################################################################################################
-    #### application unit test objects
+    #### application test objects
     create_table :application_mains, :force => true, :primary_key => :application_main_id do |t|
       t.column :pid, :integer
     end
@@ -67,11 +79,7 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
     end
   
     #############################################################################################################
-    #### nic unit test objects
-    create_table :nics, :force => true, :primary_key => :nic_id do |t|
-      t.column :slot, :integer
-    end
-  
+    #### termination point test objects  
     create_table :ethernet_terminations, :force => true, :primary_key => :ethernet_termination_id do |t|
       t.column :mac_addr, :string
     end
@@ -84,34 +92,26 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
       t.column :tcp_port, :integer
     end
   
-    #############################################################################################################
-    #### user unit test objects
-    create_table :users, :force => true, :primary_key => :user_id do |t|
-      t.column :uid, :integer
-    end
-      
-    create_table :user_terminations, :force => true, :primary_key => :user_termination_id do |t|
-    end
-  
   end
   
   def self.down
   
-    drop_table :aln_things
     drop_table :aln_resources
     drop_table :aln_connections
+    drop_table :aln_paths
     drop_table :aln_terminations
+    drop_table :aln_termination_sets
     drop_table :inventory_items
+    drop_table :switches
+    drop_table :datacenters
     drop_table :servers
-    drop_table :server_components
-    drop_table :app_mains
-    drop_table :app_main_components
     drop_table :nics
+    drop_table :hardware_components
+    drop_table :application_components
+    drop_table :application_mains
     drop_table :ip_terminations
     drop_table :tcp_socket_terminations
     drop_table :ethernet_terminations
-    drop_table :users
-    drop_table :user_terminations
     
   end
   
