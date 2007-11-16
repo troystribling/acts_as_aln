@@ -54,7 +54,7 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
       t.column :model, :string
     end
   
-    create_table :server_components, :force => true, :primary_key => :server_component_id do |t|
+    create_table :hardware_components, :force => true, :primary_key => :hardware_component_id do |t|
     end
   
     #############################################################################################################
@@ -81,7 +81,7 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
     end
   
     create_table :tcp_socket_terminations, :force => true, :primary_key => :ip_termination_id do |t|
-      t.column :port, :integer
+      t.column :tcp_port, :integer
     end
   
     #############################################################################################################

@@ -33,11 +33,107 @@ aln_termination_resource_supported_2:
 
 aln_connection:
   resource_name: Connection-1
-  directionality: unidirectional
 
 aln_connection_resource:
   resource_name: Connection-1
 
+aln_path:
+  resource_name: Path-1
+
+server_1:
+  resource_name: Server-1
+  model: KickAss
+
+server_2:
+  resource_name: Server-2
+  model: KickAss
+
+switch:
+  resource_name: Switch
+  model: BigSwitch
+
+hardware_component_1:
+  resource_name: Hardware-Component-1
+
+hardware_component_2:
+  resource_name: Hardware-Component-2
+
+nic_1:
+  resource_name: NIC-1
+  serial_number: A123456
+  slot: 1
+
+nic_2:
+  resource_name: NIC-2
+  serial_number: A789101112
+  slot: 1
+  
+ethernet_termination_1:
+  resource_name: Ethernet-1
+  directionality: bidirectional
+  direction: server 
+  mac_addr: AA:BB:CC:DD:EE:FF
+
+ethernet_termination_2:
+  resource_name: Ethernet-2
+  directionality: bidirectional
+  direction: server 
+  mac_addr: 00:11:22:33:44:55
+
+ip_termination_1:
+  resource_name: IP-1
+  directionality: bidirectional
+  direction: server 
+  ip_addr: 10.10.10.1
+
+ip_termination_2:
+  resource_name: IP-2
+  directionality: bidirectional
+  direction: server 
+  ip_addr: 10.10.10.2
+
+tcp_termination_1:
+  resource_name: TCP-1
+  directionality: bidirectional
+  direction: server 
+  tcp_port: 1
+
+tcp_termination_2:
+  resource_name: TCP-2
+  directionality: bidirectional
+  direction: client 
+  tcp_port: 1
+
+tcp_termination_3:
+  resource_name: TCP-3
+  directionality: bidirectional
+  direction: server 
+  tcp_port: 2
+
+tcp_termination_4:
+  resource_name: TCP-4
+  directionality: bidirectional
+  direction: client 
+  tcp_port: 2
+
+application_component_1:
+  resource_name: Application-Component-1
+
+application_component_2:
+  resource_name: Application-Component-2
+  
+application_main_1:
+  resource_name: Application-Main-1
+  pid: 1
+
+application_main_2:
+  resource_name: Application-Main-2
+  pid: 2
+
+application_main_3:
+  resource_name: Application-Main-3
+  pid: 3
+  
 find_by_model_aln_resource_depth_greater_than_1:
   -
    - 39 

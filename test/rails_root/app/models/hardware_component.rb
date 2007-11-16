@@ -1,4 +1,4 @@
-class ServerComponent < ActiveRecord::Base
+class HardwareComponent < ActiveRecord::Base
   
   ###############################################################
   #### declare descendant associations and ancestor association
