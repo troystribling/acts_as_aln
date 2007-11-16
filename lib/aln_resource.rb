@@ -259,11 +259,7 @@ class AlnResource < ActiveRecord::Base
       if mod.class.eql?(AlnResource)
         mod
       else
-        if mod.respond_to?(:aln_resource)  
-          mod.aln_resource
-        else
-          raise(PlanB::InvalidClass, "target model is invalid")
-        end
+        mod.aln_resource
       end
     end
           

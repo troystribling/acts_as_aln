@@ -65,11 +65,7 @@ class AlnTermination < ActiveRecord::Base
       if mod.class.eql?(AlnTermination)
         mod
       else
-        if mod.respond_to?(:aln_termination)  
-          mod.aln_termination
-        else
-          raise(PlanB::InvalidClass, "target model is invalid")
-        end
+        mod.aln_termination
       end
     end
           

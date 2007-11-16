@@ -1,9 +1,9 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 #########################################################################################################
-describe "adding supported to supporter and accessing supported from supporter that is not persistent", :shared => true do
+describe "adding supported to supporter that is not persistent", :shared => true do
 
-  it "should be possible to add supported individally" do
+  it "should be possible for individual obects" do
     @root << @s1
     @root.supported.should include(AlnResource.to_aln_resource(@s1))
     @root << @s2
@@ -12,28 +12,48 @@ describe "adding supported to supporter and accessing supported from supporter t
     @root.supported.should include(AlnResource.to_aln_resource(@s3))
   end
 
-  it "should be possible to add array of supported" do
+  it "should be possible for array of obects" do
     @root << [@s1, @s2, @s3]
     @root.supported.should include(AlnResource.to_aln_resource(@s1))
     @root.supported.should include(AlnResource.to_aln_resource(@s2))
     @root.supported.should include(AlnResource.to_aln_resource(@s3))
   end
 
-  it "should be possible to access supported by index" do
+  it "should persist supported and supporter" do
+    @root.should_not persist
+    @s1.should_not persist
+    @root << @s1
+    @root.should persist
+    @s1.should persist
+    AlnResource.to_aln_resource(@root).should persist
+    AlnResource.to_aln_resource(@s1).should persist
+  end
+  
+end
+
+#########################################################################################################
+describe "accessing supported from supporter that is not persistent", :shared => true do
+
+  it "should be possible by by index" do
     @root << [@s1, @s2, @s3]
     @root.supported[0].should eql(AlnResource.to_aln_resource(@s1))
     @root.supported[1].should eql(AlnResource.to_aln_resource(@s2))
     @root.supported[2].should eql(AlnResource.to_aln_resource(@s3))
   end
 
-  it "should be possible to interate through supported" do
+  it "should be possible by iterator" do
     @root << [@s1, @s2, @s3]
     @root.supported.detect{|s| AlnResource.to_aln_resource(@s1).eql?(s)}.should eql(AlnResource.to_aln_resource(@s1))
     @root.supported.detect{|s| AlnResource.to_aln_resource(@s2).eql?(s)}.should eql(AlnResource.to_aln_resource(@s2))
     @root.supported.detect{|s| AlnResource.to_aln_resource(@s3).eql?(s)}.should eql(AlnResource.to_aln_resource(@s3))
   end
 
-  it "should be possible to convert supported to array" do
+end
+
+#########################################################################################################
+describe "conversion of supported container to array", :shared => true do
+
+  it "should be possible" do
     @root.supported.to_array.class.should eql(Array)
   end
   
@@ -128,7 +148,7 @@ end
 #########################################################################################################
 describe "force load of supporter from database", :shared => true do
 
-  it "should be an option when supporter is retrieved" do
+  it "should be an option when supporter is accessed" do
     @root << [@s1, @s2, @s3]
     root_update = AlnResource.find(AlnResource.to_aln_resource(@root).id)
     root_update.resource_name = 'new_name'
@@ -198,8 +218,12 @@ describe "accessing supported from aln_resource supporter" do
     @s3.destroy
   end  
     
-  it_should_behave_like "adding supported to supporter and accessing supported from supporter that is not persistent"
+  it_should_behave_like "adding supported to supporter that is not persistent"
 
+  it_should_behave_like "accessing supported from supporter that is not persistent"
+
+  it_should_behave_like "conversion of supported container to array"
+  
   it_should_behave_like "removing supported from supporter"
 
   it_should_behave_like "access to supported from supporter that is persistent"
@@ -231,8 +255,12 @@ describe "accessing supported from aln_resource descendant supporter" do
     @s3.destroy
   end  
 
-  it_should_behave_like "adding supported to supporter and accessing supported from supporter that is not persistent"
+  it_should_behave_like "adding supported to supporter that is not persistent"
 
+  it_should_behave_like "accessing supported from supporter that is not persistent"
+
+  it_should_behave_like "conversion of supported container to array"
+  
   it_should_behave_like "removing supported from supporter"
 
   it_should_behave_like "access to supported from supporter that is persistent"

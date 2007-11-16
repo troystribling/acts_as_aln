@@ -93,7 +93,7 @@ describe "retrieval of aln_termination ancestor from aln_termination descendant 
   end
 
   it "should raise PlanB::InvalidType if model is not a descendant of aln_resource" do
-    lambda{AlnTermination.to_aln_termination(Array.new)}.should raise_error(PlanB::InvalidClass) 
+    lambda{AlnTermination.to_aln_termination(Array.new)}.should raise_error(NoMethodError) 
   end
   
 end

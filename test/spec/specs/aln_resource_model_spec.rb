@@ -58,7 +58,7 @@ describe "retrieval of aln_resource ancestor from aln_resource descendant model 
   end
 
   it "should raise PlanB::InvalidType if model is not a descendant of aln_resource" do
-    lambda{AlnResource.to_aln_resource(Array.new)}.should raise_error(PlanB::InvalidClass) 
+    lambda{AlnResource.to_aln_resource(Array.new)}.should raise_error(NoMethodError) 
   end
   
 end

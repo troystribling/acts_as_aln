@@ -9,11 +9,19 @@ end
 describe "assignement of network ID for terminations when a support relationship is established where the terminations are not involved in a connection or other support relations with terminations" do
 
   it "should be nil for termination prior to establishment of support relationship" do 
-    EthernetTermination.new.network_id.should be_nil
+    EthernetTermination.new(model_data[:ethernet_termination_1]).network_id.should be_nil
   end
 
-  it "should be nil after support relationship is established" do 
-    EthernetTermination.new.network_id.should be_nil
+  it "should be nil after support relationship is established" do
+    nic = Nic.new(model_data[:nic_1]) 
+    tpt = EthernetTermination.new(model_data[:ethernet_termination_1])
+    nic << tpt
+    tpt.should persist   
+    tpt.aln_termination.should persist   
+    tpt.aln_resource.should persist   
+    nic.supported(true).should include(AlnResource.to_aln_resource(tpt))
+    nic.supported.first.to_descendant.network_id.should be_nil
+    nic.destroy
   end
 
 end
