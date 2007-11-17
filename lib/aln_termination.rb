@@ -28,7 +28,7 @@ class AlnTermination < ActiveRecord::Base
   ####################################################################################
   #### add supported model to model instance and update meta data
   def << (sup)
-    new_network_id = self.get_network_id(self)
+    new_network_id = self.get_network_id
     sup.class.eql?(Array) ? sup.each{|s| s.network_id = new_network_id} : sup.network_id = new_network_id
     self.aln_resource << sup
   end  
@@ -41,15 +41,15 @@ class AlnTermination < ActiveRecord::Base
     self.aln_resource << sup
   end  
 
-
   ####################################################################################
   #### get network id
-  def get_network_id(model)
-    if model.network_id.nil?
-      model.save if model.id.nil?
-      model.network_id = model.id
+  def get_network_id
+    if self.network_id.nil?
+      self.save if self.id.nil?
+      self.network_id = self.id
+      self.save
     end
-    model.network_id
+    self.network_id
   end
                    
   ####################################################################################

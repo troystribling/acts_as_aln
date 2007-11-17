@@ -33,17 +33,30 @@ describe "assignement of network ID for terminations when a support relationship
     @nic.destroy
   end
   
-  it "should be aln_termination_id of supporter when supported is not in a prior support relationship and supporter is in a prior supporting relationship" do 
+  it "should be aln_termination_id of supporter when supporter is in a prior support relationship with an aln_termination descendant and supported is not in a prior support relationship" do 
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
     ip = IpTermination.new(model_data[:ip_termination_1])
+    eth.network_id.should be_nil
+    ip.network_id.should be_nil
     @nic << eth    
-    EthernetTermination.find(eth.id).network_id.should be_nil
     eth << ip
     EthernetTermination.find(eth.id).network_id.should eql(eth.aln_termination.id)
     IpTermination.find(ip.id).network_id.should eql(eth.aln_termination.id)
   end
 
-  it "should be network ID of supporter when supporter is in a prior support relationship and supported is not in a prior support relationship" do 
+  it "should be network ID of supporter when supporter is in a prior supporting relationship with an aln_termination descendant and supported is not in a prior support relationship" do 
+    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    @nic << eth    
+    eth.network_id.should be_nil
+    ip1.network_id.should be_nil
+    eth << ip1
+    EthernetTermination.find(eth.id).network_id.should eql(eth.aln_termination.id)
+    IpTermination.find(ip1.id).network_id.should eql(eth.network_id)
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    ip2.network_id.should be_nil
+    eth << ip2
+    IpTermination.find(ip2.id).network_id.should eql(eth.network_id)
   end
 
   it "should be network ID of supporter when supporter is in a prior support relationship and supported is in a prior support relationship" do 
