@@ -28,38 +28,42 @@ class AlnTermination < ActiveRecord::Base
   ####################################################################################
   #### add supported model to model instance and update meta data
   def << (sup)
-    sup.class.eql?(Array) ? sup.each{|s| update_network_id(s)} : update_network_id(sup)
+    new_network_id = self.get_network_id(self)
+    sup.class.eql?(Array) ? sup.each{|s| s.network_id = new_network_id} : sup.network_id = new_network_id
     self.aln_resource << sup
   end  
 
   ####################################################################################
   #### add network 
   def add_network (sup)
-    new_network_id = AlnTermination.get_network_id(self)
-    sup.class.eql?(Array) ? sup.each{|s| s.network_id = new_network_id} : sup.network_id = new_network_id
+    new_network_id = self.get_network_id(self)
+    sup.class.eql?(Array) ? sup.each{|s| update_network_id(s)} : update_network_id(sup)
     self.aln_resource << sup
   end  
 
 
   ####################################################################################
+  #### get network id
+  def get_network_id(model)
+    if model.network_id.nil?
+      model.save if model.id.nil?
+      model.network_id = model.id
+    end
+    model.network_id
+  end
+                   
+  ####################################################################################
   #### update network id for supported
   def update_network_id(sup)
     sup_network_id = AlnTermination.get_network_id(sup)
     new_network_id = AlnTermination.get_network_id(self)
-    self.class.update_all("nework_id = #{new_network_id}", "nework_id = #{sup_network_id}")     
+    self.class.update_all("network_id = #{new_network_id}", "network_id = #{sup_network_id}")     
   end
             
   ####################################################################################
   # class methods
   class << self
 
-    ####################################################################################
-    #### get network id
-    def get_network_id(model)
-      model.save if model.id.nil?
-      model.network_id.nil? ? model.id : model.network_id
-    end
-                   
     #### return model aln_termination
     def to_aln_termination(mod)
       if mod.class.eql?(AlnTermination)

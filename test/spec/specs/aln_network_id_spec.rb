@@ -14,13 +14,9 @@ describe "assignement of network ID for terminations when a support relationship
 
   it "should be nil after support relationship is established" do
     nic = Nic.new(model_data[:nic_1]) 
-    tpt = EthernetTermination.new(model_data[:ethernet_termination_1])
-    nic << tpt
-    tpt.should persist   
-    tpt.aln_termination.should persist   
-    tpt.aln_resource.should persist   
-    nic.supported(true).should include(AlnResource.to_aln_resource(tpt))
-    nic.supported.first.to_descendant.network_id.should be_nil
+    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
+    nic << eth    
+    EthernetTermination.find(eth.id).network_id.should be_nil
     nic.destroy
   end
 
@@ -29,7 +25,22 @@ end
 #########################################################################################################
 describe "assignement of network ID for terminations when a support relationship is established where the terminations are not involved in a connection but either or both may be in other prior support relations with terminations" do
 
+  before(:each) do
+    @nic = Nic.new(model_data[:nic_1]) 
+  end
+
+  after(:each) do
+    @nic.destroy
+  end
+  
   it "should be aln_termination_id of supporter when supported is not in a prior support relationship and supporter is in a prior supporting relationship" do 
+    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip = IpTermination.new(model_data[:ip_termination_1])
+    @nic << eth    
+    EthernetTermination.find(eth.id).network_id.should be_nil
+    eth << ip
+    EthernetTermination.find(eth.id).network_id.should eql(eth.aln_termination.id)
+    IpTermination.find(ip.id).network_id.should eql(eth.aln_termination.id)
   end
 
   it "should be network ID of supporter when supporter is in a prior support relationship and supported is not in a prior support relationship" do 
