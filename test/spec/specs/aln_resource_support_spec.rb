@@ -19,7 +19,7 @@ describe "adding supported to supporter that is not persistent", :shared => true
     @root.supported.should include(AlnResource.to_aln_resource(@s3))
   end
 
-  it "should persist supported and supporter" do
+  it "should persist aln_resource models for supported and supporter" do
     @root.should_not persist
     @s1.should_not persist
     @root << @s1

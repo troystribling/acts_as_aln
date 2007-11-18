@@ -3,21 +3,34 @@ require File.dirname(__FILE__) + '/../spec_helper'
 ##########################################################################################################
 module NetworkIdHelper
 
+  def check_network_id(model, id, network_id)
+    chk = model.find(id)
+    chk.network_id.should eql(network_id)
+  end
+  
 end
 
 #########################################################################################################
 describe "assignement of network ID for terminations when a support relationship is established where the terminations are not involved in a connection or other support relations with terminations" do
+
+  include NetworkIdHelper
+  
+  before(:each) do
+    @nic = Nic.new(model_data[:nic_1]) 
+  end
+
+  after(:each) do
+    @nic.destroy
+  end
 
   it "should be nil for termination prior to establishment of support relationship" do 
     EthernetTermination.new(model_data[:ethernet_termination_1]).network_id.should be_nil
   end
 
   it "should be nil after support relationship is established" do
-    nic = Nic.new(model_data[:nic_1]) 
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
-    nic << eth    
-    EthernetTermination.find(eth.id).network_id.should be_nil
-    nic.destroy
+    @nic << eth   
+    check_network_id(EthernetTermination, eth.id, nil)
   end
 
 end
@@ -25,6 +38,8 @@ end
 #########################################################################################################
 describe "assignement of network ID for terminations when a support relationship is established where the terminations are not involved in a connection but either or both may be in other prior support relations with terminations" do
 
+  include NetworkIdHelper
+  
   before(:each) do
     @nic = Nic.new(model_data[:nic_1]) 
   end
@@ -33,33 +48,114 @@ describe "assignement of network ID for terminations when a support relationship
     @nic.destroy
   end
   
-  it "should be aln_termination_id of supporter when supporter is in a prior support relationship with an aln_termination descendant and supported is not in a prior support relationship" do 
+  it "should be aln_termination_id of supporter when supporter is not in a prior support relationship with an aln_termination descendant and supported is not in a prior support relationship with an aln_termination descendant" do 
+
+    #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
     ip = IpTermination.new(model_data[:ip_termination_1])
-    eth.network_id.should be_nil
-    ip.network_id.should be_nil
+
+    #### create support root relationship
     @nic << eth    
     eth << ip
-    EthernetTermination.find(eth.id).network_id.should eql(eth.aln_termination.id)
-    IpTermination.find(ip.id).network_id.should eql(eth.aln_termination.id)
+
+    #### check network_ids
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(IpTermination, ip.id, eth.network_id)
+
   end
 
-  it "should be network ID of supporter when supporter is in a prior supporting relationship with an aln_termination descendant and supported is not in a prior support relationship" do 
+  it "should be aln_termination_id of supporter when supporter is not in a prior supporting relationship with an aln_termination descendant and supported is in a prior support relationship with an aln_termination descendant" do 
+
+    #### create models
+    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip = IpTermination.new(model_data[:ip_termination_1])
+    tcp = TcpTermination.new(model_data[:tcp_termination_1])
+
+    #### create support root relationship
+    @nic << eth    
+
+    #### create supported relationship
+    ip << tcp
+
+    #### check supported network_ids
+    check_network_id(IpTermination, ip.id, ip.aln_termination.id)
+    check_network_id(TcpTermination, tcp.id, ip.network_id)
+
+    #### add supported network to support root
+    eth.add_network(ip)
+
+    #### check support root network_id
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+ 
+    #### check support root network_id
+    check_network_id(IpTermination, ip.id, eth.network_id)
+    check_network_id(TcpTermination, tcp.id, eth.network_id)
+
+  end
+
+  it "should be network ID of supporter when supporter is in a prior supporting relationship with an aln_termination descendant and supported is not in a prior support relationship with an aln_termination descendant" do 
+
+    #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
     ip1 = IpTermination.new(model_data[:ip_termination_1])
-    @nic << eth    
-    eth.network_id.should be_nil
-    ip1.network_id.should be_nil
-    eth << ip1
-    EthernetTermination.find(eth.id).network_id.should eql(eth.aln_termination.id)
-    IpTermination.find(ip1.id).network_id.should eql(eth.network_id)
     ip2 = IpTermination.new(model_data[:ip_termination_2])
-    ip2.network_id.should be_nil
+
+    #### create support root relationship
+    @nic << eth    
+
+    #### create supported relationship
+    eth << ip1
+
+    #### check support root network_id
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+
+    #### check supported network_id
+    check_network_id(IpTermination, ip1.id, eth.network_id)
+
+    #### create second support relationship
     eth << ip2
-    IpTermination.find(ip2.id).network_id.should eql(eth.network_id)
+
+    #### check support root network_id
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+
+    #### check supported network_ids
+    check_network_id(IpTermination, ip1.id, eth.network_id)
+    check_network_id(IpTermination, ip2.id, eth.network_id)
+
   end
 
-  it "should be network ID of supporter when supporter is in a prior support relationship and supported is in a prior support relationship" do 
+  it "should be network ID of supporter when supporter is in a prior supporting relationship with an aln_termination descendant and supported in a prior support relationship with an aln_termination descendant" do 
+
+    #### create models
+    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    tcp = TcpTermination.new(model_data[:tcp_termination_1])
+
+    #### create support root relationship
+    @nic << eth
+    eth << ip1    
+
+    #### create supported relationship
+    ip2 << tcp
+
+    #### check support root network_id
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(IpTermination, ip1.id, eth.network_id)
+
+    #### check supported network_id
+    check_network_id(IpTermination, ip2.id, ip2.aln_termination.id)
+    check_network_id(TcpTermination, tcp.id, ip2.network_id)
+
+    #### add supported network to support root
+    eth.add_network(ip)
+
+    #### check support root network_id
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(IpTermination, ip1.id, eth.network_id)
+    check_network_id(IpTermination, ip2.id, eth.network_id)
+    check_network_id(TcpTermination, tcp.id, eth.network_id)
+    
   end
 
 end
