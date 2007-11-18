@@ -36,7 +36,7 @@ class AlnTermination < ActiveRecord::Base
   ####################################################################################
   #### add network 
   def add_network (sup)
-    new_network_id = self.get_network_id(self)
+    new_network_id = self.get_network_id
     sup.class.eql?(Array) ? sup.each{|s| update_network_id(s)} : update_network_id(sup)
     self.aln_resource << sup
   end  
@@ -55,8 +55,8 @@ class AlnTermination < ActiveRecord::Base
   ####################################################################################
   #### update network id for supported
   def update_network_id(sup)
-    sup_network_id = AlnTermination.get_network_id(sup)
-    new_network_id = AlnTermination.get_network_id(self)
+    sup_network_id = sup.get_network_id
+    new_network_id = self.get_network_id
     self.class.update_all("network_id = #{new_network_id}", "network_id = #{sup_network_id}")     
   end
             

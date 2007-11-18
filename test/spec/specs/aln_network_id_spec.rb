@@ -69,7 +69,7 @@ describe "assignement of network ID for terminations when a support relationship
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
     ip = IpTermination.new(model_data[:ip_termination_1])
-    tcp = TcpTermination.new(model_data[:tcp_termination_1])
+    tcp = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
 
     #### create support root relationship
     @nic << eth    
@@ -79,7 +79,7 @@ describe "assignement of network ID for terminations when a support relationship
 
     #### check supported network_ids
     check_network_id(IpTermination, ip.id, ip.aln_termination.id)
-    check_network_id(TcpTermination, tcp.id, ip.network_id)
+    check_network_id(TcpSocketTermination, tcp.id, ip.network_id)
 
     #### add supported network to support root
     eth.add_network(ip)
@@ -89,7 +89,7 @@ describe "assignement of network ID for terminations when a support relationship
  
     #### check support root network_id
     check_network_id(IpTermination, ip.id, eth.network_id)
-    check_network_id(TcpTermination, tcp.id, eth.network_id)
+    check_network_id(TcpSocketTermination, tcp.id, eth.network_id)
 
   end
 
@@ -130,7 +130,7 @@ describe "assignement of network ID for terminations when a support relationship
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
     ip1 = IpTermination.new(model_data[:ip_termination_1])
     ip2 = IpTermination.new(model_data[:ip_termination_2])
-    tcp = TcpTermination.new(model_data[:tcp_termination_1])
+    tcp = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
 
     #### create support root relationship
     @nic << eth
@@ -145,16 +145,16 @@ describe "assignement of network ID for terminations when a support relationship
 
     #### check supported network_id
     check_network_id(IpTermination, ip2.id, ip2.aln_termination.id)
-    check_network_id(TcpTermination, tcp.id, ip2.network_id)
+    check_network_id(TcpSocketTermination, tcp.id, ip2.network_id)
 
     #### add supported network to support root
-    eth.add_network(ip)
+    eth.add_network(ip2)
 
     #### check support root network_id
     check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
     check_network_id(IpTermination, ip2.id, eth.network_id)
-    check_network_id(TcpTermination, tcp.id, eth.network_id)
+    check_network_id(TcpSocketTermination, tcp.id, eth.network_id)
     
   end
 
@@ -163,9 +163,41 @@ end
 #########################################################################################################
 describe "assignement of network ID for terminations when a support relationship is established if either or both terminations are in a connection but neither are in other prior support relations with terminations" do
 
-  it "should be aln_termination_id of supporter when supporter is not in a prior connection and supported is in a prior connection" do 
+  include NetworkIdHelper
+  
+  before(:each) do
+    @nic1 = Nic.new(model_data[:nic_1]) 
+    @nic2 = Nic.new(model_data[:nic_2]) 
+    @nic3 = Nic.new(model_data[:nic_3]) 
+    @nic4 = Nic.new(model_data[:nic_4]) 
   end
 
+  after(:each) do
+    @nic1.destroy
+    @nic2.destroy
+    @nic3.destroy
+    @nic4.destroy
+  end
+  
+  it "should be aln_termination_id of supporter when supporter is not in a prior connection and supported is in a prior connection" do 
+
+    #### create terminations
+    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+
+    #### create connections
+    c = AlnConnection.new(:resource_name => 'Connection-1', :connected_termination_type => :ethernet_termination)
+    
+    #### create non terminating support relationships
+    @nic1 << eth
+    @nic2 << ip2
+        
+  end
+
+  it "should be aln_termination_id of supporter when supporter is not in a prior connection and supported is in a prior connection" do 
+  end
+  
   it "should be network ID of supporter when supporter is in a prior connection and supported is in a prior connection" do 
   end
 
@@ -201,12 +233,34 @@ describe "assignement of network ID for terminations when a support relationship
 end
 
 #########################################################################################################
-describe "assignement of network ID terminations when added to a connection where the terminations are not involved in other prior connections or other prior support relations" do
+describe "assignement of network ID for terminations when added to a connection where the terminations are not involved in other prior connections or other prior support relations" do
 
-  it "should be nil for termination prior to establishing connection" do 
+  include NetworkIdHelper
+  
+  before(:each) do
+    @nic1 = Nic.new(model_data[:nic_1]) 
+    @nic2 = Nic.new(model_data[:nic_2]) 
   end
 
+  after(:each) do
+    @nic1.destroy
+    @nic2.destroy
+  end
+  
   it "should be aln_termination_id of termination added to connection if no other terminations are in connection" do 
+
+    #### create terminations
+    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
+
+    #### create connections
+    c = AlnConnection.new(:resource_name => 'ethernet_connection-1', :connected_termination_type => :ethernet_termination)
+
+    #### create connection
+    c << eth
+    
+    #### check network_id
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+
   end
 
   it "should be network ID of first termination as next termination is added to connection" do 

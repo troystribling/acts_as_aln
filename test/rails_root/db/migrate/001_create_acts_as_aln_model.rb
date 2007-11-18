@@ -19,6 +19,7 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
     create_table :aln_termination_sets, :force => true, :primary_key => :aln_termination_set_id do |t|
       t.column :aln_termination_set_descendant_id, :integer
       t.column :aln_termination_set_descendant_type, :string
+      t.column :connected_termination_type, :string
     end
   
     create_table :aln_paths, :force => true, :primary_key => :aln_path_id do |t|
@@ -88,7 +89,7 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
       t.column :ip_addr, :string
     end
   
-    create_table :tcp_socket_terminations, :force => true, :primary_key => :ip_termination_id do |t|
+    create_table :tcp_socket_terminations, :force => true, :primary_key => :tcp_socket_termination_id do |t|
       t.column :tcp_port, :integer
     end
   
