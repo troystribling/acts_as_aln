@@ -94,6 +94,18 @@ ethernet_termination_2:
   direction: server 
   mac_addr: 00:11:22:33:44:55
 
+ethernet_termination_3:
+  resource_name: Ethernet-3
+  directionality: bidirectional
+  direction: server 
+  mac_addr: 1A:2B:3C:4D:5E:6F
+
+ethernet_termination_4:
+  resource_name: Ethernet-4
+  directionality: bidirectional
+  direction: server 
+  mac_addr: A1:B2:C3:D4:E5:F6
+
 ip_termination_1:
   resource_name: IP-1
   directionality: bidirectional
