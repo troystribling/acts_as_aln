@@ -42,8 +42,13 @@ class AlnTerminationSet < ActiveRecord::Base
   #### add network to connection
   def add_network (term)
     validate_termination(term)
-    self.aln_terminations.empty? ? term.get_network_id : \
-      self.class.update_all("network_id = #{self.aln_terminations.first.network_id }", "network_id = #{term.get_network_id}")     
+    unless self.aln_terminations.empty? 
+      new_network_id = self.aln_terminations.first.network_id
+      term.network_id = new_network_id 
+      AlnTermination.update_all("network_id = #{new_network_id}", "network_id = #{term.get_network_id}")
+    else
+      term.get_network_id 
+    end     
     self.aln_terminations << AlnTermination.to_aln_termination(term)
     self.save
   end  

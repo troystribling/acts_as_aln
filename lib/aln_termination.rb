@@ -29,16 +29,20 @@ class AlnTermination < ActiveRecord::Base
   #### add supported model to model instance and update meta data
   def << (sup)
     new_network_id = self.get_network_id
-    sup.class.eql?(Array) ? sup.each{|s| s.network_id = new_network_id} : sup.network_id = new_network_id
+    set_network_id = lambda do |s|
+      s.network_id = new_network_id
+      s.save
+    end
+    sup.class.eql?(Array) ? sup.each{|s| set_network_id[s]} : set_network_id[sup]
     self.aln_resource << sup
   end  
 
   ####################################################################################
   #### add network 
   def add_network (sup)
-    new_network_id = self.get_network_id
-    sup.class.eql?(Array) ? sup.each{|s| update_network_id(s)} : update_network_id(sup)
-    self.aln_resource << sup
+    update_network_id = lambda {|s| AlnTermination.update_all("network_id = #{self.get_network_id}", "network_id = #{s.get_network_id}")}
+    sup.class.eql?(Array) ? sup.each{|s| update_network_id[s]} : update_network_id[sup]
+    self.aln_resource.add_support_hierarchy(sup)
   end  
 
   ####################################################################################
@@ -52,14 +56,6 @@ class AlnTermination < ActiveRecord::Base
     self.network_id
   end
                    
-  ####################################################################################
-  #### update network id for supported
-  def update_network_id(sup)
-    sup_network_id = sup.get_network_id
-    new_network_id = self.get_network_id
-    self.class.update_all("network_id = #{new_network_id}", "network_id = #{sup_network_id}")     
-  end
-            
   ####################################################################################
   # class methods
   class << self
