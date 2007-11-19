@@ -481,8 +481,7 @@ describe "assignement of network ID for terminations when a support relationship
     @nic2 << ip2
         
     #### create connections
-    @ipc << ip1
-    @ipc << ip2
+    @ipc << [ip1, ip2]
     
     #### check network_id prior creating support realtionship
     check_network_id(EthernetTermination, eth.id, nil)
@@ -490,7 +489,7 @@ describe "assignement of network ID for terminations when a support relationship
     check_network_id(IpTermination, ip2.id, ip1.network_id)
     
     #### create support relationship
-    eth << ip2
+    eth.add_network(ip2)
 
     #### check network_id after creating support realtionship
     check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
@@ -513,10 +512,8 @@ describe "assignement of network ID for terminations when a support relationship
     @nic3 << ip2
         
     #### create connections
-    @ethc << eth1
-    @ethc << eth2
-    @ipc << ip1
-    @ipc << ip2
+    @ethc << [eth1, eth2]
+    @ipc << [ip1, ip2]
     
     #### check network_id prior creating support realtionship
     check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
@@ -525,7 +522,7 @@ describe "assignement of network ID for terminations when a support relationship
     check_network_id(IpTermination, ip2.id, ip1.network_id)
     
     #### create support relationship
-    eth2 << ip2
+    eth2.add_network(ip2)
 
     #### check network_id after creating support realtionship
     check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
@@ -547,8 +544,7 @@ describe "assignement of network ID for terminations when a support relationship
     @nic2 << eth2
         
     #### create connections
-    @ethc << eth1
-    @ethc << eth2
+    @ethc << [eth1, eth2]
     
     #### check network_id prior creating support realtionship
     check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
@@ -588,25 +584,307 @@ describe "assignement of network ID for terminations when a support relationship
     @ipc.destroy
   end
   
-  it "should be aln_termination_id of supporter when supporter is not in a prior connection or support relationship and supported is in a prior connection and support relationship" do 
+  it "should be aln_termination_id of supporter when supporter is not in a prior connection or support relationship with other terminations and supported is in a prior connection and support relationship woth other terminations" do 
+
+    #### create terminations
+    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+    tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
+
+    #### create non terminating support relationships
+    @nic1 << eth
+    @nic2 << ip2
+
+    #### create connections
+    @ipc << [ip1, ip2]
+
+    #### terminating support relationships
+    ip1 << tcp1
+    ip2 << tcp2
+            
+    #### check network_id prior creating support realtionship
+    check_network_id(EthernetTermination, eth.id, nil)
+    check_network_id(IpTermination, ip1.id, ip1.aln_termination.id)
+    check_network_id(IpTermination, ip2.id, ip1.network_id)
+    check_network_id(TcpSocketTermination, tcp1.id, ip1.network_id)
+    check_network_id(TcpSocketTermination, tcp2.id, ip1.network_id)
+    
+    #### create support relationship
+    eth.add_network(ip1)
+
+    #### check network_id after creating support realtionship
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(IpTermination, ip1.id, eth.network_id)
+    check_network_id(IpTermination, ip2.id, eth.network_id)
+    check_network_id(TcpSocketTermination, tcp1.id, eth.network_id)
+    check_network_id(TcpSocketTermination, tcp2.id, eth.network_id)
+
   end
 
-  it "should be network ID of supporter when supporter is in a prior connection and not in a support relationship and supported is in a prior connection and support relationship" do 
+  it "should be network ID of supporter when supporter is in a prior connection and not in a support relationship with othert terminations and supported is in a prior connection and support relationship with other terminations" do 
+
+    #### create terminations
+    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+    tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
+
+    #### create non terminating support relationships
+    @nic1 << eth1
+    @nic2 << eth2
+    @nic3 << ip2
+
+    #### create connections
+    @ethc << [eth1, eth2]
+    @ipc << [ip1, ip2]
+
+    #### terminating support relationships
+    ip1 << tcp1
+    ip2 << tcp2
+            
+    #### check network_id prior creating support realtionship
+    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth2.id, eth1.network_id)
+    check_network_id(IpTermination, ip1.id, ip1.aln_termination.id)
+    check_network_id(IpTermination, ip2.id, ip1.network_id)
+    check_network_id(TcpSocketTermination, tcp1.id, ip1.network_id)
+    check_network_id(TcpSocketTermination, tcp2.id, ip1.network_id)
+    
+    #### create support relationship
+    eth2.add_network(ip1)
+
+    #### check network_id after creating support realtionship
+    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth2.id, eth1.network_id)
+    check_network_id(IpTermination, ip1.id, eth1.network_id)
+    check_network_id(IpTermination, ip2.id, eth1.network_id)
+    check_network_id(TcpSocketTermination, tcp1.id, eth1.network_id)
+    check_network_id(TcpSocketTermination, tcp2.id, eth1.network_id)
+
   end
 
-  it "should be network ID of supporter when supporter is not in a prior connection and is in a support relationship and supported is in a prior connection and support relationship" do 
+  it "should be network ID of supporter when supporter is not in a prior connection and is in a support relationship with terminations and supported is in a prior connection and support relationship with other terminations" do 
+
+    #### create terminations
+    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    ip3 = IpTermination.new(model_data[:ip_termination_3])
+    tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+    tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
+
+    #### create non terminating support relationships
+    @nic1 << eth
+    @nic2 << ip3
+
+    #### create connections
+    @ipc << [ip2, ip3]
+
+    #### terminating support relationships
+    eth << ip1
+    ip1 << tcp1
+    ip2 << tcp2
+            
+    #### check network_id prior creating support realtionship
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(IpTermination, ip1.id, eth.network_id)
+    check_network_id(IpTermination, ip2.id, ip2.network_id)
+    check_network_id(IpTermination, ip3.id, ip2.network_id)
+    check_network_id(TcpSocketTermination, tcp1.id, ip2.network_id)
+    check_network_id(TcpSocketTermination, tcp2.id, ip2.network_id)
+    
+    #### create support relationship
+    eth.add_network(ip2)
+
+    #### check network_id after creating support realtionship
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(IpTermination, ip1.id, eth.network_id)
+    check_network_id(IpTermination, ip2.id, eth.network_id)
+    check_network_id(TcpSocketTermination, tcp1.id, eth.network_id)
+    check_network_id(TcpSocketTermination, tcp2.id, eth.network_id)
+
   end
 
-  it "should be network ID of supporter when supporter is in a prior connection and support relationship and supported is not in a prior connection or support relationship" do 
+  it "should be network ID of supporter when supporter is in a prior connection and support relationship with terminations and supported is not in a prior connection or support relationship with terminations" do 
+
+    #### create terminations
+    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    ip3 = IpTermination.new(model_data[:ip_termination_3])
+
+    #### create non terminating support relationships
+    @nic1 << eth1
+    @nic2 << eth2
+
+    #### create connections
+    @ethc << [eth1, eth2]
+
+    #### terminating support relationships
+    eth1 << ip1
+    eth2 << ip2
+            
+    #### check network_id prior creating support realtionship
+    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth2.id, eth1.network_id)
+    check_network_id(IpTermination, ip1.id, eth1.network_id)
+    check_network_id(IpTermination, ip2.id, eth1.network_id)
+    check_network_id(IpTermination, ip3.id, nil)
+    
+    #### create support relationship
+    eth.add_network(ip3)
+
+    #### check network_id after creating support realtionship
+    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth2.id, eth1.network_id)
+    check_network_id(IpTermination, ip1.id, eth1.network_id)
+    check_network_id(IpTermination, ip2.id, eth1.network_id)
+    check_network_id(IpTermination, ip3.id, eth1.network_id)
+
   end
 
-  it "should be network ID of supporter when supporter is in a prior connection and support relationship and supported is not in a prior connection but is in a prior support relationship" do 
+  it "should be network ID of supporter when supporter is in a prior connection and support relationship with terminations and supported is not in a prior connection but is in a prior support relationship with terminations" do 
+
+    #### create terminations
+    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    ip3 = IpTermination.new(model_data[:ip_termination_3])
+    tcp = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+
+    #### create non terminating support relationships
+    @nic1 << eth1
+    @nic2 << eth2
+
+    #### create connections
+    @ethc << [eth1, eth2]
+
+    #### terminating support relationships
+    eth1 << ip1
+    eth2 << ip2
+    ip3 << tcp
+            
+    #### check network_id prior creating support realtionship
+    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth2.id, eth1.network_id)
+    check_network_id(IpTermination, ip1.id, eth1.network_id)
+    check_network_id(IpTermination, ip2.id, eth1.network_id)
+    check_network_id(IpTermination, ip3.id, ip3.aln_termination)
+    check_network_id(TcpSocketTermination, tcp.id, ip3.network_id)
+    
+    #### create support relationship
+    eth.add_network(ip3)
+
+    #### check network_id after creating support realtionship
+    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth2.id, eth1.network_id)
+    check_network_id(IpTermination, ip1.id, eth1.network_id)
+    check_network_id(IpTermination, ip2.id, eth1.network_id)
+    check_network_id(IpTermination, ip3.id, eth1.network_id)
+    check_network_id(TcpSocketTermination, tcp.id, eth1.network_id)
+
   end
 
-  it "should be network ID of supporter when supporter is in a prior connection and support relationship and supported is in a prior connection but is not in a prior support relationship" do 
+  it "should be network ID of supporter when supporter is in a prior connection and support relationship with terminations and supported is in a prior connection but is not in a prior support relationship with terminations" do 
+
+    #### create terminations
+    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    ip3 = IpTermination.new(model_data[:ip_termination_3])
+    ip4 = IpTermination.new(model_data[:ip_termination_4])
+
+    #### create non terminating support relationships
+    @nic1 << eth1
+    @nic2 << eth2
+    @nic4 << ip4
+
+    #### create connections
+    @ethc << [eth1, eth2]
+    @ipc << [ip3, ip4]
+
+    #### terminating support relationships
+    eth1 << ip1
+    eth2 << ip2
+            
+    #### check network_id prior creating support realtionship
+    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth2.id, eth1.network_id)
+    check_network_id(IpTermination, ip1.id, eth1.network_id)
+    check_network_id(IpTermination, ip2.id, eth1.network_id)
+    check_network_id(IpTermination, ip3.id, ip3.aln_termination)
+    check_network_id(IpTermination, ip4.id, ip3.network_id)
+    
+    #### create support relationship
+    eth.add_network(ip3)
+
+    #### check network_id after creating support realtionship
+    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth2.id, eth1.network_id)
+    check_network_id(IpTermination, ip1.id, eth1.network_id)
+    check_network_id(IpTermination, ip2.id, eth1.network_id)
+    check_network_id(IpTermination, ip3.id, eth1.network_id)
+    check_network_id(IpTermination, ip4.id, eth1.network_id)
+
   end
 
-  it "should be network ID of supporter when supporter is in a prior connection and support relationship and supported is in a prior connection and support relationship" do 
+  it "should be network ID of supporter when supporter is in a prior connection and support relationship with terminations and supported is in a prior connection and support relationship with terminations" do 
+
+    #### create terminations
+    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    ip3 = IpTermination.new(model_data[:ip_termination_3])
+    ip4 = IpTermination.new(model_data[:ip_termination_4])
+    tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+    tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+
+    #### create non terminating support relationships
+    @nic1 << eth1
+    @nic2 << eth2
+    @nic4 << ip4
+
+    #### create connections
+    @ethc << [eth1, eth2]
+    @ipc << [ip3, ip4]
+
+    #### terminating support relationships
+    eth1 << ip1
+    eth2 << ip2
+    ip3 << tcp1
+    ip4 << tcp2
+            
+    #### check network_id prior creating support realtionship
+    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth2.id, eth1.network_id)
+    check_network_id(IpTermination, ip1.id, eth1.network_id)
+    check_network_id(IpTermination, ip2.id, eth1.network_id)
+    check_network_id(IpTermination, ip3.id, ip3.aln_termination)
+    check_network_id(IpTermination, ip4.id, ip3.network)
+    check_network_id(TcpSocketTermination, tcp1.id, ip3.network)
+    check_network_id(TcpSocketTermination, tcp2.id, ip3.network)
+    
+    #### create support relationship
+    eth.add_network(ip3)
+
+    #### check network_id after creating support realtionship
+    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth2.id, eth1.network_id)
+    check_network_id(IpTermination, ip1.id, eth1.network_id)
+    check_network_id(IpTermination, ip2.id, eth1.network_id)
+    check_network_id(IpTermination, ip3.id, eth1.network_id)
+    check_network_id(IpTermination, ip4.id, eth1.network_id)
+    check_network_id(TcpSocketTermination, tcp1.id, eth1.network_id)
+    check_network_id(TcpSocketTermination, tcp2.id, eth1.network_id)
+
   end
 
 end
