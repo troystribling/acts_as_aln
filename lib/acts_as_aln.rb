@@ -1,4 +1,9 @@
 module PlanB #:nodoc
+
+  ####################################################
+  # termination configuration error
+  class TerminationInvalid < ArgumentError; end  
+
   module Acts #:nodoc
     module Aln #:nodoc
 
@@ -9,28 +14,10 @@ module PlanB #:nodoc
   
       ####################################################
       module ClassMethods
-
-        def acts_as_aln_resource
-          InstanceMethods::AlnResourceMethods.add_methods(self)
-        end
-
       end
   
       ####################################################
       module InstanceMethods
-
-        module AlnResourceMethods
-    
-          def self.add_methods(target)
-    
-            target.class_eval <<-do_eval
-
-            do_eval
-    
-          end           
-    
-        end
-
       end
   
       ####################################################

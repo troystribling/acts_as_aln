@@ -51,7 +51,10 @@ class AlnTerminationSet < ActiveRecord::Base
   ####################################################################################
   #### validate termination class
   def validate_termination(term)
-    check_termination = lambda{|t| raise(PlanB::InvalidClass, "target model is invalid") unless t.class.name.tableize.singularize.to_sym.eql?(self.connected_termination_type)}
+    check_termination = lambda do |t| 
+      raise(PlanB::InvalidClass, "connected termination must be same class") unless t.class.name.tableize.singularize.to_sym.eql?(self.connected_termination_type)
+      raise(PlanB::TerminationInvalid, "termination is already in connection") unless t.aln_termination_set_id.nil?
+    end
     term.class.eql?(Array) ? term.each{|t| check_termination[t]} : check_termination[term]
   end
 
