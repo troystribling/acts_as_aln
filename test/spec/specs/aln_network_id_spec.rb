@@ -35,7 +35,7 @@ describe "assignement of network ID for terminations when a support relationship
 
 end
 
-#########################################################################################################
+##########################################################################################################
 describe "assignement of network ID for terminations when a support relationship is established where the terminations are not involved in a connection but either or both may be in other prior support relations with terminations" do
 
   include NetworkIdHelper
@@ -54,7 +54,7 @@ describe "assignement of network ID for terminations when a support relationship
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
     ip = IpTermination.new(model_data[:ip_termination_1])
 
-    #### create support root relationship
+    #### create support relationships
     @nic << eth    
     eth << ip
 
@@ -74,7 +74,7 @@ describe "assignement of network ID for terminations when a support relationship
     #### create support root relationship
     @nic << eth    
 
-    #### create supported relationship
+    #### create termination support relationship
     ip << tcp
 
     #### check supported network_ids
@@ -160,7 +160,7 @@ describe "assignement of network ID for terminations when a support relationship
 
 end
 
-#########################################################################################################
+##########################################################################################################
 describe "assignement of network ID for terminations when added to a connection where the terminations are not involved in other prior connections or other prior support relations" do
 
   include NetworkIdHelper
@@ -204,8 +204,7 @@ describe "assignement of network ID for terminations when added to a connection 
     @nic2 << eth2
 
     #### create connection
-    @c << eth1
-    @c << eth2
+    @c << [eth1, eth2]
     
     #### check network_id
     check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
@@ -345,7 +344,7 @@ describe "assignement of network ID for terminations when termination hierarchy 
 
 end
 
-#########################################################################################################
+##########################################################################################################
 describe "assignement of network ID for terminations when termination supported is added to a connection" do
 
   include NetworkIdHelper
@@ -489,7 +488,7 @@ describe "assignement of network ID for terminations when a support relationship
     check_network_id(IpTermination, ip2.id, ip1.network_id)
     
     #### create support relationship
-    eth.add_network(ip2)
+    eth.add_network(ip1)
 
     #### check network_id after creating support realtionship
     check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
@@ -522,7 +521,7 @@ describe "assignement of network ID for terminations when a support relationship
     check_network_id(IpTermination, ip2.id, ip1.network_id)
     
     #### create support relationship
-    eth2.add_network(ip2)
+    eth2.add_network(ip1)
 
     #### check network_id after creating support realtionship
     check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
