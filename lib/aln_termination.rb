@@ -26,11 +26,34 @@ class AlnTermination < ActiveRecord::Base
                           :allow_nil => true
 
   ####################################################################################
+  #### instance attributes
+  ####################################################################################
+  #### termination supporter
+  def termination_supporter(*args)
+    unless self.termination_supporter_id.nil?
+       self.create_termination_supporter    
+      @termination_supporter.load(*args)
+    end
+  end
+
+  #### set supporter
+  def create_termination_supporter
+   @termination_supporter = AlnSupporter.new(self, :termination_supporter_id) if @termination_supporter.nil?
+  end
+  
+  #### set supporter
+  def termination_supporter=(sup)
+    self.create_termination_supporter    
+    @termination_supporter.value = AlnTermination.to_aln_termination(sup)
+  end
+
+  ####################################################################################
   #### add supported model to model instance and update meta data
   def << (sup)
     new_network_id = self.get_network_id
     set_network_id = lambda do |s|
       s.network_id = new_network_id
+      s.termination_supporter = self
       s.save
     end
     sup.class.eql?(Array) ? sup.each{|s| set_network_id[s]} : set_network_id[sup]
@@ -40,7 +63,10 @@ class AlnTermination < ActiveRecord::Base
   ####################################################################################
   #### add network 
   def add_network (sup)
-    update_network_id = lambda {|s| AlnTermination.update_all("network_id = #{self.get_network_id}", "network_id = #{s.get_network_id}")}
+    update_network_id = lambda do |s|
+      s.termination_supporter = self      
+      AlnTermination.update_all("network_id = #{self.get_network_id}", "network_id = #{s.get_network_id}")
+    end
     sup.class.eql?(Array) ? sup.each{|s| update_network_id[s]} : update_network_id[sup]
     self.aln_resource.add_support_hierarchy(sup)
   end  

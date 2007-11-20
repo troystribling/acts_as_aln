@@ -27,7 +27,7 @@ class AlnResource < ActiveRecord::Base
   #### set supporter
   def supporter=(sup)
     self.create_supporter    
-    @supporter.value = self.class.to_aln_resource(sup)
+    @supporter.value = AlnResource.to_aln_resource(sup)
   end
          
   #### supported

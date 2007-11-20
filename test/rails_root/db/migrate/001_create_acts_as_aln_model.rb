@@ -37,6 +37,7 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
       t.column :aln_termination_descendant_type, :string
       t.column :aln_termination_set_id, :integer   
       t.column :aln_path_id, :integer   
+      t.column :termination_supporter_id, :integer   
       t.column :network_id, :integer   
       t.column :layer_id, :integer   
       t.column :directionality, :string

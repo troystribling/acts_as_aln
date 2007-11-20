@@ -4,8 +4,9 @@
 class AlnSupporter
 
   ##################################################################################
-  def initialize(sup)
-    @supported = sup
+  def initialize(*args)
+    @supported = args[0]
+    args[1].nil? ? @supporter_id = "supporter_id=" : @supporter_id = args[1].to_s + "="
     @supporter = nil
     @loaded = false
   end
@@ -14,7 +15,7 @@ class AlnSupporter
   def value=(s)
     @supporter = s
     @supporter.save if @supporter.new_record?
-    @supported.supporter_id = @supporter.id
+    @supported.send(@supporter_id.to_sym, @supporter.id)
     @loaded = true
   end
 
