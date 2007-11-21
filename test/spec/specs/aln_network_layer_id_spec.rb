@@ -96,7 +96,7 @@ describe "assignement of layer ID for terminations when a support relationship i
 
   end
 
-  it "should remain 1 when other supported are aded to a different termination with the same layer ID" do 
+  it "should remain 1 when other supported are added to a different termination with the same layer ID" do 
 
     #### create terminations
     eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])

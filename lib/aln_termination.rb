@@ -81,6 +81,14 @@ class AlnTermination < ActiveRecord::Base
     end
     self.network_id
   end
+
+  ####################################################################################
+  #### update the layer id
+  def update_layer_id (inc)
+    new_layer_id = self.layer_id + inc
+    old_layer_id = self.layer_id
+    AlnTermination.update_all("layer_id = #{new_layer_id}", "layer_id = #{old_layer_id} AND network_id = #{self.network_id}")
+  end
                    
   ####################################################################################
   # class methods

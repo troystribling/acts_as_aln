@@ -213,16 +213,18 @@ class AlnResource < ActiveRecord::Base
     self.class.find_by_model_and_condition("aln_resources.aln_resource_id = #{self.supporter_id}", model, :first)
   end
 
-  #### find specified supporter within entier hierarchy
+  #### find all supporters
+  def find_all_supporters_by_model(model, *args)
+    cond = "aln_resources.support_hierarchy_left < #{self.support_hierarchy_left} AND aln_resources.support_hierarchy_right > AND #{self.support_hierarchy_right} and aln_resources.support_hierarchy_root_id = #{self.class.get_support_hierarchy_root_id(self)}"
+    self.class.set_order_parameter("aln_resources.support_hierarchy_left ASC", *args)
+    self.class.find_by_model_and_condition(cond, model, *args)
+  end
+
+  #### find specified supporter within entire hierarchy
   def find_in_support_hierarchy_by_model(model, *args)
-    cond = "aln_resources.support_hierarchy_left between #{self.support_hierarchy_left} and #{self.support_hierarchy_right} and aln_resources.support_hierarchy_root_id = #{self.class.get_support_hierarchy_root_id(self)}"
+    cond = "aln_resources.support_hierarchy_left between #{self.support_hierarchy_left} AND #{self.support_hierarchy_right} AND aln_resources.support_hierarchy_root_id = #{self.class.get_support_hierarchy_root_id(self)}"
     if args.first.eql?(:all)
-      order = "aln_resources.support_hierarchy_left DESC"
-      if args[1].nil?
-        args[1] = {:order => order}
-      else
-        args[1].include?(:order) ? args[1][:order] << ', ' + order : args[1][:order] = order
-      end
+      self.class.set_order_parameter("aln_resources.support_hierarchy_left DESC", *args)
     end
     self.class.find_by_model_and_condition(cond, model, *args)
   end
@@ -231,6 +233,15 @@ class AlnResource < ActiveRecord::Base
   # class methods
   class << self
 
+    #### set order parameter
+    def set_order_parameter(order, *args)
+      if args[1].nil?
+        args[1] = {:order => order}
+      else
+        args[1].include?(:order) ? args[1][:order] << ', ' + order : args[1][:order] = order
+      end
+    end
+    
     #### return roots of support hierachy
     def find_support_hierarchy_root_by_model(model, *args)
       find_by_model_and_condition("aln_resources.supporter_id is NULL", model, *args)
@@ -248,7 +259,7 @@ class AlnResource < ActiveRecord::Base
         if args[1].nil?
           args[1] = {:conditions => condition}
         else
-          args[1].include?(:conditions) ? args[1][:conditions] << ' and ' + condition : args[1][:conditions] = condition
+          args[1].include?(:conditions) ? args[1][:conditions] << ' AND ' + condition : args[1][:conditions] = condition
         end
       end
       model.find_by_model(*args)
