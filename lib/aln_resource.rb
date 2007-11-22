@@ -215,8 +215,10 @@ class AlnResource < ActiveRecord::Base
 
   #### find all supporters of specified model
   def find_all_supporters_by_model(model, *args)
-    cond = "aln_resources.support_hierarchy_left < #{self.support_hierarchy_left} AND aln_resources.support_hierarchy_right > AND #{self.support_hierarchy_right} and aln_resources.support_hierarchy_root_id = #{self.class.get_support_hierarchy_root_id(self)}"
-    args = self.class.set_order_parameter("aln_resources.support_hierarchy_left DESC", *args)
+    cond = "aln_resources.support_hierarchy_left < #{self.support_hierarchy_left} AND aln_resources.support_hierarchy_right > #{self.support_hierarchy_right} and aln_resources.support_hierarchy_root_id = #{self.class.get_support_hierarchy_root_id(self)}"
+    args[0] = :all
+    args = self.class.set_order_parameter("aln_resources.support_hierarchy_left ASC", *args)
+    p cond
     self.class.find_by_model_and_condition(cond, model, *args)
   end
 
