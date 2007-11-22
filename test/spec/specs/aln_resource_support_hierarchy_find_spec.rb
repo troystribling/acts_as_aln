@@ -71,7 +71,7 @@ describe "queries for root of support hierarcy" do
     root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2])]
     root = AlnTermination.new(model_data[:aln_termination])
     root << [AlnTermination.new(model_data[:aln_termination_supported_3]), AlnTermination.new(model_data[:aln_termination_supported_4])]
-    root = AlnConnection.new(model_data[:aln_connection])
+    root = AlnConnection.new(model_data[:aln_connection].merge({:connected_termination_type => :aln_termination}))
     root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2])]
     root_chk = AlnResource.find_support_hierarchy_root_by_model(AlnResource, :all)
     root_chk.length.should be(3)
@@ -89,8 +89,8 @@ describe "queries for root of support hierarcy" do
     root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_1])]
     root = AlnTermination.new(model_data[:aln_termination])
     root << [AlnTermination.new(model_data[:aln_termination_supported_2]), AlnTermination.new(model_data[:aln_termination_supported_2])]
-    root_con = AlnConnection.new(model_data[:aln_connection])
-    root_con << [AlnResource.new(model_data[:aln_resource_supported_2]), AlnResource.new(model_data[:aln_resource_supported_2])]
+    root_con = AlnConnection.new(model_data[:aln_connection].merge({:connected_termination_type => :aln_termination}))
+    root_con << [AlnTermination.new(model_data[:aln_termination_supported_2]), AlnTermination.new(model_data[:aln_termination_supported_2])]
     root_chk = AlnTermination.find_support_hierarchy_root_by_model(AlnTermination, :all)
     root_chk.length.should be(2)
     root_chk.each do |r|
@@ -169,22 +169,22 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
 
   it "should find first supported matching specified condition for aln_resource model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'") 
-    mod.support_hierarchy_left.should eql(20)
-    mod.support_hierarchy_right.should eql(21)
+    mod.support_hierarchy_left.should eql(24)
+    mod.support_hierarchy_right.should eql(41)
     mod.class.should eql(AlnResource)
   end
 
   it "should find first supported of the specified aln_resource descendant model" do 
     mod = @root.find_in_support_hierarchy_by_model(AlnTermination, :first) 
-    mod.support_hierarchy_left.should eql(24)
-    mod.support_hierarchy_right.should eql(41)
+    mod.support_hierarchy_left.should eql(39)
+    mod.support_hierarchy_right.should eql(40)
     mod.class.should eql(AlnTermination)
   end
 
   it "should find first supported matching specified condition for the specified aln_resource descendant model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnTermination, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_2]['resource_name']}'") 
-    mod.support_hierarchy_left.should eql(22)
-    mod.support_hierarchy_right.should eql(23)
+    mod.support_hierarchy_left.should eql(37)
+    mod.support_hierarchy_right.should eql(38)
     mod.class.should eql(AlnTermination)
   end
   
@@ -221,9 +221,9 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
   end
 
   it "should find first supported matching specified condition for aln_resource model" do
-    mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'") 
-    mod.support_hierarchy_left.should eql(4)
-    mod.support_hierarchy_right.should eql(5)
+    mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_1]['resource_name']}'") 
+    mod.support_hierarchy_left.should eql(8)
+    mod.support_hierarchy_right.should eql(9)
     mod.class.should eql(AlnResource)
   end
 
@@ -247,7 +247,7 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
   end
 
   it "should find all supported matching specified condition for aln_resource model" do
-    mods = @root.find_in_support_hierarchy_by_model(AlnResource, :all, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'") 
+    mods = @root.find_in_support_hierarchy_by_model(AlnResource, :all, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_1]['resource_name']}'") 
     verify_hierarchy_metadata(mods, @root, AlnResource, model_data[:find_by_model_with_condition_aln_resource_depth_1])
   end
 
@@ -276,24 +276,24 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
 
   it "should find first supported matching specified condition for aln_resource model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'") 
-    mod.support_hierarchy_left.should eql(20)
-    mod.support_hierarchy_right.should eql(21)
+    mod.support_hierarchy_left.should eql(24)
+    mod.support_hierarchy_right.should eql(41)
     mod.support_hierarchy_root_id = @root.id
     mod.class.should eql(AlnResource)
   end
 
   it "should find first supported of the specified aln_resource descendant model" do 
     mod = @root.find_in_support_hierarchy_by_model(AlnTermination, :first) 
-    mod.support_hierarchy_left.should eql(24)
-    mod.support_hierarchy_right.should eql(41)
+    mod.support_hierarchy_left.should eql(39)
+    mod.support_hierarchy_right.should eql(40)
     mod.support_hierarchy_root_id = @root.id
     mod.class.should eql(AlnTermination)
   end
 
   it "should find first supported matching specified condition for the specified aln_resource descendant model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnTermination, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_2]['resource_name']}'") 
-    mod.support_hierarchy_left.should eql(22)
-    mod.support_hierarchy_right.should eql(23)
+    mod.support_hierarchy_left.should eql(37)
+    mod.support_hierarchy_right.should eql(38)
     mod.support_hierarchy_root_id = @root.id
     mod.class.should eql(AlnTermination)
   end
@@ -355,11 +355,11 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
     root << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2]),
              AlnResource.new(model_data[:aln_resource_supported_3]), AlnResource.new(model_data[:aln_resource_supported_4])]
     root.supported(true).first << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
-             AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2])]
+             AlnTermination.new(model_data[:aln_termination_supported_3]), AlnTermination.new(model_data[:aln_termination_supported_4])]
     root.supported(true).last << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2]),
              AlnResource.new(model_data[:aln_resource_supported_3]), AlnResource.new(model_data[:aln_resource_supported_4])]
     root.supported(true).first.supported(true).last << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
-             AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2])]
+             AlnTermination.new(model_data[:aln_termination_supported_3]), AlnTermination.new(model_data[:aln_termination_supported_4])]
     root.supported(true).last.supported(true).last << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2]),
              AlnResource.new(model_data[:aln_resource_supported_3]), AlnResource.new(model_data[:aln_resource_supported_4])]
     @root = AlnResource.find(root.id)
@@ -368,11 +368,11 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
     root_control << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2]),
              AlnResource.new(model_data[:aln_resource_supported_3]), AlnResource.new(model_data[:aln_resource_supported_4])]
     root_control.supported(true).first << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
-             AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2])]
+             AlnTermination.new(model_data[:aln_termination_supported_3]), AlnTermination.new(model_data[:aln_termination_supported_4])]
     root_control.supported(true).last << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2]),
              AlnResource.new(model_data[:aln_resource_supported_3]), AlnResource.new(model_data[:aln_resource_supported_4])]
     root_control.supported(true).first.supported(true).last << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
-             AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2])]
+             AlnTermination.new(model_data[:aln_termination_supported_3]), AlnTermination.new(model_data[:aln_termination_supported_4])]
     root_control.supported(true).last.supported(true).last << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2]),
              AlnResource.new(model_data[:aln_resource_supported_3]), AlnResource.new(model_data[:aln_resource_supported_4])]
     @control_root = AlnResource.find(root_control.id)
@@ -398,11 +398,11 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
     root << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2]),
              AlnResource.new(model_data[:aln_resource_supported_3]), AlnResource.new(model_data[:aln_resource_supported_4])]
     root.supported(true).first << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
-             AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2])]
+             AlnTermination.new(model_data[:aln_termination_supported_3]), AlnTermination.new(model_data[:aln_termination_supported_4])]
     root.supported(true).last << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2]),
              AlnResource.new(model_data[:aln_resource_supported_3]), AlnResource.new(model_data[:aln_resource_supported_4])]
     root.supported(true).first.supported(true).last << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
-             AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2])]
+             AlnTermination.new(model_data[:aln_termination_supported_3]), AlnTermination.new(model_data[:aln_termination_supported_4])]
     root.supported(true).last.supported(true).last << [AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2]),
              AlnResource.new(model_data[:aln_resource_supported_3]), AlnResource.new(model_data[:aln_resource_supported_4])]
     @root = AlnResource.find_support_hierarchy_root_by_model(AlnResource, :first)

@@ -258,29 +258,23 @@ find_by_model_aln_termination_depth_greater_than_1:
    - 37
    - 38
   -
+   - 35
+   - 36
+  -
    - 32
    - 33
   -
    - 30
    - 31
   -
-   - 24
-   - 41
+   - 28
+   - 29
   -
-   - 22
-   - 23
+   - 26
+   - 27
   -
-   - 17
-   - 18
-  -
-   - 15
-   - 16
-  -
-   - 10
-   - 11
-  -
-   - 8
-   - 9
+   - 25
+   - 34
 
 find_by_model_aln_resource_depth_1:
   -
@@ -303,23 +297,23 @@ find_by_model_aln_termination_depth_1:
   -
    - 6
    - 7
+  -
+   - 4
+   - 5
+  -
+   - 2
+   - 3
 
 find_by_model_with_condition_aln_resource_depth_greater_1:
   -
-   - 35
-   - 36
+   - 24
+   - 41
   -
-   - 28
-   - 29
+   - 17
+   - 18
   -
-   - 20
-   - 21
-  -
-   - 13
-   - 14
-  -
-   - 6
-   - 7
+   - 10
+   - 11
 
 find_by_model_with_condition_aln_termination_depth_greater_1:
   -
@@ -328,20 +322,11 @@ find_by_model_with_condition_aln_termination_depth_greater_1:
   -
    - 30
    - 31
-  -
-   - 22
-   - 23
-  -
-   - 15
-   - 16
-  -
-   - 8
-   - 9
 
 find_by_model_with_condition_aln_resource_depth_1:
   -
-   - 4
-   - 5
+   - 8
+   - 9
 
 find_by_model_with_condition_aln_termination_depth_1:
   -
