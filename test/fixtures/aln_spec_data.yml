@@ -249,6 +249,9 @@ find_by_model_aln_resource_depth_greater_than_1:
   - 
    - 2
    - 19
+  - 
+   - 1
+   - 42
       
 find_by_model_aln_termination_depth_greater_than_1:
   -
@@ -289,6 +292,9 @@ find_by_model_aln_resource_depth_1:
   -
    - 2
    - 3
+  -
+   - 1
+   - 10
 
 find_by_model_aln_termination_depth_1:
   -

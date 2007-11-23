@@ -129,13 +129,6 @@ class AlnResource < ActiveRecord::Base
     self.support_hierarchy_right += update_increment
     self.save
     
-    ### if model is not hierahcy root also update root
-    unless root_id.eql?(self.id)
-      hierarchy_root = AlnResource.find(root_id)
-      hierarchy_root.support_hierarchy_right += update_increment
-      hierarchy_root.save
-    end 
-    
   end
 
   ####################################################################################
@@ -218,7 +211,6 @@ class AlnResource < ActiveRecord::Base
     cond = "aln_resources.support_hierarchy_left < #{self.support_hierarchy_left} AND aln_resources.support_hierarchy_right > #{self.support_hierarchy_right} and aln_resources.support_hierarchy_root_id = #{self.class.get_support_hierarchy_root_id(self)}"
     args[0] = :all
     args = self.class.set_order_parameter("aln_resources.support_hierarchy_left ASC", *args)
-    p cond
     self.class.find_by_model_and_condition(cond, model, *args)
   end
 
@@ -252,8 +244,13 @@ class AlnResource < ActiveRecord::Base
 
     #### get support_hierarchy_root_id
     def get_support_hierarchy_root_id(model)
-      model.save if model.id.nil?
-      model.support_hierarchy_root_id.nil? ? model.id : model.support_hierarchy_root_id
+      if model.support_hierarchy_root_id.nil?
+        model = AlnResource.to_aln_resource(model)
+        model.save if model.new_record?
+        model.support_hierarchy_root_id = model.id
+        model.save
+      end
+      model.support_hierarchy_root_id
     end
 
     #### find model with specified condition

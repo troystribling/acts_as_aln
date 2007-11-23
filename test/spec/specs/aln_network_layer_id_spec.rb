@@ -61,16 +61,16 @@ describe "assignement of layer ID for terminations when a support relationship i
     eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
     ip = IpTermination.new(model_data[:ip_termination_1])
 
-    #### create support relationship with no termination resouces    
+    #### create support relationship with non termination resouces    
     @nic << [eth1, eth2]   
     
     #### create support relationship with terminations
     eth1 << ip
     
     #### verify layer ID
-    check_layer_id(EthernetTermination, eth1.id, 1)
-    check_layer_id(EthernetTermination, eth2.id, 1)
-    check_layer_id(IpTermination, ip.id, 0)
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip.id, 1)
 
   end
 
@@ -82,17 +82,17 @@ describe "assignement of layer ID for terminations when a support relationship i
     ip1 = IpTermination.new(model_data[:ip_termination_1])
     ip2 = IpTermination.new(model_data[:ip_termination_2])
 
-    #### create support relationship with no termination resouces    
+    #### create support relationship with non termination resouces    
     @nic << [eth1, eth2]   
     
     #### create support relationship with terminations
     eth1 << [ip1, ip2]
     
     #### verify layer ID
-    check_layer_id(EthernetTermination, eth1.id, 1)
-    check_layer_id(EthernetTermination, eth2.id, 1)
-    check_layer_id(IpTermination, ip1.id, 0)
-    check_layer_id(IpTermination, ip2.id, 0)
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+    check_layer_id(IpTermination, ip2.id, 1)
 
   end
 
@@ -105,7 +105,7 @@ describe "assignement of layer ID for terminations when a support relationship i
     ip2 = IpTermination.new(model_data[:ip_termination_2])
     ip3 = IpTermination.new(model_data[:ip_termination_3])
 
-    #### create support relationship with no termination resouces    
+    #### create support relationship with non termination resouces    
     @nic << [eth1, eth2]   
     
     #### create support relationship with terminations
@@ -113,11 +113,11 @@ describe "assignement of layer ID for terminations when a support relationship i
     eth2 << ip3
     
     #### verify layer ID
-    check_layer_id(EthernetTermination, eth1.id, 1)
-    check_layer_id(EthernetTermination, eth2.id, 1)
-    check_layer_id(IpTermination, ip1.id, 0)
-    check_layer_id(IpTermination, ip2.id, 0)
-    check_layer_id(IpTermination, ip3.id, 0)
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+    check_layer_id(IpTermination, ip2.id, 1)
+    check_layer_id(IpTermination, ip3.id, 1)
 
   end
 
@@ -140,13 +140,63 @@ end
 #########################################################################################################
 describe "assignement of layer ID for terminations when a connection is established where the terminations are not involved in a connection and are not involved support relations with terminations" do
 
+  before(:each) do
+    @nic1 = Nic.new(model_data[:nic_1]) 
+    @nic2 = Nic.new(model_data[:nic_2]) 
+    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :connected_termination_type => :ethernet_termination)
+  end
+
+  after(:each) do
+    @nic.destroy
+    @c.destroy
+  end
+
   it "should be 0 for termination prior to establishment of connection" do 
+
+    #### create terminations
+    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
+
+    #### create support relationship with non termination resouces    
+    @nic << eth  
+    
+    #### verify layer ID
+    check_layer_id(EthernetTermination, eth.id, 0)
+
   end
 
   it "should be 0 for termination after to establishment of connection" do 
+
+    #### create terminations
+    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
+
+    #### create support relationship with non termination resouces    
+    @nic << eth   
+    
+    #### create connection
+    @c << eth
+    
+    #### verify layer ID
+    check_layer_id(EthernetTermination, eth.id, 0)
+
   end
 
   it "should be 0 after establishment of connection with another termination" do 
+
+    #### create terminations
+    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_1])
+
+    #### create support relationship with non termination resouces    
+    @nic1 << eth1   
+    @nic2 << eth2   
+    
+    #### create connection
+    @c << [eth1, eth2]
+    
+    #### verify layer ID
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+
   end
 
 end

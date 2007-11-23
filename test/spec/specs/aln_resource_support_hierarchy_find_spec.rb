@@ -8,14 +8,14 @@ module FindHierarchyHelper
     (0..mods.length-1).each do |idx|
       mods[idx].support_hierarchy_left.should eql(lr_data[idx][0])
       mods[idx].support_hierarchy_right.should eql(lr_data[idx][1])
-      mods[idx].support_hierarchy_root_id = @root.id
+      mods[idx].support_hierarchy_root_id = AlnResource.to_aln_resource(@root).id
       mods[idx].class.should eql(mod_class)
     end
   end
     
 end
 
-#########################################################################################################
+########################################################################################################
 describe "queries for root of support hierarcy" do
 
   it "should find root when root is aln_resource model" do 
@@ -162,8 +162,8 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
 
   it "should find first supported for aln_resource model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first) 
-    mod.support_hierarchy_left.should eql(24)
-    mod.support_hierarchy_right.should eql(41)
+    mod.support_hierarchy_left.should eql(1)
+    mod.support_hierarchy_right.should eql(42)
     mod.class.should eql(AlnResource)
   end
 
@@ -215,8 +215,8 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
 
   it "should find first supported for aln_resource model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first) 
-    mod.support_hierarchy_left.should eql(8)
-    mod.support_hierarchy_right.should eql(9)
+    mod.support_hierarchy_left.should eql(1)
+    mod.support_hierarchy_right.should eql(10)
     mod.class.should eql(AlnResource)
   end
 
@@ -264,63 +264,6 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
 end
 
 ##########################################################################################################
-describe "queries for supported within hierachy from hierarchy root when hiearchy depth is 1 and database contains multiple hierarchy roots", :shared => true  do
-
-  it "should find first supported for aln_resource model" do
-    mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first) 
-    mod.support_hierarchy_left.should eql(24)
-    mod.support_hierarchy_right.should eql(41)
-    mod.support_hierarchy_root_id = @root.id
-    mod.class.should eql(AlnResource)
-  end
-
-  it "should find first supported matching specified condition for aln_resource model" do
-    mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'") 
-    mod.support_hierarchy_left.should eql(24)
-    mod.support_hierarchy_right.should eql(41)
-    mod.support_hierarchy_root_id = @root.id
-    mod.class.should eql(AlnResource)
-  end
-
-  it "should find first supported of the specified aln_resource descendant model" do 
-    mod = @root.find_in_support_hierarchy_by_model(AlnTermination, :first) 
-    mod.support_hierarchy_left.should eql(39)
-    mod.support_hierarchy_right.should eql(40)
-    mod.support_hierarchy_root_id = @root.id
-    mod.class.should eql(AlnTermination)
-  end
-
-  it "should find first supported matching specified condition for the specified aln_resource descendant model" do
-    mod = @root.find_in_support_hierarchy_by_model(AlnTermination, :first, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_2]['resource_name']}'") 
-    mod.support_hierarchy_left.should eql(37)
-    mod.support_hierarchy_right.should eql(38)
-    mod.support_hierarchy_root_id = @root.id
-    mod.class.should eql(AlnTermination)
-  end
-  
-  it "should find all supported aln_resource models" do 
-    mods = @root.find_in_support_hierarchy_by_model(AlnResource, :all)
-    verify_hierarchy_metadata(mods, @root, AlnResource, model_data[:find_by_model_aln_resource_depth_greater_than_1])
-  end
-
-  it "should find all supported matching specified condition for aln_resource model" do
-    mods = @root.find_in_support_hierarchy_by_model(AlnResource, :all, :conditions => "aln_resources.resource_name = '#{model_data[:aln_resource_supported_1]['resource_name']}'") 
-    verify_hierarchy_metadata(mods, @root, AlnResource, model_data[:find_by_model_with_condition_aln_resource_depth_greater_1])
-  end
-
-  it "should find all supported of the specified aln_resource descendant model" do 
-    mods = @root.find_in_support_hierarchy_by_model(AlnTermination, :all)
-    verify_hierarchy_metadata(mods, @root, AlnTermination, model_data[:find_by_model_aln_termination_depth_greater_than_1])
-  end
-
-  it "should find all supported matching specified condition for aln_resource descendant model" do
-    mods = @root.find_in_support_hierarchy_by_model(AlnTermination, :all, :conditions => "aln_resources.resource_name = '#{model_data[:aln_termination_supported_2]['resource_name']}'") 
-    verify_hierarchy_metadata(mods, @root, AlnTermination, model_data[:find_by_model_with_condition_aln_termination_depth_greater_1])
-  end
-
-end
-
-##########################################################################################################
 describe "queries for supporter within hierachy from supported when hiearchy depth is greater than 1", :shared => true  do
 
   it "should return empty array if there are no supporters" do
@@ -328,14 +271,25 @@ describe "queries for supporter within hierachy from supported when hiearchy dep
   end
 
   it "should return array of aln_resource supporters sorted by by decreasing distance from supported when aln_resource is specified model" do
-    sup = @root.supported(true).first.supported(true).last.supported(true).first.find_all_supporters_by_model(AlnResource)
-    sup.each {|s| p s.attributes}
-    sup.length.should eql(3)
+    mods = @root.supported(true).first.supported(true).last.supported(true).first.find_all_supporters_by_model(AlnResource)
+    mods.length.should eql(3)
+    mods[0].support_hierarchy_left.should eql(1)
+    mods[0].support_hierarchy_right.should eql(42)
+    mods[0].support_hierarchy_root_id = AlnResource.to_aln_resource(@root).id
+    mods[1].support_hierarchy_left.should eql(24)
+    mods[1].support_hierarchy_right.should eql(41)
+    mods[1].support_hierarchy_root_id = AlnResource.to_aln_resource(@root).id
+    mods[2].support_hierarchy_left.should eql(25)
+    mods[2].support_hierarchy_right.should eql(34)
+    mods[2].support_hierarchy_root_id = AlnResource.to_aln_resource(@root).id
   end
 
   it "should return array of aln_resource descendant supporters sorted by by decreasing distance from supported when aln_resource descendant is specified model" do
-    sup = @root.supported(true).first.supported(true).last.supported(true).first.find_all_supporters_by_model(AlnTermination)
-    sup.length.should eql(1)
+    mods = @root.supported(true).first.supported(true).last.supported(true).first.find_all_supporters_by_model(AlnTermination)
+    mods.length.should eql(1)
+    mods[0].support_hierarchy_left.should eql(25)
+    mods[0].support_hierarchy_right.should eql(34)
+    mods[0].support_hierarchy_root_id = AlnResource.to_aln_resource(@root).id
   end
 
   it "should return empty array of supporters if support hierarchy does not conatin specified model" do
@@ -345,42 +299,43 @@ describe "queries for supporter within hierachy from supported when hiearchy dep
 end
 
 ##########################################################################################################
-describe "queries for supporter within hierachy from supported when hiearchy depth is greater than 1 and database contains multiple hierarchy roots", :shared => true  do
+describe "queries within hierachy from hierarchy root when hiearchy depth is 0", :shared => true  do
 
-  it "should return empty array if there are no supporters" do
-  end
-
-  it "should return array of supporters sorted by by decreasing distance from supported" do
-  end
-
-end
-
-##########################################################################################################
-describe "queries for supported within hierachy from hierarchy root when hiearchy depth is 0", :shared => true  do
-
-  it "should return nil when quried for first aln_resource model" do
+  it "should return root when queried for first aln_resource model" do
     mod = @root.find_in_support_hierarchy_by_model(AlnResource, :first) 
-    mod.should be_nil
+    mod.should eql(@root.class.to_aln_resource(mod))
   end
 
-  it "should return empty array when queried for all aln_resource models" do 
+  it "should return root when queried for all aln_resource models" do 
     mods = @root.find_in_support_hierarchy_by_model(AlnResource, :all)
-    mods.should be_empty
+    mods.length.should eql(1)
+    mods.first.should eql(@root.class.to_aln_resource(mods.first))
   end
 
-  it "should return nil when quried for first aln_resource descendant model" do
+  it "should return root when queried for first aln_resource descendant model" do
+    mod = @root.find_in_support_hierarchy_by_model(@root.class, :first) 
+    mod.should eql(@root)
+  end
+
+  it "should return root when queried for all aln_resource  descendant model" do 
+    mods = @root.find_in_support_hierarchy_by_model(@root.class, :all)
+    mods.length.should eql(1)
+    mods.first.should eql(@root)
+  end
+
+  it "should return nil when queried for first descendant model which is not a descendant of any model in hierarchy" do
     mod = @root.find_in_support_hierarchy_by_model(AlnTermination, :first) 
     mod.should be_nil
   end
 
-  it "should return empty array when queried for all aln_resource descendant models" do 
+  it "should return nil when queried for all descendant models which is not a descendant of any model in hierarchy" do
     mods = @root.find_in_support_hierarchy_by_model(AlnTermination, :all)
     mods.should be_empty
   end
 
 end
 
-##########################################################################################################
+#########################################################################################################
 describe "queries for supported within hierachy from hierarchy root when hiearchy depth is greater than 1 for aln_resource root"  do
   
   include FindHierarchyHelper
@@ -419,7 +374,9 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
     @control_root.destroy
   end
   
-  it_should_behave_like "queries for supported within hierachy from hierarchy root when hiearchy depth is 1 and database contains multiple hierarchy roots"
+  it_should_behave_like "queries for supported within hierachy from hierarchy root when hiearchy depth is greater than 1"
+  
+  it_should_behave_like "queries for supporter within hierachy from supported when hiearchy depth is greater than 1"
   
 end
 
@@ -462,7 +419,9 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
     @control_root.destroy
   end
   
-  it_should_behave_like "queries for supported within hierachy from hierarchy root when hiearchy depth is 1 and database contains multiple hierarchy roots"
+  it_should_behave_like "queries for supported within hierachy from hierarchy root when hiearchy depth is greater than 1"
+  
+  it_should_behave_like "queries for supporter within hierachy from supported when hiearchy depth is greater than 1"
   
 end
 
@@ -567,7 +526,7 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
 end
 
 ##########################################################################################################
-describe "queries for supported within hierachy from hierarchy root when hiearchy depth is 0 for aln_resource root"  do
+describe "queries within hierachy from hierarchy root when hiearchy depth is 0 for aln_resource root"  do
   
   before(:all) do
     root = AlnResource.new(model_data[:aln_resource])
@@ -579,12 +538,12 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
     @root.destroy
   end
 
-  it_should_behave_like "queries for supported within hierachy from hierarchy root when hiearchy depth is 0"
+  it_should_behave_like "queries within hierachy from hierarchy root when hiearchy depth is 0"
   
 end
 
 ##########################################################################################################
-describe "queries for supported within hierachy from hierarchy root when hiearchy depth is 0 for aln_resource descendant root"  do
+describe "queries within hierachy from hierarchy root when hiearchy depth is 0 for aln_resource descendant root"  do
   
   before(:all) do
     root = Nic.new(model_data[:nic_1])
@@ -596,7 +555,7 @@ describe "queries for supported within hierachy from hierarchy root when hiearch
     @root.destroy
   end
 
-  it_should_behave_like "queries for supported within hierachy from hierarchy root when hiearchy depth is 0"
+  it_should_behave_like "queries within hierachy from hierarchy root when hiearchy depth is 0"
   
 end
 

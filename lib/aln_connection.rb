@@ -24,6 +24,7 @@ class AlnConnection < ActiveRecord::Base
     end
     set_network_id = lambda do |t| 
       t.network_id = self.aln_termination_set.aln_terminations.first.network_id 
+      t.layer_id = self.aln_termination_set.aln_terminations.first.layer_id 
       t.save
       self.aln_termination_set.aln_terminations << AlnTermination.to_aln_termination(t)
     end

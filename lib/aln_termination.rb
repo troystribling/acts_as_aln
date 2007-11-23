@@ -53,6 +53,7 @@ class AlnTermination < ActiveRecord::Base
     new_network_id = self.get_network_id
     set_network_id = lambda do |s|
       s.network_id = new_network_id
+      s.layer_id = self.layer_id + 1
       s.termination_supporter = self
       s.save
     end
@@ -81,19 +82,12 @@ class AlnTermination < ActiveRecord::Base
     end
     self.network_id
   end
-
-  ####################################################################################
-  #### update the layer id
-  def update_layer_id (inc)
-    new_layer_id = self.layer_id + inc
-    old_layer_id = self.layer_id
-    AlnTermination.update_all("layer_id = #{new_layer_id}", "layer_id = #{old_layer_id} AND network_id = #{self.network_id}")
-  end
                    
   ####################################################################################
   # class methods
   class << self
 
+    ####################################################################################
     #### return model aln_termination
     def to_aln_termination(mod)
       if mod.class.eql?(AlnTermination)
@@ -102,6 +96,17 @@ class AlnTermination < ActiveRecord::Base
         mod.aln_termination
       end
     end
+
+  ####################################################################################
+  #### set the layer id for specified network
+  def set_layer_id_for_network (new_layer_id, network_id)
+    AlnTermination.update_all("layer_id = #{new_layer_id}", "layer_id = #{self.layer_id} AND network_id = #{network_id}")
+  end
+
+  ####################################################################################
+  #### get maximum layer_id for specified network
+  def get_max_layer_id_for_network (network_id)
+  end
           
   end
                           
