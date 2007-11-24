@@ -475,7 +475,7 @@ describe "assignement of network ID for terminations when a support relationship
     ip1 = IpTermination.new(model_data[:ip_termination_1])
     ip2 = IpTermination.new(model_data[:ip_termination_2])
 
-    #### create non terminating support relationships
+    #### create nonterminating support relationships
     @nic1 << eth
     @nic2 << ip2
         
@@ -505,7 +505,7 @@ describe "assignement of network ID for terminations when a support relationship
     ip1 = IpTermination.new(model_data[:ip_termination_1])
     ip2 = IpTermination.new(model_data[:ip_termination_2])
 
-    #### create non terminating support relationships
+    #### create nonterminating support relationships
     @nic1 << eth1
     @nic2 << eth2
     @nic3 << ip2
@@ -539,7 +539,7 @@ describe "assignement of network ID for terminations when a support relationship
     ip = IpTermination.new(model_data[:ip_termination_1])
     ip.save
 
-    #### create non terminating support relationships
+    #### create nonterminating support relationships
     @nic1 << eth1
     @nic2 << eth2
         
@@ -593,7 +593,7 @@ describe "assignement of network ID for terminations when a support relationship
     tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
     tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
 
-    #### create non terminating support relationships
+    #### create nonterminating support relationships
     @nic1 << eth
     @nic2 << ip2
 
@@ -633,7 +633,7 @@ describe "assignement of network ID for terminations when a support relationship
     tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
     tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
 
-    #### create non terminating support relationships
+    #### create nonterminating support relationships
     @nic1 << eth1
     @nic2 << eth2
     @nic3 << ip2
@@ -677,7 +677,7 @@ describe "assignement of network ID for terminations when a support relationship
     tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
     tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
 
-    #### create non terminating support relationships
+    #### create nonterminating support relationships
     @nic1 << eth
     @nic2 << ip3
 
@@ -719,7 +719,7 @@ describe "assignement of network ID for terminations when a support relationship
     ip3 = IpTermination.new(model_data[:ip_termination_3])
     ip3.save
 
-    #### create non terminating support relationships
+    #### create nonterminating support relationships
     @nic1 << eth1
     @nic2 << eth2
 
@@ -759,7 +759,7 @@ describe "assignement of network ID for terminations when a support relationship
     ip3 = IpTermination.new(model_data[:ip_termination_3])
     tcp = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
 
-    #### create non terminating support relationships
+    #### create nonterminating support relationships
     @nic1 << eth1
     @nic2 << eth2
 
@@ -802,7 +802,7 @@ describe "assignement of network ID for terminations when a support relationship
     ip3 = IpTermination.new(model_data[:ip_termination_3])
     ip4 = IpTermination.new(model_data[:ip_termination_4])
 
-    #### create non terminating support relationships
+    #### create nonterminating support relationships
     @nic1 << eth1
     @nic2 << eth2
     @nic3 << ip4
@@ -848,7 +848,7 @@ describe "assignement of network ID for terminations when a support relationship
     tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
     tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
 
-    #### create non terminating support relationships
+    #### create nonterminating support relationships
     @nic1 << eth1
     @nic2 << eth2
     @nic3 << ip4
