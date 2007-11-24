@@ -44,7 +44,7 @@ class AlnTermination < ActiveRecord::Base
   #### set supporter
   def termination_supporter=(sup)
     self.create_termination_supporter    
-    @termination_supporter.value = AlnTermination.to_aln_termination(sup)
+    @termination_supporter.value = self.class.to_aln_termination(sup)
   end
 
   ####################################################################################
@@ -64,11 +64,10 @@ class AlnTermination < ActiveRecord::Base
   ####################################################################################
   #### add network 
   def add_network (sup)
-    update_network_id = lambda do |s|
-      s.termination_supporter = self      
-      AlnTermination.update_all("network_id = #{self.get_network_id}", "network_id = #{s.get_network_id}")
-    end
-    sup.class.eql?(Array) ? sup.each{|s| update_network_id[s]} : update_network_id[sup]
+    sup_network_id = sup.get_network_id
+    self.class.update_layer_ids_for_network(sup.layer_id, self.layer_id + 1, sup_network_id)
+    sup.termination_supporter = self  
+    self.class.update_network_id(sup_network_id, self.get_network_id)   
     self.aln_resource.add_support_hierarchy(sup)
   end  
 
@@ -99,14 +98,23 @@ class AlnTermination < ActiveRecord::Base
 
   ####################################################################################
   #### set the layer id for specified network
-  def set_layer_id_for_network (new_layer_id, network_id)
-    AlnTermination.update_all("layer_id = #{new_layer_id}", "layer_id = #{self.layer_id} AND network_id = #{network_id}")
+  def update_layer_ids_for_network (old_layer_id, new_layer_id, network_id)
+    max_layer_id = self.class.find_max_layer_id_by_network_id(network_id)
+    (0..max_layer_id - 1).each do |l| 
+      self.class.update_all("layer_id = #{old_layer_id + l}", "layer_id = #{new_layer_id + l} AND network_id = #{network_id}")
+    end
+  end
+
+  ####################################################################################
+  #### update the specified network ID
+  def update_network_id (old_network_id, new_network_id)
+    self.class.update_all("network_id = #{new_network_id}", "network_id = #{old_network_id}")
   end
 
   ####################################################################################
   #### find maximum layer_id for specified network
   def find_max_layer_id_by_network_id (network_id)
-    AlnTermination.find(:all, :select => "MAX(layer_id)", :conditions => "network_id=#{network_id}")
+    self.class.find(:all, :select => "MAX(layer_id)", :conditions => "network_id=#{network_id}")
   end
           
   end
