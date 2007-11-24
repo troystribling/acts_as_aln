@@ -60,6 +60,8 @@ end
 #########################################################################################################
 describe "assignement of layer ID for terminations when a support relationship is established where none of the terminations are involved in a connection and the added supported are not involved in other support relations with terminations" do
 
+  include LayerIdHelper
+
   before(:each) do
     @nic = Nic.new(model_data[:nic_1]) 
   end
@@ -74,6 +76,7 @@ describe "assignement of layer ID for terminations when a support relationship i
     eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
     eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
     ip = IpTermination.new(model_data[:ip_termination_1])
+    ip.save
 
     #### create initial support relationship with nonterminating resouces    
     @nic << [eth1, eth2]   
@@ -100,6 +103,7 @@ describe "assignement of layer ID for terminations when a support relationship i
     eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
     ip1 = IpTermination.new(model_data[:ip_termination_1])
     ip2 = IpTermination.new(model_data[:ip_termination_2])
+    ip2.save
 
     #### create initial support relationship with nonterminating resouces    
     @nic << [eth1, eth2]   
@@ -132,6 +136,7 @@ describe "assignement of layer ID for terminations when a support relationship i
     ip1 = IpTermination.new(model_data[:ip_termination_1])
     ip2 = IpTermination.new(model_data[:ip_termination_2])
     ip3 = IpTermination.new(model_data[:ip_termination_3])
+    ip3.save
 
     #### create initial support relationship with nonterminating resouces    
     @nic << [eth1, eth2]   
@@ -167,6 +172,7 @@ describe "assignement of layer ID for terminations when a support relationship i
     ip2 = IpTermination.new(model_data[:ip_termination_2])
     ip3 = IpTermination.new(model_data[:ip_termination_3])
     tcp = TcpSocketTermination.new(model_data[:tcp_socket_termination_4])
+    tcp.save
 
     #### create initial support relationship with nonterminating resouces    
     @nic << [eth1, eth2]   
@@ -201,6 +207,8 @@ end
 #########################################################################################################
 describe "assignement of layer ID for terminations when a support relationship is established where the terminations are involved in a connection and the added supported are not involved support relations with terminations" do
 
+  include LayerIdHelper
+
   before(:each) do
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
@@ -208,7 +216,8 @@ describe "assignement of layer ID for terminations when a support relationship i
   end
 
   after(:each) do
-    @nic.destroy
+    @nic1.destroy
+    @nic2.destroy
     @c.destroy
   end
 
@@ -218,6 +227,7 @@ describe "assignement of layer ID for terminations when a support relationship i
     eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
     eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
     ip = IpTermination.new(model_data[:ip_termination_1])
+    ip.save
 
     #### create initial support relationship with nonterminating resouces    
     @nic1 << eth1
@@ -248,6 +258,7 @@ describe "assignement of layer ID for terminations when a support relationship i
     eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
     ip1 = IpTermination.new(model_data[:ip_termination_1])
     ip2 = IpTermination.new(model_data[:ip_termination_2])
+    ip2.save
 
     #### create initial support relationship with nonterminating resouces    
     @nic1 << eth1
@@ -284,6 +295,7 @@ describe "assignement of layer ID for terminations when a support relationship i
     ip1 = IpTermination.new(model_data[:ip_termination_1])
     ip2 = IpTermination.new(model_data[:ip_termination_2])
     ip3 = IpTermination.new(model_data[:ip_termination_3])
+    ip3.save
 
     #### create initial support relationship with nonterminating resouces    
     @nic1 << eth1
@@ -294,14 +306,13 @@ describe "assignement of layer ID for terminations when a support relationship i
     
     #### create initial support relationship with terminating resouces    
     eth1 << [ip1, ip2]
-    eth2 << ip3
 
     #### verify layer id of initial configuration
     check_layer_id(EthernetTermination, eth1.id, 0)
     check_layer_id(EthernetTermination, eth2.id, 0)
     check_layer_id(IpTermination, ip1.id, 1)
     check_layer_id(IpTermination, ip2.id, 1)
-    check_layer_id(IpTermination, ip3.id, 1)
+    check_layer_id(IpTermination, ip3.id, 0)
 
     #### create support relationship with terminations
     eth2 << ip3
@@ -324,6 +335,7 @@ describe "assignement of layer ID for terminations when a support relationship i
     ip2 = IpTermination.new(model_data[:ip_termination_2])
     ip3 = IpTermination.new(model_data[:ip_termination_3])
     tcp = TcpSocketTermination.new(model_data[:tcp_socket_termination_4])
+    tcp.save
 
     #### create initial support relationship with nonterminating resouces    
     @nic1 << eth1
@@ -334,6 +346,7 @@ describe "assignement of layer ID for terminations when a support relationship i
     
     #### create initial support relationship with terminating resouces    
     eth1 << [ip1, ip2]
+    eth2 << ip3
 
     #### verify layer id of initial configuration
     check_layer_id(EthernetTermination, eth1.id, 0)
@@ -361,6 +374,8 @@ end
 #########################################################################################################
 describe "assignement of layer ID for terminations when a support relationship is established where the terminations are not involved in a connection but the added supported terminations are involved in prior support relations with terminations" do
 
+  include LayerIdHelper
+
   it "should increase from 0 to 2 when first supported termination is added if it has a single layer of supported" do 
   end
 
@@ -375,6 +390,8 @@ end
 #########################################################################################################
 describe "assignement of layer ID for terminations when a connection is established where the terminations are not involved in a connection and are not involved support relations with terminations" do
 
+  include LayerIdHelper
+
   before(:each) do
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
@@ -382,7 +399,8 @@ describe "assignement of layer ID for terminations when a connection is establis
   end
 
   after(:each) do
-    @nic.destroy
+    @nic1.destroy
+    @nic2.destroy
     @c.destroy
   end
 
@@ -392,7 +410,7 @@ describe "assignement of layer ID for terminations when a connection is establis
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
 
     #### create support relationship with nonterminating resouces    
-    @nic << eth  
+    @nic1 << eth  
     
     #### verify layer id of final configuration
     check_layer_id(EthernetTermination, eth.id, 0)
@@ -405,7 +423,7 @@ describe "assignement of layer ID for terminations when a connection is establis
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
 
     #### create support relationship with nonterminating resouces    
-    @nic << eth   
+    @nic1 << eth   
     
     #### create connection
     @c << eth
@@ -439,6 +457,8 @@ end
 #########################################################################################################
 describe "assignement of layer ID for terminations when a connection is established where the terminations are not involved in a connection but are involved support relations with terminations" do
 
+  include LayerIdHelper
+
   it "should be 1 for network when connection is established when connected termination has layer ID of 1 and the connecting termination has layer ID of 0" do 
   end
 
@@ -452,6 +472,8 @@ end
 
 #########################################################################################################
 describe "assignement of layer ID for terminations when a connection is established at a supporting layer where terminations are involved in a connection and are involved a support relation with other terminations which are also involved in support relations", :shared => true do
+
+  include LayerIdHelper
 
   it "should be 2 for network when connection is established when connected termination has layer ID of 2 and the connecting termination has layer ID of 1" do 
   end

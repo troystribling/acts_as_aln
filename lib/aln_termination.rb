@@ -104,8 +104,9 @@ class AlnTermination < ActiveRecord::Base
   end
 
   ####################################################################################
-  #### get maximum layer_id for specified network
-  def get_max_layer_id_for_network (network_id)
+  #### find maximum layer_id for specified network
+  def find_max_layer_id_by_network_id (network_id)
+    AlnTermination.find(:all, :select => "MAX(layer_id)", :conditions => "network_id=#{network_id}")
   end
           
   end
