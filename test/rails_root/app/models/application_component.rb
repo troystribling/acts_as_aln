@@ -1,4 +1,4 @@
-class AppMainComponent < ActiveRecord::Base
+class ApplicationComponent < ActiveRecord::Base
   
   ###############################################################
   #### declare descendant associations and ancestor association

@@ -65,10 +65,13 @@ class AlnTermination < ActiveRecord::Base
   #### add network 
   def add_network (sup)
     sup_network_id = sup.get_network_id
+    new_network_id = self.get_network_id
     self.class.update_layer_ids_for_network(sup.layer_id, self.layer_id + 1, sup_network_id)
     sup.layer_id = self.layer_id + 1
     sup.termination_supporter = self  
-    self.class.update_network_id(sup_network_id, self.get_network_id)   
+    sup.network_id = new_network_id
+    self.class.update_network_id(sup_network_id, new_network_id)   
+    sup.save
     self.aln_resource.add_support_hierarchy(sup)
   end  
 
@@ -101,9 +104,8 @@ class AlnTermination < ActiveRecord::Base
   #### set the layer id for specified network
   def update_layer_ids_for_network (old_layer_id, new_layer_id, network_id)
     max_layer_id = self.find_max_layer_id_by_network_id(network_id)
-    p max_layer_id
-    (1..max_layer_id - 1).each do |l| 
-      self.update_all("layer_id = #{old_layer_id + l}", "layer_id = #{new_layer_id + l} AND network_id = #{network_id}")
+    (1..max_layer_id).each do |l| 
+      self.update_all("layer_id = #{new_layer_id + l}", "layer_id = #{old_layer_id + l} AND network_id = #{network_id}")
     end
   end
 

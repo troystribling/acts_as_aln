@@ -47,7 +47,7 @@ class AlnConnection < ActiveRecord::Base
     validate_termination(term)
     unless self.aln_terminations.empty? 
       term_network_id = term.get_network_id
-      term_layer_id = term.get_layer_id
+      term_layer_id = term.layer_id
       connection_network_id = self.aln_termination_set.aln_terminations.first.network_id
       connection_layer_id = self.aln_termination_set.aln_terminations.first.layer_id
       if connection_layer_id > term_layer_id

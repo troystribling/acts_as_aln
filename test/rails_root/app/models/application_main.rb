@@ -1,4 +1,4 @@
-class AppMain < ActiveRecord::Base
+class ApplicationMain < ActiveRecord::Base
   
   ###############################################################
   #### declare ancestor association with aln_resource
