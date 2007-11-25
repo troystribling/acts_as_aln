@@ -48,15 +48,17 @@ class AlnConnection < ActiveRecord::Base
     unless self.aln_terminations.empty? 
       term_network_id = term.get_network_id
       term_layer_id = term.get_layer_id
-      new_network_id = self.aln_termination_set.aln_terminations.first.network_id
-      new_layer_id = self.aln_termination_set.aln_terminations.first.layer_id
-      if new_layer_id > term_layer_id
-        AlnTermination.update_layer_ids_for_network(term_layer_id, new_layer_id + 1, term_network_id)
-      elsif new_layer_id < term_layer_id
-        self.aln_termination_set.aln_terminations.each {|t| AlnTermination.update_layer_ids_for_network(new_layer_id, term_layer_id + 1, new_network_id)}
+      connection_network_id = self.aln_termination_set.aln_terminations.first.network_id
+      connection_layer_id = self.aln_termination_set.aln_terminations.first.layer_id
+      if connection_layer_id > term_layer_id
+        term.layer_id = new_layer_id 
+        AlnTermination.update_layer_ids_for_network(term_layer_id, connection_layer_id, term_network_id)
+      elsif connection_layer_id < term_layer_id
+        self.aln_termination_set.aln_terminations.each {|t| t.layer_id = term_layer_id}
+        AlnTermination.update_layer_ids_for_network(connection_layer_id, term_layer_id, connection_network_id)
       end
-      term.network_id = new_network_id 
-      AlnTermination.update_network_id(term_network_id, new_network_id)
+      term.network_id = connection_layer_id 
+      AlnTermination.update_network_id(term_network_id, connection_network_id)
     else
       term.get_network_id 
     end     

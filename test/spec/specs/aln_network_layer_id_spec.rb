@@ -376,13 +376,146 @@ describe "assignement of layer ID for terminations when a support relationship i
 
   include LayerIdHelper
 
+  before(:each) do
+    @nic = Nic.new(model_data[:nic_1]) 
+  end
+
+  after(:each) do
+    @nic.destroy
+  end
+
   it "should increase from 0 to 2 when first supported termination is added if it has a single layer of supported" do 
+
+    #### create terminations
+    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
+    ip = IpTermination.new(model_data[:ip_termination_1])
+    tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+    tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
+
+    #### create initial support relationship with nonterminating resouces    
+    @nic << [eth1, eth2]   
+        
+    #### create added supported network relationship with terminating resouces    
+    ip << [tcp1, tcp2]
+
+    #### verify layer id of supporter network initial configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+
+    #### verify layer id of supported network initial configuration
+    check_layer_id(IpTermination, ip.id, 0)
+    check_layer_id(TcpSocketTermination, tcp1.id, 1)
+    check_layer_id(TcpSocketTermination, tcp2.id, 1)
+
+    #### create support relationship with supporter network
+    eth1 << ip
+    
+    #### verify layer id of final configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip.id, 1)
+    check_layer_id(TcpSocketTermination, tcp1.id, 2)
+    check_layer_id(TcpSocketTermination, tcp2.id, 2)
+
   end
 
   it "should remain 2 when another supported termination is addd with only a single layer of supported" do 
+
+    #### create terminations
+    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+    tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
+    tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
+    tcp4 = TcpSocketTermination.new(model_data[:tcp_socket_termination_4])
+
+    #### create initial support relationship with nonterminating resouces    
+    @nic << [eth1, eth2]   
+        
+    #### create supporter network relationship with terminating resouces
+    eth1 << ip1    
+    ip1 << [tcp1, tcp2]
+
+    #### create added supported network relationship with terminating resouces    
+    ip2 << [tcp3, tcp4]
+
+    #### verify layer id of supporter network initial configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+    check_layer_id(TcpSocketTermination, tcp1.id, 2)
+    check_layer_id(TcpSocketTermination, tcp2.id, 2)
+
+    #### verify layer id of supported network initial configuration
+    check_layer_id(IpTermination, ip2.id, 0)
+    check_layer_id(TcpSocketTermination, tcp3.id, 1)
+    check_layer_id(TcpSocketTermination, tcp4.id, 1)
+
+    #### create support relationship with supporter network
+    eth1 << ip2
+    
+    #### verify layer id of final configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+    check_layer_id(IpTermination, ip2.id, 1)
+    check_layer_id(TcpSocketTermination, tcp1.id, 2)
+    check_layer_id(TcpSocketTermination, tcp2.id, 2)
+    check_layer_id(TcpSocketTermination, tcp3.id, 2)
+    check_layer_id(TcpSocketTermination, tcp4.id, 2)
+
   end
 
-  it "should remain 2 when oanther supported termination is added with only a single layer of supported to another termination with the same layer ID" do 
+  it "should remain 2 when supported termination is added with a single layer of supported to another termination with the same layer ID bur no supported" do 
+
+    #### create terminations
+    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+    tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
+    tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
+    tcp4 = TcpSocketTermination.new(model_data[:tcp_socket_termination_4])
+
+    #### create initial support relationship with nonterminating resouces    
+    @nic << [eth1, eth2]   
+        
+    #### create supporter network relationship with terminating resouces
+    eth1 << ip1    
+    ip1 << [tcp1, tcp2]
+
+    #### create added supported network relationship with terminating resouces    
+    ip2 << [tcp3, tcp4]
+
+    #### verify layer id of supporter network initial configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+    check_layer_id(TcpSocketTermination, tcp1.id, 2)
+    check_layer_id(TcpSocketTermination, tcp2.id, 2)
+
+    #### verify layer id of supported network initial configuration
+    check_layer_id(IpTermination, ip2.id, 0)
+    check_layer_id(TcpSocketTermination, tcp3.id, 1)
+    check_layer_id(TcpSocketTermination, tcp4.id, 1)
+
+    #### create support relationship with supporter network
+    eth2 << ip2
+    
+    #### verify layer id of final configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+    check_layer_id(IpTermination, ip2.id, 1)
+    check_layer_id(TcpSocketTermination, tcp1.id, 2)
+    check_layer_id(TcpSocketTermination, tcp2.id, 2)
+    check_layer_id(TcpSocketTermination, tcp3.id, 2)
+    check_layer_id(TcpSocketTermination, tcp4.id, 2)
+
   end
 
 end
@@ -459,13 +592,107 @@ describe "assignement of layer ID for terminations when a connection is establis
 
   include LayerIdHelper
 
+  before(:each) do
+    @nic1 = Nic.new(model_data[:nic_1]) 
+    @nic2 = Nic.new(model_data[:nic_2]) 
+    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :connected_termination_type => :ethernet_termination)
+  end
+
+  after(:each) do
+    @nic1.destroy
+    @nic2.destroy
+    @c.destroy
+  end
+
   it "should be 1 for network when connection is established when connected termination has layer ID of 1 and the connecting termination has layer ID of 0" do 
+
+    #### create terminations
+    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+
+    #### create initial support relationship with nonterminating resouces    
+    @nic1 << eth1   
+    @nic2 << eth2   
+        
+    #### create supporter network relationship with terminating resouces
+    eth1 << ip1    
+
+    #### verify layer id of initial configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+
+    #### create connection
+    @c << [eth1, eth2]
+    
+    #### verify layer id of final configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+
   end
 
   it "should be 1 for network when connection is established when connected termination has layer ID of 1 and the connecting termination has layer ID of 1" do 
+
+    #### create terminations
+    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+
+    #### create initial support relationship with nonterminating resouces    
+    @nic1 << eth1   
+    @nic2 << eth2   
+        
+    #### create supporter network relationship with terminating resouces
+    eth1 << ip1    
+    eth2 << ip2    
+
+    #### verify layer id of initial configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+    check_layer_id(IpTermination, ip2.id, 1)
+
+    #### create connection
+    @c << [eth1, eth2]
+    
+    #### verify layer id of final configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+    check_layer_id(IpTermination, ip2.id, 1)
+
   end
 
   it "should be 1 for network when connection is established when connected termination has layer ID of 0 and the connecting termination has layer ID of 1" do 
+
+    #### create terminations
+    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+
+    #### create initial support relationship with nonterminating resouces    
+    @nic1 << eth1   
+    @nic2 << eth2   
+        
+    #### create supporter network relationship with terminating resouces
+    eth2 << ip1    
+
+    #### verify layer id of initial configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+
+    #### create connection
+    @c << [eth1, eth2]
+    
+    #### verify layer id of final configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+
   end
 
 end
@@ -474,6 +701,22 @@ end
 describe "assignement of layer ID for terminations when a connection is established at a supporting layer where terminations are involved in a connection and are involved a support relation with other terminations which are also involved in support relations", :shared => true do
 
   include LayerIdHelper
+
+  before(:each) do
+    @nic1 = Nic.new(model_data[:nic_1]) 
+    @nic2 = Nic.new(model_data[:nic_2]) 
+    @nic3 = Nic.new(model_data[:nic_3]) 
+    @cip = AlnConnection.new(:resource_name => 'ip_connection', :connected_termination_type => :ip_termination)
+    @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :connected_termination_type => :tcp_socket_termination)
+  end
+
+  after(:each) do
+    @nic1.destroy
+    @nic2.destroy
+    @nic3.destroy
+    @cip.destroy
+    @ctcp.destroy
+  end
 
   it "should be 2 for network when connection is established when connected termination has layer ID of 2 and the connecting termination has layer ID of 1" do 
   end
