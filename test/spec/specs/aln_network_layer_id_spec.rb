@@ -716,107 +716,107 @@ describe "assignement of layer ID for terminations when a connection is establis
     @ctcp.destroy
   end
 
-  it "should be 1 for network when connection is established when connected termination has layer ID of 1 and the connecting termination has layer ID of 1" do
-
-    #### create terminations
-    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
-    eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
-    ip1 = IpTermination.new(model_data[:ip_termination_1])
-    ip2 = IpTermination.new(model_data[:ip_termination_2])
-
-    #### create initial support relationship with nonterminating resouces    
-    @nic1 << eth1   
-    @nic2 << eth2   
-        
-    #### create supporter network relationship with terminating resouces
-    eth1 << ip1    
-    eth2 << ip2    
-
-    #### verify layer id of initial configuration
-    check_layer_id(EthernetTermination, eth1.id, 0)
-    check_layer_id(EthernetTermination, eth2.id, 0)
-    check_layer_id(IpTermination, ip1.id, 1)
-    check_layer_id(IpTermination, ip2.id, 1)
-
-    #### create connection
-    @cip.add_network(ip1) 
-    @cip.add_network(ip2)
-    
-    #### verify layer id of final configuration
-    check_layer_id(EthernetTermination, eth1.id, 0)
-    check_layer_id(EthernetTermination, eth2.id, 0)
-    check_layer_id(IpTermination, ip1.id, 1)
-    check_layer_id(IpTermination, ip2.id, 1)
-     
-  end
-
-  it "should be 1 for network when connection is established when connected termination has layer ID of 0 and the connecting termination has layer ID of 1" do 
-
-    #### create terminations
-    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
-    eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
-    ip1 = IpTermination.new(model_data[:ip_termination_1])
-    ip2 = IpTermination.new(model_data[:ip_termination_2])
-
-    #### create initial support relationship with nonterminating resouces    
-    @server << @nic1   
-    @nic1 << ip1
-    @nic2 << eth2   
-        
-    #### create supporter network relationship with terminating resouces
-    eth2 << ip2    
-
-    #### verify layer id of initial configuration
-    check_layer_id(EthernetTermination, eth2.id, 0)
-    check_layer_id(IpTermination, ip2.id, 1)
-    check_layer_id(IpTermination, ip1.id, 0)
-
-    #### create connection
-    @cip.add_network(ip1) 
-    @cip.add_network(ip2)
-    
-    #### verify layer id of final configuration
-    check_layer_id(EthernetTermination, eth2.id, 0)
-    check_layer_id(IpTermination, ip1.id, 1)
-    check_layer_id(IpTermination, ip2.id, 1)
-
-  end
-
-  it "should be 2 for network when connection is established when connected termination has layer ID of 1 and the connecting termination has layer ID of 1" do 
-
-    #### create terminations
-    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
-    eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
-    ip1 = IpTermination.new(model_data[:ip_termination_1])
-    ip2 = IpTermination.new(model_data[:ip_termination_2])
-    tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
-
-    #### create initial support relationship with nonterminating resouces    
-    @server << @nic1   
-    @nic1 << ip1
-    @nic2 << eth2   
-        
-    #### create supporter network relationship with terminating resouces
-    ip1 << tcp1
-    eth2 << ip2    
-
-    #### verify layer id of initial configuration
-    check_layer_id(EthernetTermination, eth2.id, 0)
-    check_layer_id(IpTermination, ip2.id, 1)
-    check_layer_id(IpTermination, ip1.id, 0)
-    check_layer_id(TcpSocketTermination, tcp1.id, 1)
-
-    #### create connection
-    @cip.add_network(ip1)
-    @cip.add_network(ip2)
-    
-    #### verify layer id of final configuration
-    check_layer_id(EthernetTermination, eth2.id, 0)
-    check_layer_id(IpTermination, ip1.id, 1)
-    check_layer_id(IpTermination, ip2.id, 1)
-    check_layer_id(TcpSocketTermination, tcp1.id, 2)
-
-  end
+#  it "should be 1 for network when connection is established when connected termination has layer ID of 1 and the connecting termination has layer ID of 1" do
+#
+#    #### create terminations
+#    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+#    eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
+#    ip1 = IpTermination.new(model_data[:ip_termination_1])
+#    ip2 = IpTermination.new(model_data[:ip_termination_2])
+#
+#    #### create initial support relationship with nonterminating resouces    
+#    @nic1 << eth1   
+#    @nic2 << eth2   
+#        
+#    #### create supporter network relationship with terminating resouces
+#    eth1 << ip1    
+#    eth2 << ip2    
+#
+#    #### verify layer id of initial configuration
+#    check_layer_id(EthernetTermination, eth1.id, 0)
+#    check_layer_id(EthernetTermination, eth2.id, 0)
+#    check_layer_id(IpTermination, ip1.id, 1)
+#    check_layer_id(IpTermination, ip2.id, 1)
+#
+#    #### create connection
+#    @cip.add_network(ip1) 
+#    @cip.add_network(ip2)
+#    
+#    #### verify layer id of final configuration
+#    check_layer_id(EthernetTermination, eth1.id, 0)
+#    check_layer_id(EthernetTermination, eth2.id, 0)
+#    check_layer_id(IpTermination, ip1.id, 1)
+#    check_layer_id(IpTermination, ip2.id, 1)
+#     
+#  end
+#
+#  it "should be 1 for network when connection is established when connected termination has layer ID of 0 and the connecting termination has layer ID of 1" do 
+#
+#    #### create terminations
+#    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+#    eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
+#    ip1 = IpTermination.new(model_data[:ip_termination_1])
+#    ip2 = IpTermination.new(model_data[:ip_termination_2])
+#
+#    #### create initial support relationship with nonterminating resouces    
+#    @server << @nic1   
+#    @nic1 << ip1
+#    @nic2 << eth2   
+#        
+#    #### create supporter network relationship with terminating resouces
+#    eth2 << ip2    
+#
+#    #### verify layer id of initial configuration
+#    check_layer_id(EthernetTermination, eth2.id, 0)
+#    check_layer_id(IpTermination, ip2.id, 1)
+#    check_layer_id(IpTermination, ip1.id, 0)
+#
+#    #### create connection
+#    @cip.add_network(ip1) 
+#    @cip.add_network(ip2)
+#    
+#    #### verify layer id of final configuration
+#    check_layer_id(EthernetTermination, eth2.id, 0)
+#    check_layer_id(IpTermination, ip1.id, 1)
+#    check_layer_id(IpTermination, ip2.id, 1)
+#
+#  end
+#
+#  it "should be 2 for network when connection is established when connected termination has layer ID of 1 and the connecting termination has layer ID of 1" do 
+#
+#    #### create terminations
+#    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+#    eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
+#    ip1 = IpTermination.new(model_data[:ip_termination_1])
+#    ip2 = IpTermination.new(model_data[:ip_termination_2])
+#    tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
+#
+#    #### create initial support relationship with nonterminating resouces    
+#    @server << @nic1   
+#    @nic1 << ip1
+#    @nic2 << eth2   
+#        
+#    #### create supporter network relationship with terminating resouces
+#    ip1 << tcp1
+#    eth2 << ip2    
+#
+#    #### verify layer id of initial configuration
+#    check_layer_id(EthernetTermination, eth2.id, 0)
+#    check_layer_id(IpTermination, ip2.id, 1)
+#    check_layer_id(IpTermination, ip1.id, 0)
+#    check_layer_id(TcpSocketTermination, tcp1.id, 1)
+#
+#    #### create connection
+#    @cip.add_network(ip1)
+#    @cip.add_network(ip2)
+#    
+#    #### verify layer id of final configuration
+#    check_layer_id(EthernetTermination, eth2.id, 0)
+#    check_layer_id(IpTermination, ip1.id, 1)
+#    check_layer_id(IpTermination, ip2.id, 1)
+#    check_layer_id(TcpSocketTermination, tcp1.id, 2)
+#
+#  end
 
   it "should be 2 for network when connection is established when connected termination has layer ID of 1 and has a supported that is inviolved in a connection and the connecting termination has layer ID of 2" do 
 
@@ -843,11 +843,11 @@ describe "assignement of layer ID for terminations when a connection is establis
     @ctcp << [tcp1, tcp2]
     
     #### verify layer id of initial configuration
+    check_layer_id(TcpSocketTermination, tcp1.id, 0)
+    check_layer_id(IpTermination, ip2.id, 0)
+    check_layer_id(TcpSocketTermination, tcp2.id, 1)
     check_layer_id(EthernetTermination, eth3.id, 0)
     check_layer_id(IpTermination, ip3.id, 1)
-    check_layer_id(IpTermination, ip2.id, 0)
-    check_layer_id(TcpSocketTermination, tcp1.id, 1)
-    check_layer_id(TcpSocketTermination, tcp2.id, 1)
 
     #### create connection
     @cip.add_network(ip2)
@@ -862,4 +862,13 @@ describe "assignement of layer ID for terminations when a connection is establis
 
   end
 
+end
+
+##########################################################################################################
+describe "assignement of layer ID for terminations when a connection is established as order terminations are added to connection is varied" do
+end
+
+
+##########################################################################################################
+describe "assignement of layer ID for terminations when a connection is established with more than three terminations" do
 end

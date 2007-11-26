@@ -17,26 +17,26 @@ class AlnConnection < ActiveRecord::Base
   ####################################################################################
   #### add termination to connection
   def << (term)    
-    validate_termination(term)
-    set_first_network_id = lambda do |t| 
+    validate_termination(term)    
+    add_first_term = lambda do |t| 
       t.get_network_id 
       self.aln_termination_set.aln_terminations << AlnTermination.to_aln_termination(t)
     end
-    set_network_id = lambda do |t| 
+    add_term = lambda do |t| 
+      self.update_layer_id(term, false)
       t.network_id = self.aln_termination_set.aln_terminations.first.network_id 
-      t.layer_id = self.aln_termination_set.aln_terminations.first.layer_id 
       t.save
       self.aln_termination_set.aln_terminations << AlnTermination.to_aln_termination(t)
     end
     if self.aln_terminations.empty?
       if term.class.eql?(Array) 
-        set_first_network_id[term.shift]
-        term.each{|t| set_network_id[t]} 
+        add_first_term[term.shift]
+        term.each{|t| add_term[t]} 
       else
-        set_first_network_id[term]
+        add_first_term[term]
       end
     else
-      term.class.eql?(Array) ? term.each{|t| set_network_id[t]} : set_network_id[term]
+      term.class.eql?(Array) ? term.each{|t| add_term[t]} : add_term[term]
     end
     self.save
   end  
@@ -46,25 +46,30 @@ class AlnConnection < ActiveRecord::Base
   def add_network (term)
     validate_termination(term)
     unless self.aln_terminations.empty? 
-      term_network_id = term.get_network_id
-      term_layer_id = term.layer_id
+      self.update_layer_id(term, true)
       connection_network_id = self.aln_termination_set.aln_terminations.first.network_id
-      connection_layer_id = self.aln_termination_set.aln_terminations.first.layer_id
-      if connection_layer_id > term_layer_id
-        term.layer_id = new_layer_id 
-        AlnTermination.update_layer_ids_for_network(term_layer_id, connection_layer_id, term_network_id)
-      elsif connection_layer_id < term_layer_id
-        self.aln_termination_set.aln_terminations.each {|t| t.layer_id = term_layer_id}
-        AlnTermination.update_layer_ids_for_network(connection_layer_id, term_layer_id, connection_network_id)
-      end
-      term.network_id = connection_layer_id 
-      AlnTermination.update_network_id(term_network_id, connection_network_id)
+      AlnTermination.update_network_id(term.get_network_id, connection_network_id)
+      term.network_id = connection_network_id 
     else
       term.get_network_id 
     end     
     self.aln_termination_set.aln_terminations << AlnTermination.to_aln_termination(term)
     self.save
   end  
+
+  ####################################################################################
+  #### update layer_id
+  def update_layer_id (term, update_all)
+    term_layer_id = term.layer_id
+    connection_layer_id = self.aln_termination_set.aln_terminations.first.layer_id
+    if connection_layer_id > term_layer_id
+      term.layer_id = connection_layer_id 
+      AlnTermination.update_layer_ids_for_network(term_layer_id, connection_layer_id, term.get_network_id) if update_all
+    elsif connection_layer_id < term_layer_id
+      self.aln_termination_set.aln_terminations.each {|t| t.layer_id = term_layer_id}
+      AlnTermination.update_layer_ids_for_network(connection_layer_id, term_layer_id, self.aln_termination_set.aln_terminations.first.network_id) if update_all
+    end
+  end
 
   ####################################################################################
   #### validate termination class
