@@ -48,13 +48,15 @@ class AlnConnection < ActiveRecord::Base
     unless self.aln_terminations.empty? 
       self.update_layer_id(term, true)
       connection_network_id = self.aln_termination_set.aln_terminations.first.network_id
-      AlnTermination.update_network_id(term.get_network_id, connection_network_id)
-      term.network_id = connection_network_id 
+      term_network_id = term.get_network_id
+      term.network_id = connection_network_id
+      term.save
+      AlnTermination.update_network_id(term_network_id, connection_network_id)
     else
       term.get_network_id 
     end     
-    self.save
     self.aln_termination_set.aln_terminations << AlnTermination.to_aln_termination(term)
+    self.save
   end  
 
   ####################################################################################

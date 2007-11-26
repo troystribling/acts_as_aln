@@ -867,9 +867,131 @@ end
 
 ##########################################################################################################
 describe "assignement of layer ID for terminations when a connection is established as order terminations are added to connection is varied" do
+
+  include LayerIdHelper
+
+  before(:each) do
+    @server = Server.new(model_data[:server_1])
+    @application_main = ApplicationMain.new(model_data[:application_main_1])
+    @nic1 = Nic.new(model_data[:nic_1]) 
+    @nic2 = Nic.new(model_data[:nic_2]) 
+    @nic3 = Nic.new(model_data[:nic_3]) 
+    @cip = AlnConnection.new(:resource_name => 'ip_connection', :connected_termination_type => :ip_termination)
+    @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :connected_termination_type => :tcp_socket_termination)
+  end
+
+  after(:each) do
+    @server.destroy
+    @application_main.destroy    
+    @nic1.destroy
+    @nic2.destroy
+    @nic3.destroy
+    @cip.destroy
+    @ctcp.destroy
+  end
+
+  it "should be identical when a connection established between two terminations with different layer IDs (configuration 1)" do 
+
+    #### create terminations
+    eth3 = EthernetTermination.new(model_data[:ethernet_termination_3])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    ip3 = IpTermination.new(model_data[:ip_termination_3])
+    tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+    tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
+    tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
+
+    #### create initial support relationship with nonterminating resouces    
+    @server << [@application_main, @nic2]   
+    @application_main << @nic1
+    @nic1 << tcp1
+    @nic2 << ip2
+    @nic3 << eth3   
+        
+    #### create supporter network relationship with terminating resouces
+    ip2 << tcp2
+    eth3 << ip3    
+    
+    #### create prior connections
+    @ctcp.add_network(tcp2)
+    @ctcp.add_network(tcp1)
+    
+    #### verify layer id of initial configuration
+    check_layer_id(IpTermination, ip2.id, 0)
+    check_layer_id(TcpSocketTermination, tcp1.id, 1)
+    check_layer_id(TcpSocketTermination, tcp2.id, 1)
+    check_layer_id(EthernetTermination, eth3.id, 0)
+    check_layer_id(IpTermination, ip3.id, 1)
+
+    #### create connection
+    @cip.add_network(ip2)
+    @cip.add_network(ip3)
+    
+    #### verify layer id of final configuration
+    check_layer_id(EthernetTermination, eth3.id, 0)
+    check_layer_id(IpTermination, ip3.id, 1)
+    check_layer_id(IpTermination, ip2.id, 1)
+    check_layer_id(TcpSocketTermination, tcp1.id, 2)
+    check_layer_id(TcpSocketTermination, tcp2.id, 2)
+
+  end
+
+  it "should be identical when a connection established between two terminations with different layer IDs (configurtaion 2)" do 
+
+    #### create terminations
+    eth3 = EthernetTermination.new(model_data[:ethernet_termination_3])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    ip3 = IpTermination.new(model_data[:ip_termination_3])
+    tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+    tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
+    tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
+
+    #### create initial support relationship with nonterminating resouces    
+    @server << [@application_main, @nic2]   
+    @application_main << @nic1
+    @nic1 << tcp1
+    @nic2 << ip2
+    @nic3 << eth3   
+        
+    #### create supporter network relationship with terminating resouces
+    ip2 << tcp2
+    eth3 << ip3    
+    
+    #### create prior connections
+    @ctcp.add_network(tcp1)
+    @ctcp.add_network(tcp2)
+    
+    #### verify layer id of initial configuration
+    check_layer_id(IpTermination, ip2.id, 0)
+    check_layer_id(TcpSocketTermination, tcp1.id, 1)
+    check_layer_id(TcpSocketTermination, tcp2.id, 1)
+    check_layer_id(EthernetTermination, eth3.id, 0)
+    check_layer_id(IpTermination, ip3.id, 1)
+
+    #### reload models prior to building connection since some metadata was updated during privious operations
+    ip2 = AlnTermination.find(ip2.aln_termination_id).to_descendant
+    
+    #### create connection
+    @cip.add_network(ip3)
+    @cip.add_network(ip2)
+    
+    #### verify layer id of final configuration
+    check_layer_id(EthernetTermination, eth3.id, 0)
+    check_layer_id(IpTermination, ip3.id, 1)
+    check_layer_id(IpTermination, ip2.id, 1)
+    check_layer_id(TcpSocketTermination, tcp1.id, 2)
+    check_layer_id(TcpSocketTermination, tcp2.id, 2)
+
+  end
+  
 end
 
 
 ##########################################################################################################
-describe "assignement of layer ID for terminations when a connection is established with more than three terminations" do
+describe "assignement of layer ID for terminations when a connection is established with more than two terminations" do
 end
+
+
+##########################################################################################################
+describe "assignement of layer ID for terminations for a network with more than three layers" do
+end
+
