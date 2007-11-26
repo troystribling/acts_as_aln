@@ -23,7 +23,7 @@ class AlnConnection < ActiveRecord::Base
       self.aln_termination_set.aln_terminations << AlnTermination.to_aln_termination(t)
     end
     add_term = lambda do |t| 
-      self.update_layer_id(term, false)
+      self.update_layer_id(t, false)
       t.network_id = self.aln_termination_set.aln_terminations.first.network_id 
       t.save
       self.aln_termination_set.aln_terminations << AlnTermination.to_aln_termination(t)
@@ -53,8 +53,8 @@ class AlnConnection < ActiveRecord::Base
     else
       term.get_network_id 
     end     
-    self.aln_termination_set.aln_terminations << AlnTermination.to_aln_termination(term)
     self.save
+    self.aln_termination_set.aln_terminations << AlnTermination.to_aln_termination(term)
   end  
 
   ####################################################################################

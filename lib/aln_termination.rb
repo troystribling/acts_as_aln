@@ -118,7 +118,7 @@ class AlnTermination < ActiveRecord::Base
   ####################################################################################
   #### find maximum layer_id for specified network
   def find_max_layer_id_by_network_id (network_id)
-    self.find(:all, :select => "MAX(layer_id)", :conditions => "network_id=#{network_id}").first.attributes["MAX(layer_id)"].to_i
+    self.find_by_sql("SELECT MAX(layer_id) FROM aln_terminations WHERE network_id=#{network_id}").first.attributes["MAX(layer_id)"].to_i
   end
           
   end
