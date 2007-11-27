@@ -818,7 +818,7 @@ describe "assignement of layer ID for terminations when a connection is establis
 
   end
 
-  it "should be 2 for network when connection is established when connected termination has layer ID of 1 and has a supported that is inviolved in a connection and the connecting termination has layer ID of 2" do 
+  it "should be 2 for network when connection is established when connected termination has layer ID of 1 and has a supported that is inviolved in a connection and the connecting termination has layer ID of 1" do 
 
     #### create terminations
     eth3 = EthernetTermination.new(model_data[:ethernet_termination_3])
@@ -967,7 +967,7 @@ describe "assignement of layer ID for terminations when a connection is establis
     check_layer_id(EthernetTermination, eth3.id, 0)
     check_layer_id(IpTermination, ip3.id, 1)
 
-    #### reload models prior to building connection since some metadata was updated during privious operations
+    #### reload model prior to building connection since some metadata was updated during privious operations
     ip2 = AlnTermination.find(ip2.aln_termination_id).to_descendant
     
     #### create connection
@@ -988,6 +988,84 @@ end
 
 ##########################################################################################################
 describe "assignement of layer ID for terminations when a connection is established with more than two terminations" do
+
+  include LayerIdHelper
+
+  before(:each) do
+    @server = Server.new(model_data[:server_1])
+    @application_main = ApplicationMain.new(model_data[:application_main_1])    
+    @nic3 = Nic.new(model_data[:nic_3]) 
+    @nic4 = Nic.new(model_data[:nic_4]) 
+    @cip = AlnConnection.new(:resource_name => 'ip_connection', :connected_termination_type => :ip_termination)
+    @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :connected_termination_type => :tcp_socket_termination)
+  end
+
+  after(:each) do
+    @server.destroy
+    @application_main.destroy    
+    @nic3.destroy
+    @nic4.destroy
+    @cip.destroy
+    @ctcp.destroy
+  end
+
+  it "should be 2 for network when third connection is established when connected termination has layer ID of 1 and connecting termination has layer ID of 1" do 
+  
+    #### create terminations
+    eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    ip3 = IpTermination.new(model_data[:ip_termination_3])
+    tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
+    tcp4 = TcpSocketTermination.new(model_data[:tcp_socket_termination_4])
+
+    #### create initial support relationship with nonterminating resouces    
+    @server << [@application_main, @nic3]   
+    @application_main << @nic4   
+    @nic3 << ip3  
+    @nic4 << tcp4
+
+    @nic1 << eth1
+    @nic2 << eth2
+        
+    #### create supporter network relationship with terminating resouces
+    eth1 << ip1    
+    eth2 << ip2    
+    ip3 << tcp3
+    
+    #### create prior connections
+    @ctcp.add_network(tcp3)
+    @ctcp.add_network(tcp4)
+    @cip << [ip2, ip2]
+    
+    #### verify layer id of initial configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+    check_layer_id(IpTermination, ip2.id, 1)
+    
+    check_layer_id(IpTermination, ip3.id, 0)
+    check_layer_id(TcpSocketTermination, tcp3.id, 1)
+    check_layer_id(TcpSocketTermination, tcp4.id, 1)
+
+    #### reload model prior to building connection since some metadata was updated during privious operations
+    ip3 = AlnTermination.find(ip2.aln_termination_id).to_descendant
+
+    #### create connection
+    @cip.add_network(ip3)
+    
+    #### verify layer id of final configuration
+    check_layer_id(EthernetTermination, eth1.id, 0)
+    check_layer_id(EthernetTermination, eth2.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+    check_layer_id(IpTermination, ip2.id, 1)    
+    check_layer_id(IpTermination, ip3.id, 1)
+    check_layer_id(TcpSocketTermination, tcp3.id, 2)
+    check_layer_id(TcpSocketTermination, tcp4.id, 2)
+    
+  end
+
 end
 
 
