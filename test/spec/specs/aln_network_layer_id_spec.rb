@@ -598,7 +598,7 @@ describe "assignement of layer ID for terminations when a connection is establis
     @c.destroy
   end
 
-  it "should be 1 for network when connection is established when connected termination has layer ID of 1 and the connecting termination has layer ID of 0" do 
+  it "should be 1 for network when connection is established when connected termination is in a network with maximum layer ID of 1 and the connecting termination is in a network with maximum layer ID of 0" do 
 
     #### create terminations
     eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -627,7 +627,7 @@ describe "assignement of layer ID for terminations when a connection is establis
 
   end
 
-  it "should be 1 for network when connection is established when connected termination has layer ID of 1 and the connecting termination has layer ID of 1" do 
+  it "should be 1 for network when connection is established when connected termination is in a network with maximum layer ID of 1 and the connecting termination is in a network with maximum layer ID of 1" do 
 
     #### create terminations
     eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -660,7 +660,7 @@ describe "assignement of layer ID for terminations when a connection is establis
 
   end
 
-  it "should be 1 for network when connection is established when connected termination has layer ID of 0 and the connecting termination has layer ID of 1" do 
+  it "should be 1 for network when connection is established when connected termination is in a network with maximum layer ID of 0 and the connecting termination is in a network with maximum layer ID of 1" do 
 
     #### create terminations
     eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -782,7 +782,7 @@ describe "assignement of layer ID for terminations when a connection is establis
 
   end
 
-  it "should be 2 for network when connection is established when connected termination has layer ID of 1 and the connecting termination has layer ID of 1" do 
+  it "should be 2 for network when connection is established between networks when one has maximum layer ID of 1 and the other has maximum layer ID of 1" do 
 
     #### create terminations
     eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -818,7 +818,7 @@ describe "assignement of layer ID for terminations when a connection is establis
 
   end
 
-  it "should be 2 for network when connection is established when connected termination has layer ID of 1 and has a supported that is inviolved in a connection and the connecting termination has layer ID of 1" do 
+  it "should be 2 for network when connection is established between networks when one has maximum layer ID of 1 and the other has maximum layer ID of 1" do 
 
     #### create terminations
     eth3 = EthernetTermination.new(model_data[:ethernet_termination_3])
@@ -890,7 +890,7 @@ describe "assignement of layer ID for terminations when a connection is establis
     @ctcp.destroy
   end
 
-  it "should be identical when a connection established between two terminations with different layer IDs (configuration 1)" do 
+  it "should be identical when a connection established between two networks with different layer IDs (configuration 1)" do 
 
     #### create terminations
     eth3 = EthernetTermination.new(model_data[:ethernet_termination_3])
@@ -935,7 +935,7 @@ describe "assignement of layer ID for terminations when a connection is establis
 
   end
 
-  it "should be identical when a connection established between two terminations with different layer IDs (configurtaion 2)" do 
+  it "should be identical when a connection established between two networks with different layer IDs (configurtaion 2)" do 
 
     #### create terminations
     eth3 = EthernetTermination.new(model_data[:ethernet_termination_3])
@@ -987,13 +987,14 @@ end
 
 
 ##########################################################################################################
-describe "assignement of layer ID for terminations when a connection is established with more than two terminations" do
+describe "assignement of layer ID for terminations when a connection is established at a supporting layer with more than two terminations" do
 
   include LayerIdHelper
 
   before(:each) do
     @server = Server.new(model_data[:server_1])
     @application_main = ApplicationMain.new(model_data[:application_main_1])    
+    @nic1 = Nic.new(model_data[:nic_1])
     @nic3 = Nic.new(model_data[:nic_3]) 
     @nic4 = Nic.new(model_data[:nic_4]) 
     @cip = AlnConnection.new(:resource_name => 'ip_connection', :connected_termination_type => :ip_termination)
@@ -1003,17 +1004,18 @@ describe "assignement of layer ID for terminations when a connection is establis
   after(:each) do
     @server.destroy
     @application_main.destroy    
+    @nic1.destroy
     @nic3.destroy
     @nic4.destroy
     @cip.destroy
     @ctcp.destroy
   end
 
-  it "should be 2 for network when third connection is established when connected termination has layer ID of 1 and connecting termination has layer ID of 1" do 
+  it "should be 2 for network when third connection is established when connected network has maximum layer ID of 1 and connecting network has maximum layer ID of 1" do 
   
     #### create terminations
     eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
-    eth2 = EthernetTermination.new(model_data[:ethernet_termination_1])
+    eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
     ip1 = IpTermination.new(model_data[:ip_termination_1])
     ip2 = IpTermination.new(model_data[:ip_termination_2])
     ip3 = IpTermination.new(model_data[:ip_termination_3])
@@ -1026,8 +1028,7 @@ describe "assignement of layer ID for terminations when a connection is establis
     @nic3 << ip3  
     @nic4 << tcp4
 
-    @nic1 << eth1
-    @nic2 << eth2
+    @nic1 << [eth1, eth2]
         
     #### create supporter network relationship with terminating resouces
     eth1 << ip1    
@@ -1050,7 +1051,7 @@ describe "assignement of layer ID for terminations when a connection is establis
     check_layer_id(TcpSocketTermination, tcp4.id, 1)
 
     #### reload model prior to building connection since some metadata was updated during privious operations
-    ip3 = AlnTermination.find(ip2.aln_termination_id).to_descendant
+    ip3 = AlnTermination.find(ip3.aln_termination_id).to_descendant
 
     #### create connection
     @cip.add_network(ip3)
