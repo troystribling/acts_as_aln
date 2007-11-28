@@ -13,18 +13,5 @@ describe "aln_connection inheritance associations" do
 
 end
 
-#########################################################################################################
-describe "aln_connection termination associations" do
-
-  it "should have many terminations" do 
-    AlnConnection.new.should have_method(:aln_terminations)
-  end
-
-end
-
-##########################################################################################################
-describe "attributes supported by aln_connection models" do
-
-end
 
 

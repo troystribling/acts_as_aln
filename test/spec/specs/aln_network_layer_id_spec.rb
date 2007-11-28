@@ -212,7 +212,7 @@ describe "assignement of layer ID for terminations when a support relationship i
   before(:each) do
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
-    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :connected_termination_type => :ethernet_termination)
+    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
   end
 
   after(:each) do
@@ -522,7 +522,7 @@ describe "assignement of layer ID for terminations when a connection is establis
   before(:each) do
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
-    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :connected_termination_type => :ethernet_termination)
+    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
   end
 
   after(:each) do
@@ -589,7 +589,7 @@ describe "assignement of layer ID for terminations when a connection is establis
   before(:each) do
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
-    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :connected_termination_type => :ethernet_termination)
+    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
   end
 
   after(:each) do
@@ -702,8 +702,8 @@ describe "assignement of layer ID for terminations when a connection is establis
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
     @nic3 = Nic.new(model_data[:nic_3]) 
-    @cip = AlnConnection.new(:resource_name => 'ip_connection', :connected_termination_type => :ip_termination)
-    @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :connected_termination_type => :tcp_socket_termination)
+    @cip = AlnConnection.new(:resource_name => 'ip_connection', :termination_type => :ip_termination)
+    @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :termination_type => :tcp_socket_termination)
   end
 
   after(:each) do
@@ -876,8 +876,8 @@ describe "assignement of layer ID for terminations when a connection is establis
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
     @nic3 = Nic.new(model_data[:nic_3]) 
-    @cip = AlnConnection.new(:resource_name => 'ip_connection', :connected_termination_type => :ip_termination)
-    @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :connected_termination_type => :tcp_socket_termination)
+    @cip = AlnConnection.new(:resource_name => 'ip_connection', :termination_type => :ip_termination)
+    @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :termination_type => :tcp_socket_termination)
   end
 
   after(:each) do
@@ -997,8 +997,8 @@ describe "assignement of layer ID for terminations when a connection is establis
     @nic1 = Nic.new(model_data[:nic_1])
     @nic3 = Nic.new(model_data[:nic_3]) 
     @nic4 = Nic.new(model_data[:nic_4]) 
-    @cip = AlnConnection.new(:resource_name => 'ip_connection', :connected_termination_type => :ip_termination)
-    @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :connected_termination_type => :tcp_socket_termination)
+    @cip = AlnConnection.new(:resource_name => 'ip_connection', :termination_type => :ip_termination)
+    @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :termination_type => :tcp_socket_termination)
   end
 
   after(:each) do
@@ -1080,9 +1080,9 @@ describe "assignement of layer ID for terminations for a network with more than 
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
     @nic3 = Nic.new(model_data[:nic_3]) 
-    @cip = AlnConnection.new(:resource_name => 'ip_connection', :connected_termination_type => :ip_termination)
-    @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :connected_termination_type => :tcp_socket_termination)
-    @ctp = AlnConnection.new(:resource_name => 'tp_connection', :connected_termination_type => :aln_termination)
+    @cip = AlnConnection.new(:resource_name => 'ip_connection', :termination_type => :ip_termination)
+    @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :termination_type => :tcp_socket_termination)
+    @ctp = AlnConnection.new(:resource_name => 'tp_connection', :termination_type => :aln_termination)
   end
 
   after(:each) do

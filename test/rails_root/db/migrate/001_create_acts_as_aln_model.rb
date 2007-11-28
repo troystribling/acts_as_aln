@@ -19,7 +19,7 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
     create_table :aln_termination_sets, :force => true, :primary_key => :aln_termination_set_id do |t|
       t.column :aln_termination_set_descendant_id, :integer
       t.column :aln_termination_set_descendant_type, :string
-      t.column :connected_termination_type, :string
+      t.column :termination_type, :string
     end
   
     create_table :aln_paths, :force => true, :primary_key => :aln_path_id do |t|

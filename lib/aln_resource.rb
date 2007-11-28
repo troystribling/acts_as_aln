@@ -267,11 +267,7 @@ class AlnResource < ActiveRecord::Base
 
     #### return model aln_resource
     def to_aln_resource(mod)
-      if mod.class.eql?(AlnResource)
-        mod
-      else
-        mod.aln_resource
-      end
+      mod.class.eql?(AlnResource) ? mod : mod.aln_resource
     end
           
   end

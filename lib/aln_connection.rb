@@ -9,15 +9,8 @@ class AlnConnection < ActiveRecord::Base
 
   ####################################################################################
   #### add termination to connection
-  def initialize(*args)
-    super(*args)
-    raise(ArgumentError, ":connected_termination_type must be specified") if args[0][:connected_termination_type].nil?
-  end
-
-  ####################################################################################
-  #### add termination to connection
   def << (term)    
-    validate_termination(term)    
+    self.aln_termination_set.validate_termination(term)    
     add_first_term = lambda do |t| 
       t.get_network_id 
       self.aln_termination_set.aln_terminations << AlnTermination.to_aln_termination(t)
@@ -44,7 +37,7 @@ class AlnConnection < ActiveRecord::Base
   ####################################################################################
   #### add network to connection
   def add_network (term)
-    validate_termination(term)
+    self.aln_termination_set.validate_termination(term)
     unless self.aln_terminations.empty? 
       self.update_layer_id(term, true)
       connection_network_id = self.aln_termination_set.aln_terminations.first.network_id
@@ -74,13 +67,9 @@ class AlnConnection < ActiveRecord::Base
   end
 
   ####################################################################################
-  #### validate termination class
-  def validate_termination(term)
-    check_termination = lambda do |t| 
-      raise(PlanB::InvalidClass, "connected termination must be #{self.connected_termination_type.to_s}") unless t.class.name.tableize.singularize.to_sym.eql?(self.connected_termination_type)
-      raise(PlanB::TerminationInvalid, "termination is already in connection") unless t.aln_termination_set_id.nil?
-    end
-    term.class.eql?(Array) ? term.each{|t| check_termination[t]} : check_termination[term]
+  # class methods
+  class << self
+
   end
 
 end

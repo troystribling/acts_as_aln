@@ -168,7 +168,7 @@ describe "assignement of network ID for terminations when added to a connection 
   before(:each) do
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
-    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :connected_termination_type => :ethernet_termination)
+    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
   end
 
   after(:each) do
@@ -222,7 +222,7 @@ describe "assignement of network ID for terminations when termination hierarchy 
   before(:each) do
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
-    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :connected_termination_type => :ethernet_termination)
+    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
   end
 
   after(:each) do
@@ -352,8 +352,8 @@ describe "assignement of network ID for terminations when termination supported 
   before(:each) do
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
-    @ethc = AlnConnection.new(:resource_name => 'ethernet_connection', :connected_termination_type => :ethernet_termination)
-    @ipc = AlnConnection.new(:resource_name => 'ip_connection', :connected_termination_type => :ip_termination)
+    @ethc = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
+    @ipc = AlnConnection.new(:resource_name => 'ip_connection', :termination_type => :ip_termination)
   end
 
   after(:each) do
@@ -456,8 +456,8 @@ describe "assignement of network ID for terminations when a support relationship
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
     @nic3 = Nic.new(model_data[:nic_3]) 
-    @ethc = AlnConnection.new(:resource_name => 'ethernet_connection', :connected_termination_type => :ethernet_termination)
-    @ipc = AlnConnection.new(:resource_name => 'ip_connection', :connected_termination_type => :ip_termination)
+    @ethc = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
+    @ipc = AlnConnection.new(:resource_name => 'ip_connection', :termination_type => :ip_termination)
   end
 
   after(:each) do
@@ -572,8 +572,8 @@ describe "assignement of network ID for terminations when a support relationship
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
     @nic3 = Nic.new(model_data[:nic_3]) 
-    @ethc = AlnConnection.new(:resource_name => 'ethernet_connection', :connected_termination_type => :ethernet_termination)
-    @ipc = AlnConnection.new(:resource_name => 'ip_connection', :connected_termination_type => :ip_termination)
+    @ethc = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
+    @ipc = AlnConnection.new(:resource_name => 'ip_connection', :termination_type => :ip_termination)
   end
 
   after(:each) do

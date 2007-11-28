@@ -7,4 +7,10 @@ class AlnPath < ActiveRecord::Base
    has_descendants
    has_ancestor :named => :aln_termination_set   
 
+  ####################################################################################
+  # class methods
+  class << self
+            
+  end
+
 end

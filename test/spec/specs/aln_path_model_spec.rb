@@ -13,18 +13,3 @@ describe "aln_path inheritance associations" do
 
 end
 
-#########################################################################################################
-describe "aln_path termination associations" do
-
-  it "should have many terminations" do 
-    AlnConnection.new.should have_method(:aln_terminations)
-  end
-
-end
-
-##########################################################################################################
-describe "attributes supported by aln_path models" do
-
-end
-
-

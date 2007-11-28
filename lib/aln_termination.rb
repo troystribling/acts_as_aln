@@ -93,11 +93,7 @@ class AlnTermination < ActiveRecord::Base
     ####################################################################################
     #### return model aln_termination
     def to_aln_termination(mod)
-      if mod.class.eql?(AlnTermination)
-        mod
-      else
-        mod.aln_termination
-      end
+      mod.class.eql?(AlnTermination) ? mod : mod.aln_termination
     end
 
   ####################################################################################
