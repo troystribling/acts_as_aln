@@ -16,26 +16,22 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
       t.column :resource_name, :string
     end
    
-    create_table :aln_termination_sets, :force => true, :primary_key => :aln_termination_set_id do |t|
-      t.column :aln_termination_set_descendant_id, :integer
-      t.column :aln_termination_set_descendant_type, :string
-      t.column :termination_type, :string
-    end
-  
     create_table :aln_paths, :force => true, :primary_key => :aln_path_id do |t|
       t.column :aln_path_descendant_id, :integer
       t.column :aln_path_descendant_type, :string
+      t.column :termination_type, :string
     end
   
     create_table :aln_connections, :force => true, :primary_key => :aln_connection_id do |t|
       t.column :aln_connection_descendant_id, :integer
       t.column :aln_connection_descendant_type, :string
+      t.column :termination_type, :string
     end
   
     create_table :aln_terminations, :force => true, :primary_key => :aln_termination_id do |t|
       t.column :aln_termination_descendant_id, :integer
       t.column :aln_termination_descendant_type, :string
-      t.column :aln_termination_set_id, :integer   
+      t.column :aln_connection_id, :integer   
       t.column :aln_path_id, :integer   
       t.column :termination_supporter_id, :integer   
       t.column :network_id, :integer   

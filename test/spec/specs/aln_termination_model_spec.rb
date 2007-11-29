@@ -14,10 +14,14 @@ describe "aln_termination inheritance associations" do
 end
 
 #########################################################################################################
-describe "aln_termination connection associations" do
+describe "aln_termination associations" do
 
-  it "should be able to be in a single connection" do 
+  it "should include aln_connection" do 
     AlnTermination.should have_attribute(:aln_connection_id, :integer)
+  end
+
+  it "should include aln_path" do 
+    AlnTermination.should have_attribute(:aln_path_id, :integer)
   end
 
 end

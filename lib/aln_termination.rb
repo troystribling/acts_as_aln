@@ -8,9 +8,11 @@ class AlnTermination < ActiveRecord::Base
    has_ancestor :named => :aln_resource   
    
    ###############################################################
-   #### declare terminates association with aln_connection
+   #### declare terminates associations with aln_connection and
+   #### aln_path
    ###############################################################
-   belongs_to :aln_termination_set  
+   belongs_to :aln_connection  
+   belongs_to :aln_path  
 
    ###############################################################
    #### attribute validators
