@@ -7,7 +7,7 @@ describe "aln_termination inheritance associations" do
     AlnTermination.should declare_descendant_association
   end
 
-  it "should have aln_resource as ancestor association" do 
+  it "should include aln_resource as ancestor association" do 
     AlnTermination.should be_descendant_of(AlnResource)
   end
 

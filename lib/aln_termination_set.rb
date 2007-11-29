@@ -13,12 +13,6 @@ class AlnTerminationSet < ActiveRecord::Base
    has_many :aln_terminations     
 
   ####################################################################################
-  #### add termination to connection
-  def descendant_initialize(*args)
-    raise(ArgumentError, ":termination_type must be specified") if args[0][:termination_type].nil?
-  end
-
-  ####################################################################################
   #### validate termination class
   def validate_termination(term)
     check_termination = lambda do |t| 

@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 #########################################################################################################
 describe "aln_termination_set inheritance associations" do
 
-  it "should include descendant association" do 
+  it "should declare descendant association" do 
     AlnTerminationSet.should declare_descendant_association
   end
 
@@ -25,13 +25,8 @@ end
 #########################################################################################################
 describe "aln_termination_set attributes" do
 
-  it "should include termination_type" do 
-    AlnTerminationSet.should have_attribute(:termination_type, :integer)
-  end
-
-  it "should require termination_type specification on constructor" do 
-    lambda{AlnTerminationSet.new()}.should raise_error(ArgumentError) 
-    lambda{AlnTerminationSet.new(:termination_type => :tcp_socket_termination)}.should_not raise_error(ArgumentError) 
+  it "should include termination_type ioftype string" do 
+    AlnTerminationSet.should have_attribute(:termination_type, :string)
   end
 
 end
