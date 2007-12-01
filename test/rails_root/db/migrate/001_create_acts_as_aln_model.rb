@@ -98,7 +98,6 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
     drop_table :aln_connections
     drop_table :aln_paths
     drop_table :aln_terminations
-    drop_table :aln_termination_sets
     drop_table :inventory_items
     drop_table :switches
     drop_table :datacenters
