@@ -38,6 +38,24 @@ aln_termination_supported_4:
   directionality: unidirectional
   direction: client 
 
+ip_termination_remove_1:
+  resource_name: IP-1
+  directionality: bidirectional
+  direction: server 
+  ip_addr: 10.10.10.1
+
+ip_termination_remove_2:
+  resource_name: IP-2
+  directionality: bidirectional
+  direction: client
+  ip_addr: 10.10.10.2
+
+ip_termination_remove_3:
+  resource_name: IP-3
+  directionality: bidirectional
+  direction: client 
+  ip_addr: 10.10.10.3
+
 aln_termination_resource:
   resource_name: Termination
 
