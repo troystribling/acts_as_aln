@@ -129,8 +129,8 @@ end
 describe "retrieval of connection from contained termination", :shared => true do
 
   it "should be possible" do
-    @c << @t
-    @t.aln_connection.should eql(@c)
+    @c << @t1
+    @t1.aln_connection.should eql(@c)
   end
   
 end
@@ -146,37 +146,37 @@ describe "retrieval of contained termination from connection", :shared => true d
 
   it "should be possible for a specifed termination as AlnTermination class" do
     @c << [@t1, @t2, @t3]
-    mods = @c.aln_terminations.collect do |t|
-      t if t.direction.eql?('client')      
+    mods = @c.aln_terminations.select do |t|
+      t.direction.eql?('client')      
     end
-    mods.should have_attributes_with_values([@t2.attributes, @t3.attributes])
+    mods.should have_attributes_with_values([AlnTermination.to_aln_termination(@t2).attributes, AlnTermination.to_aln_termination(@t3).attributes])
     mods.should be_class(AlnTermination)
   end
 
   it "should be possible for all terminations as AlnTermination class" do
     @c << [@t1, @t2, @t3]
-    @c.aln_terminations.should have_attributes_with_values([@t1.attributes, @t2.attributes, @t3.attributes])
+    @c.aln_terminations.should have_attributes_with_values([AlnTermination.to_aln_termination(@t1).attributes, AlnTermination.to_aln_termination(@t2).attributes, AlnTermination.to_aln_termination(@t3).attributes])
     @c.aln_terminations.should be_class(AlnTermination)
   end
 
   it "should be possible for first termination as :termination_type class" do
     @c << [@t1, @t2, @t3]
     mod = @c.find_termination_as_type(:first) 
-    mod.should have_attributes_with_values(@t1.attributes)
+    mod.should match_attributes_with(@match_attributes, @t1)
     mod.should be_class(@t1.class)
   end
 
   it "should be possible for a specifed termination as :termination_type class" do
     @c << [@t1, @t2, @t3]
     mods = @c.find_termination_as_type(:all, :conditions => "aln_terminations.direction = 'client'") 
-    mods.should have_attributes_with_values([@t2.attributes, @t3.attributes])
+    mods.should match_attributes_with(@match_attributes, [@t2, @t3])
     mods.should be_class(@t1.class)
   end
 
   it "should be possible for all terminations as :termination_type class" do
     @c << [@t1, @t2, @t3]
     mods = @c.find_termination_as_type(:all) 
-    mods.should have_attributes_with_values([@t1.attributes, @t2.attributes, @t3.attributes])
+    mods.should match_attributes_with(@match_attributes, [@t1, @t2, @t3])
     mods.should be_class(@t1.class)
   end
   
@@ -191,6 +191,7 @@ describe "management of aln_terminations in a connection" do
     @t3 = AlnTermination.new(model_data[:aln_termination_supported_3])
     @td1 = IpTermination.new(model_data[:ip_termination_1])
     @c = AlnConnection.new(:termination_type => :aln_termination)
+    @match_attributes = [:aln_connection_id, :directionality, :resource_name, :direction, :layer_id]
   end
   
   after(:each) do
@@ -217,11 +218,12 @@ end
 describe "management of aln_termination descendants in a connection" do
 
   before(:each) do
-    @t1 = IpTermination.new(model_data[:ip_termination_remove_1])
-    @t2 = IpTermination.new(model_data[:ip_termination_remove_2])
-    @t3 = IpTermination.new(model_data[:ip_termination_remove_3])
+    @t1 = IpTermination.new(model_data[:ip_termination_query_1])
+    @t2 = IpTermination.new(model_data[:ip_termination_query_2])
+    @t3 = IpTermination.new(model_data[:ip_termination_query_3])
     @td1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
     @c = AlnConnection.new(:termination_type => :ip_termination)
+    @match_attributes = [:aln_connection_id, :network_id, :directionality, :resource_name, :direction, :layer_id, :ip_addr]
   end
 
   after(:each) do

@@ -2,7 +2,7 @@ class AlnConnection < ActiveRecord::Base
 
   ###############################################################
   #### mixins
-  include AlnHelper
+  extend AlnHelper
   include AlnTerminationHelper
   
   ###############################################################
@@ -78,7 +78,7 @@ class AlnConnection < ActiveRecord::Base
   ####################################################################################
   #### return termination as :termination_type
   def find_termination_as_type(*args)
-    self.class.find_by_model_and_condition("aln_termination.aln_connection_id = #{self.id}", eval(self.termination_type.to_s.classify), *args)
+    self.class.find_by_model_and_condition("aln_terminations.aln_connection_id = #{self.id}", eval(self.termination_type.to_s.classify), *args)
   end
   
   ####################################################################################

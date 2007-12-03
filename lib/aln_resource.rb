@@ -5,7 +5,7 @@ class AlnResource < ActiveRecord::Base
 
   ###############################################################
   #### mixins
-  include AlnHelper
+  extend AlnHelper
 
   ####################################################################################
   #### declare descendant associations 

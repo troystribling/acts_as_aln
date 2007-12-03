@@ -31,6 +31,7 @@ describe "destruction of aln_connection", :shared => true do
 
   it "should set termination connection association to nil" do
     create_destroy_connection
+    @t.reload
     @t.aln_connection_id.should be_nil
     @t.aln_connection.should be_nil
   end

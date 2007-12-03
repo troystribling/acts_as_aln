@@ -8,4 +8,5 @@ require "declare_ancestor_association"
 require "have_method"
 require "persist"
 require "have_supported_with_attribute_value"
+require "match_attributes_with"
 

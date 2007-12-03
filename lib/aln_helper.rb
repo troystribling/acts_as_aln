@@ -1,7 +1,7 @@
 module AlnHelper
 
   #### find model with specified condition
-  def self.find_by_model_and_condition(condition, model, *args)
+  def find_by_model_and_condition(condition, model, *args)
     if args.first.eql?(:first) || args.first.eql?(:all)
       if args[1].nil?
         args[1] = {:conditions => condition}
