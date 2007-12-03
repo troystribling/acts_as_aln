@@ -82,6 +82,12 @@ class AlnTermination < ActiveRecord::Base
   end  
 
   ####################################################################################
+  #### detach network from support hierarchy
+  def detach_network  
+     self.aln_resource.detach_network    
+  end  
+
+  ####################################################################################
   #### get network id
   def get_network_id
     if self.network_id.nil?

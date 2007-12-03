@@ -65,6 +65,12 @@ describe "removing terminations from a connection", :shared => true do
     @t3.should persist
   end
 
+  def verify_connection_removal(term)
+    term.reload
+    term.aln_connection_id.should be_nil
+    term.aln_connection.should be_nil
+  end
+  
   it "should be possible for a specified termination without destroying termination" do
     @c << [@t1, @t2, @t3]
     @c.aln_terminations.length.should eql(3)
@@ -78,6 +84,7 @@ describe "removing terminations from a connection", :shared => true do
     @c.aln_terminations[0].should eql(AlnTermination.to_aln_termination(@t2))
     @c.aln_terminations[1].should eql(AlnTermination.to_aln_termination(@t3))
     verify_persistence
+    verify_connection_removal(@t1)
   end
 
   it "should be possible for multiple specified terminations without destroying terminations" do
@@ -93,6 +100,8 @@ describe "removing terminations from a connection", :shared => true do
     @c.aln_terminations.should_not include(AlnTermination.to_aln_termination(@t1))
     @c.aln_terminations.should_not include(AlnTermination.to_aln_termination(@t2))
     verify_persistence
+    verify_connection_removal(@t1)
+    verify_connection_removal(@t2)
   end
 
   it "should be possible for multiple terminations matching a specified condition without destroying terminations" do
@@ -110,6 +119,8 @@ describe "removing terminations from a connection", :shared => true do
     @c.aln_terminations.should_not include(AlnTermination.to_aln_termination(@t2))
     @c.aln_terminations.should_not include(AlnTermination.to_aln_termination(@t3))
     verify_persistence
+    verify_connection_removal(@t2)
+    verify_connection_removal(@t3)
   end
 
   it "should be possible for all terminations without destroying terminations" do
@@ -121,6 +132,9 @@ describe "removing terminations from a connection", :shared => true do
     @c.remove_all_terminations
     @c.aln_terminations.should be_empty
     verify_persistence
+    verify_connection_removal(@t1)
+    verify_connection_removal(@t2)
+    verify_connection_removal(@t3)
   end
 
 end

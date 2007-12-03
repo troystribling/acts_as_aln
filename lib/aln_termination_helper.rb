@@ -2,7 +2,7 @@ module AlnTerminationHelper
 
   ####################################################################################
   #### remove termination without destroying
-  def remove_termination(term)
+  def remove_termination_from_list(term)
     do_remove = lambda do |t|
       term = AlnTermination.to_aln_termination(t)
       self.aln_terminations.to_ary.delete(term)

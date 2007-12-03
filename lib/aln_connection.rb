@@ -19,6 +19,18 @@ class AlnConnection < ActiveRecord::Base
 
   ####################################################################################
   #### add termination to connection
+  def remove_termination(term)    
+    self.remove_termination_from_list(term)
+    do_remove = lambda do |t|
+      t.aln_connection_id = nil
+      t.aln_connection = nil
+      t.save
+    end
+    term.class.eql?(Array) ? term.each{|t| do_remove[t]} : do_remove[term]
+  end
+  
+  ####################################################################################
+  #### add termination to connection
   def << (term)    
     self.validate_termination(term)    
     add_first_term = lambda do |t| 
@@ -59,6 +71,13 @@ class AlnConnection < ActiveRecord::Base
     end     
     self.aln_terminations << AlnTermination.to_aln_termination(term)    
     self.save
+  end  
+
+  ####################################################################################
+  #### detach network from connection
+  def detach_network(term)
+    self.remove_termination(term)
+    term.detach_network
   end  
 
   ####################################################################################
