@@ -16,28 +16,29 @@ class AlnConnection < ActiveRecord::Base
   #### declare termination associations with aln_terminations
   ###############################################################
   has_many :aln_terminations, :dependent => :nullify     
-
+  
+  ####################################################################################
+  #### remove terminations 
+  ####################################################################################
+  #### remove connection from termination
+  def do_remove_from_termination (term)
+    term.aln_connection_id = nil
+    term.aln_connection = nil
+    term.save
+  end
+      
   ####################################################################################
   #### add termination to connection
-  def remove_termination(term)    
-    self.remove_termination_from_list(term)
-    do_remove = lambda do |t|
-      t.aln_connection_id = nil
-      t.aln_connection = nil
-      t.save
-    end
-    term.class.eql?(Array) ? term.each{|t| do_remove[t]} : do_remove[term]
-  end
-  
   ####################################################################################
   #### add termination to connection
   def << (term)    
-    self.validate_termination(term)    
     add_first_term = lambda do |t| 
+      self.validate_termination(t)    
       t.get_network_id 
       self.aln_terminations << AlnTermination.to_aln_termination(t)
     end
     add_term = lambda do |t| 
+      self.validate_termination(t)    
       self.update_layer_id(t, false)
       t.network_id = self.aln_terminations.first.network_id 
       t.save
@@ -74,13 +75,6 @@ class AlnConnection < ActiveRecord::Base
   end  
 
   ####################################################################################
-  #### detach network from connection
-  def detach_network(term)
-    self.remove_termination(term)
-    term.detach_network
-  end  
-
-  ####################################################################################
   #### update layer_id
   def update_layer_id (term, update_all)
     term_layer_id = term.layer_id
@@ -95,9 +89,31 @@ class AlnConnection < ActiveRecord::Base
   end
 
   ####################################################################################
+  #### detach termination from network
+  ####################################################################################
+  #### detach network from connection
+  def detach_network(term)
+    self.remove_termination(term)
+    term.detach_network
+  end  
+
+  ####################################################################################
+  #### find connected terminations
+  ####################################################################################
   #### return termination as :termination_type
   def find_termination_as_type(*args)
     self.class.find_by_model_and_condition("aln_terminations.aln_connection_id = #{self.id}", eval(self.termination_type.to_s.classify), *args)
+  end
+
+  ####################################################################################
+  #### fetch termination attributes
+  ####################################################################################
+  def get_termination_support_hierarchy_root_id (term)
+    if self.aln_terminations.empty? 
+      term.support_hierarchy_root_id
+    else
+      self.aln_terminations.first.support_hierarchy_root_id
+    end  
   end
   
   ####################################################################################
