@@ -123,7 +123,8 @@ class AlnTermination < ActiveRecord::Base
 
     ####################################################################################
     #### migrate termination support hierarchy to new network
-    def migrate_support_hierrachy_to_network (old_network_id, new_network_id)
+    def migrate_support_hierrachy_to_network (old_network_id, new_network_id, left)
+      self.connection.execute("UPDATE aln_resources, aln_terminations SET aln_terminations.network_id = #{new_network_id} WHERE aln_terminations.network_id = #{old_network_id} AND aln_resources.support_hierarchy_left > #{left - 1}")
     end
   
     ####################################################################################
