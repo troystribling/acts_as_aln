@@ -124,7 +124,6 @@ class AlnTermination < ActiveRecord::Base
     ####################################################################################
     #### migrate termination support hierarchy to new network
     def migrate_support_hierrachy_to_network (old_network_id, new_network_id)
-      self.update_all("network_id = #{new_network_id}", "network_id = #{old_network_id}")
     end
   
     ####################################################################################
