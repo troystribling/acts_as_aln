@@ -35,6 +35,16 @@ module AlnTerminationHelper
     self.aln_terminations.to_ary.clear
   end
 
+  ####################################################################################
+  #### fetch termination attributes
+  def get_termination_support_hierarchy_root_id (term)
+    if self.aln_terminations.empty? 
+      term.support_hierarchy_root_id
+    else
+      self.aln_terminations.first.support_hierarchy_root_id
+    end  
+  end
+  
 end
 
 

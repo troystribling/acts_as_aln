@@ -108,25 +108,31 @@ class AlnTermination < ActiveRecord::Base
       mod.class.eql?(AlnTermination) ? mod : mod.aln_termination
     end
 
-  ####################################################################################
-  #### set the layer id for specified network
-  def update_layer_ids_for_network (old_layer_id, new_layer_id, network_id)
-    max_layer_id = self.find_max_layer_id_by_network_id(network_id)
-    (0..max_layer_id).to_a.reverse.each{|l| self.update_all("layer_id = #{new_layer_id + l}", "layer_id = #{old_layer_id + l} AND network_id = #{network_id}")}
-  end
+    ####################################################################################
+    #### set the layer id for specified network
+    def update_layer_ids_for_network (old_layer_id, new_layer_id, network_id)
+      max_layer_id = self.find_max_layer_id_by_network_id(network_id)
+      (0..max_layer_id).to_a.reverse.each{|l| self.update_all("layer_id = #{new_layer_id + l}", "layer_id = #{old_layer_id + l} AND network_id = #{network_id}")}
+    end
+  
+    ####################################################################################
+    #### update the specified network ID
+    def update_network_id (old_network_id, new_network_id)
+      self.update_all("network_id = #{new_network_id}", "network_id = #{old_network_id}")
+    end
 
-  ####################################################################################
-  #### update the specified network ID
-  def update_network_id (old_network_id, new_network_id)
-    self.update_all("network_id = #{new_network_id}", "network_id = #{old_network_id}")
-  end
-
-  ####################################################################################
-  #### find maximum layer_id for specified network
-  def find_max_layer_id_by_network_id (network_id)
-    self.find_by_sql("SELECT MAX(layer_id) FROM aln_terminations WHERE network_id=#{network_id}").first.attributes["MAX(layer_id)"].to_i
-  end
-          
+    ####################################################################################
+    #### migrate termination support hierarchy to new network
+    def migrate_support_hierrachy_to_network (old_network_id, new_network_id)
+      self.update_all("network_id = #{new_network_id}", "network_id = #{old_network_id}")
+    end
+  
+    ####################################################################################
+    #### find maximum layer_id for specified network
+    def find_max_layer_id_by_network_id (network_id)
+      self.find_by_sql("SELECT MAX(layer_id) FROM aln_terminations WHERE network_id=#{network_id}").first.attributes["MAX(layer_id)"].to_i
+    end
+            
   end
                           
 end

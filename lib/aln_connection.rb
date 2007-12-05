@@ -89,7 +89,14 @@ class AlnConnection < ActiveRecord::Base
   end
 
   ####################################################################################
-  #### detach termination from network
+  #### destroy termination in connection
+  ####################################################################################
+  #### destroy specified termination
+  def destroy_termination(term)
+    if term.supported.empty? ? self.remove_termination(term) : detach_network(term)      
+    term.destroy    
+  end  
+
   ####################################################################################
   #### detach network from connection
   def detach_network(term)
@@ -105,17 +112,6 @@ class AlnConnection < ActiveRecord::Base
     self.class.find_by_model_and_condition("aln_terminations.aln_connection_id = #{self.id}", eval(self.termination_type.to_s.classify), *args)
   end
 
-  ####################################################################################
-  #### fetch termination attributes
-  ####################################################################################
-  def get_termination_support_hierarchy_root_id (term)
-    if self.aln_terminations.empty? 
-      term.support_hierarchy_root_id
-    else
-      self.aln_terminations.first.support_hierarchy_root_id
-    end  
-  end
-  
   ####################################################################################
   # class methods
   class << self
