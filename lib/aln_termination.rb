@@ -88,6 +88,14 @@ class AlnTermination < ActiveRecord::Base
   end  
 
   ####################################################################################
+  #### migrate termination support hierarchy to new network
+  def migrate_support_hierrachy_to_network (new_network_id)
+    self.network_id = new_network_id
+    self.connection.execute("UPDATE aln_resources, aln_terminations SET aln_terminations.network_id = #{new_network_id} WHERE aln_resources.support_hierarchy_left > #{self.support_hierarchy_left} AND aln_resources.support_hierarchy_right < #{self.support_hierarchy_right}")
+    self.save
+  end
+
+  ####################################################################################
   #### get network id
   def get_network_id
     if self.network_id.nil?
@@ -119,12 +127,6 @@ class AlnTermination < ActiveRecord::Base
     #### update the specified network ID
     def update_network_id (old_network_id, new_network_id)
       self.update_all("network_id = #{new_network_id}", "network_id = #{old_network_id}")
-    end
-
-    ####################################################################################
-    #### migrate termination support hierarchy to new network
-    def migrate_support_hierrachy_to_network (old_network_id, new_network_id, left)
-      self.connection.execute("UPDATE aln_resources, aln_terminations SET aln_terminations.network_id = #{new_network_id} WHERE aln_terminations.network_id = #{old_network_id} AND aln_resources.support_hierarchy_left > #{left - 1}")
     end
   
     ####################################################################################
