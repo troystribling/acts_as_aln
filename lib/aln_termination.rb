@@ -67,7 +67,6 @@ class AlnTermination < ActiveRecord::Base
     self.aln_resource << sup
   end  
 
-  ####################################################################################
   #### add network 
   def add_network (sup)
     sup_network_id = sup.get_network_id
@@ -106,6 +105,33 @@ class AlnTermination < ActiveRecord::Base
     self.network_id
   end
                    
+  ####################################################################################
+  #### true if termination is in a connection
+  def in_connection?
+    self.aln_connection_id.nil? ? false : true
+  end
+
+  #### true if termination is in a path
+  def in_path?
+    self.aln_path_id.nil? ? false : true
+  end
+
+  ####################################################################################
+  #### find connected terminations in support hierarchy
+  def find_connected_terminations
+    self.find_in_support_hierarchy_by_model(AlnTermination, :conditions => "aln_terminations.aln_connection_id is NULL")
+  end
+
+  #### return peer terminations
+  def peer_terminations
+    if in_connection? 
+      self.aln_connection.aln_terminations.to_ary.delete(self)
+      self.aln_connection.aln_terminations
+    else 
+      []
+    end 
+  end
+  
   ####################################################################################
   # class methods
   class << self

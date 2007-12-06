@@ -18,8 +18,6 @@ class AlnConnection < ActiveRecord::Base
   has_many :aln_terminations, :dependent => :nullify     
   
   ####################################################################################
-  #### remove terminations 
-  ####################################################################################
   #### remove connection from termination
   def do_remove_from_termination (term)
     term.aln_connection_id = nil
@@ -27,8 +25,6 @@ class AlnConnection < ActiveRecord::Base
     term.save
   end
       
-  ####################################################################################
-  #### add termination to connection
   ####################################################################################
   #### add termination to connection
   def << (term)    
@@ -57,7 +53,6 @@ class AlnConnection < ActiveRecord::Base
     self.save
   end  
 
-  ####################################################################################
   #### add network to connection
   def add_network (term)
     self.validate_termination(term)
@@ -89,23 +84,18 @@ class AlnConnection < ActiveRecord::Base
   end
 
   ####################################################################################
-  #### destroy termination in connection
-  ####################################################################################
   #### destroy specified termination
   def destroy_termination(term)
     if term.supported.empty? ? self.remove_termination(term) : detach_network(term)      
     term.destroy    
   end  
 
-  ####################################################################################
   #### detach network from connection
   def detach_network(term)
     self.remove_termination(term)
     term.detach_network
   end  
 
-  ####################################################################################
-  #### find connected terminations
   ####################################################################################
   #### return termination as :termination_type
   def find_termination_as_type(*args)

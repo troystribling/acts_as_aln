@@ -40,6 +40,16 @@ class AlnResource < ActiveRecord::Base
     @supported.load(*args)
   end
     
+  #### true if resource has supported
+  def has_supported?
+    supported.empty? ? false : true
+  end
+
+  #### true if resource has supporter
+  def has_supporter?
+    self.supporter_id.nil? ? false : true
+  end
+  
   ####################################################################################
   ##### update entire hierarchy
   def save_hierarchy
