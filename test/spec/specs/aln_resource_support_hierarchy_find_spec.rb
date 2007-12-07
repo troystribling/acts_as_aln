@@ -292,7 +292,7 @@ describe "queries for supporter within hierachy from supported when hiearchy dep
     mods[0].support_hierarchy_root_id = AlnResource.to_aln_resource(@root).id
   end
 
-  it "should return empty array of supporters if support hierarchy does not conatin specified model" do
+  it "should return empty array of supporters if support hierarchy does not contain specified model" do
     @root.supported(true).first.supported(true).last.supported(true).first.find_all_supporters_by_model(IpTermination).should be_empty
   end
 

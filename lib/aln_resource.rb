@@ -178,7 +178,7 @@ class AlnResource < ActiveRecord::Base
 
   ####################################################################################
   #### update meta data for all impacted models and save updates to database
-  def remove_update_metadata(update_increment, left_lower_bound, root_id)
+  def remove_update_metadata (update_increment, left_lower_bound, root_id)
 
     #### update meta data for all affected models
     self.class.update_all("support_hierarchy_left = (support_hierarchy_left - #{update_increment})", "support_hierarchy_left > #{left_lower_bound + 1} AND support_hierarchy_root_id = #{root_id}") 
@@ -195,7 +195,7 @@ class AlnResource < ActiveRecord::Base
   
   ####################################################################################
   #### return model aln_resource supported
-  def supported_as_aln_resource(mod)
+  def supported_as_aln_resource (mod)
     if mod.class.eql?(AlnResource)
       mod.supporter = self
       mod
@@ -211,7 +211,7 @@ class AlnResource < ActiveRecord::Base
 
   ####################################################################################
   #### find specified directly supported
-  def find_supported_by_model(model, *args)
+  def find_supported_by_model (model, *args)
     self.class.find_by_model_and_condition("aln_resources.supporter_id = #{self.id}", model, *args)
   end
 
@@ -253,7 +253,7 @@ class AlnResource < ActiveRecord::Base
     
     #### return roots of support hierachy
     def find_support_hierarchy_root_by_model(model, *args)
-      find_by_model_and_condition("aln_resources.supporter_id is NULL", model, *args)
+      find_by_model_and_condition("aln_resources.supporter_id IS NULL", model, *args)
     end
 
     #### get support_hierarchy_root_id

@@ -48,7 +48,7 @@ class AlnTermination < ActiveRecord::Base
   end
   
   #### set supporter
-  def termination_supporter=(sup)
+  def termination_supporter= (sup)
     self.create_termination_supporter    
     @termination_supporter.value = self.class.to_aln_termination(sup)
   end
@@ -81,14 +81,36 @@ class AlnTermination < ActiveRecord::Base
   end  
 
   ####################################################################################
-  #### detach network from support hierarchy
+  #### detach termination from network by assigning new network id
   def detach_network  
-     self.aln_resource.detach_network    
+    if self.has_supported?
+      self.id.eql?(self.get_network_id) ? new_network_id = self.supported.first.to_descendant(:aln_termination).id : new_network_id = self.id 
+      self.change_network_id(new_network_id)
+    else
+      self.change_network_id(self.id) if self.get_peer_terminations.detect{|t| t.is_connected?}.nil? 
+    end
+  end  
+
+  ####################################################################################
+  #### detach termination from network and assign new network id
+  def change_network_id (new_network_id) 
+    term_root = self.find_root_termination_supporter
+    #### self is a term root if term_root is nil
+    unless term_root.nil?
+      term_root.update_support_hierrachy_network_id(new_network_id)
+      self.find_connected_terminations.each do |t| 
+        t.get_peer_terminations.each do |pt| 
+          pt.change_network_id(new_network_id) unless pt.network_id.eql?(new_network_id)
+        end
+      end
+    else
+      self.update_support_hierrachy_network_id(new_network_id)
+    end  
   end  
 
   ####################################################################################
   #### migrate termination support hierarchy to new network
-  def migrate_support_hierrachy_to_network (new_network_id)
+  def update_support_hierrachy_network_id (new_network_id)
     self.network_id = new_network_id
     self.connection.execute("UPDATE aln_resources, aln_terminations SET aln_terminations.network_id = #{new_network_id} WHERE aln_resources.support_hierarchy_left > #{self.support_hierarchy_left} AND aln_resources.support_hierarchy_right < #{self.support_hierarchy_right}")
     self.save
@@ -119,11 +141,16 @@ class AlnTermination < ActiveRecord::Base
   ####################################################################################
   #### find connected terminations in support hierarchy
   def find_connected_terminations
-    self.find_in_support_hierarchy_by_model(AlnTermination, :conditions => "aln_terminations.aln_connection_id is NULL")
+    self.find_in_support_hierarchy_by_model(AlnTermination, :conditions => "aln_terminations.aln_connection_id IS NULL")
   end
 
+  #### find root termination supporter
+  def find_root_termination_supporter
+    find_all_supporters_by_model(AlnTermination).last
+  end
+  
   #### return peer terminations
-  def peer_terminations
+  def get_peer_terminations
     if in_connection? 
       self.aln_connection.aln_terminations.to_ary.delete(self)
       self.aln_connection.aln_terminations
@@ -152,7 +179,7 @@ class AlnTermination < ActiveRecord::Base
     ####################################################################################
     #### update the specified network ID
     def update_network_id (old_network_id, new_network_id)
-      self.update_all("network_id = #{new_network_id}", "network_id = #{old_network_id}")
+      self.update_all("network_id = #{new_network_id}", "network_id = #{old_network_id}") unless new_network_id.eql?(old_network_id)
     end
   
     ####################################################################################
