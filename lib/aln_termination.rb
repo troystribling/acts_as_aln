@@ -58,6 +58,7 @@ class AlnTermination < ActiveRecord::Base
   def << (sup)
     new_network_id = self.get_network_id
     set_network_id = lambda do |s|
+      raise(PlanB::InvalidClass, "supported must be descendant of AlnTermination") unless s.class.class_hierarchy.includes?(AlnTermination)
       s.network_id = new_network_id
       s.layer_id = self.layer_id + 1
       s.termination_supporter = self
@@ -146,7 +147,7 @@ class AlnTermination < ActiveRecord::Base
 
   #### find root termination supporter
   def find_root_termination_supporter
-    find_all_supporters_by_model(AlnTermination).last
+    self.find_all_supporters_by_model(AlnTermination).last
   end
   
   #### return peer terminations
@@ -167,6 +168,17 @@ class AlnTermination < ActiveRecord::Base
     #### return model aln_termination
     def to_aln_termination(mod)
       mod.class.eql?(AlnTermination) ? mod : mod.aln_termination
+    end
+
+    ####################################################################################
+    #### find termination roots in specified network
+    def find_termination_roots_in_network_by_model (model, network_id)
+      model.find_by_model(:all, :conditions => "aln_terminations.network_id = #{network_id} AND aln_terminations.termination_supporter_id IS NULL")
+    end
+  
+    ####################################################################################
+    #### find termination roots in support hierarchy
+    def find_termination_roots_in_support_hierarchy_by_model (model, sup)
     end
 
     ####################################################################################
