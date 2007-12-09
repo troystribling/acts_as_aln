@@ -76,24 +76,24 @@ class AlnConnection < ActiveRecord::Base
     connection_layer_id = self.aln_terminations.first.layer_id
     if connection_layer_id > term_layer_id
       term.layer_id = connection_layer_id 
-      AlnTermination.update_layer_ids_for_network(term_layer_id, connection_layer_id, term.get_network_id) if update_all
+      AlnTermination.update_layer_ids_for_network(connection_layer_id - term_layer_id, term.get_network_id) if update_all
     elsif connection_layer_id < term_layer_id
       self.aln_terminations.each {|t| t.layer_id = term_layer_id}
-      AlnTermination.update_layer_ids_for_network(connection_layer_id, term_layer_id, self.aln_terminations.first.network_id) if update_all
+      AlnTermination.update_layer_ids_for_network(term_layer_id - connection_layer_id, self.aln_terminations.first.network_id) if update_all
     end
   end
 
   ####################################################################################
   #### destroy specified termination
   def destroy_termination(term)
-    if term.supported.empty? ? self.remove_termination(term) : detach_network(term)      
+    term.supported.empty? ? self.remove_termination(term) : self.detach_network(term)      
     term.destroy    
   end  
 
   #### detach network from connection
   def detach_network(term)
     self.remove_termination(term)
-    term.detach_network
+    term.detach_network(term.find_root_termination_supporter)
   end  
 
   ####################################################################################

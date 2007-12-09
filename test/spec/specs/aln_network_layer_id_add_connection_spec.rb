@@ -1,29 +1,18 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-##########################################################################################################
-module LayerIdHelper
-
-  def check_layer_id(model, id, layer_id)
-    chk = model.find(id)
-    chk.layer_id.should eql(layer_id)
-  end
-  
-end
-
 #########################################################################################################
 describe "assignement of layer ID for terminations when a connection is established where the terminations are not involved in a connection and are not involved support relations with terminations" do
 
-  include LayerIdHelper
-
   before(:each) do
+    @server = Server.new(model_data[:server_1])
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
+    @server << [@nic1, @nic2]
     @c = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
   end
 
   after(:each) do
-    @nic1.destroy
-    @nic2.destroy
+    @server.destroy
     @c.destroy
   end
 
@@ -80,17 +69,16 @@ end
 #########################################################################################################
 describe "assignement of layer ID for terminations when a connection is established where the terminations are not involved in a connection but are involved support relations with terminations" do
 
-  include LayerIdHelper
-
   before(:each) do
+    @server = Server.new(model_data[:server_1])
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
+    @server << [@nic1, @nic2]
     @c = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
   end
 
   after(:each) do
-    @nic1.destroy
-    @nic2.destroy
+    @server.destroy
     @c.destroy
   end
 
@@ -190,24 +178,20 @@ end
 ##########################################################################################################
 describe "assignement of layer ID for terminations when a connection is established at a supporting layer" do
 
-  include LayerIdHelper
-
   before(:each) do
     @server = Server.new(model_data[:server_1])
     @application_main = ApplicationMain.new(model_data[:application_main_1])
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
     @nic3 = Nic.new(model_data[:nic_3]) 
+    @server << [@application_main, @nic2, @nic3]   
+    @application_main << @nic1
     @cip = AlnConnection.new(:resource_name => 'ip_connection', :termination_type => :ip_termination)
     @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :termination_type => :tcp_socket_termination)
   end
 
   after(:each) do
     @server.destroy
-    @application_main.destroy    
-    @nic1.destroy
-    @nic2.destroy
-    @nic3.destroy
     @cip.destroy
     @ctcp.destroy
   end
@@ -255,7 +239,6 @@ describe "assignement of layer ID for terminations when a connection is establis
     ip2 = IpTermination.new(model_data[:ip_termination_2])
 
     #### create initial support relationship with nonterminating resouces    
-    @server << @nic1   
     @nic1 << ip1
     @nic2 << eth2   
         
@@ -288,7 +271,6 @@ describe "assignement of layer ID for terminations when a connection is establis
     tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
 
     #### create initial support relationship with nonterminating resouces    
-    @server << @nic1   
     @nic1 << ip1
     @nic2 << eth2   
         
@@ -325,8 +307,6 @@ describe "assignement of layer ID for terminations when a connection is establis
     tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
 
     #### create initial support relationship with nonterminating resouces    
-    @server << [@application_main, @nic2]   
-    @application_main << @nic1
     @nic1 << tcp1
     @nic2 << ip2
     @nic3 << eth3   
@@ -364,24 +344,20 @@ end
 ##########################################################################################################
 describe "assignement of layer ID for terminations when a connection is established as order terminations are added to connection is varied" do
 
-  include LayerIdHelper
-
   before(:each) do
     @server = Server.new(model_data[:server_1])
     @application_main = ApplicationMain.new(model_data[:application_main_1])
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
     @nic3 = Nic.new(model_data[:nic_3]) 
+    @server << [@application_main, @nic2, @nic3]   
+    @application_main << @nic1
     @cip = AlnConnection.new(:resource_name => 'ip_connection', :termination_type => :ip_termination)
     @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :termination_type => :tcp_socket_termination)
   end
 
   after(:each) do
     @server.destroy
-    @application_main.destroy    
-    @nic1.destroy
-    @nic2.destroy
-    @nic3.destroy
     @cip.destroy
     @ctcp.destroy
   end
@@ -397,8 +373,6 @@ describe "assignement of layer ID for terminations when a connection is establis
     tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
 
     #### create initial support relationship with nonterminating resouces    
-    @server << [@application_main, @nic2]   
-    @application_main << @nic1
     @nic1 << tcp1
     @nic2 << ip2
     @nic3 << eth3   
@@ -442,8 +416,6 @@ describe "assignement of layer ID for terminations when a connection is establis
     tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
 
     #### create initial support relationship with nonterminating resouces    
-    @server << [@application_main, @nic2]   
-    @application_main << @nic1
     @nic1 << tcp1
     @nic2 << ip2
     @nic3 << eth3   
@@ -485,24 +457,20 @@ end
 ##########################################################################################################
 describe "assignement of layer ID for terminations when a connection is established at a supporting layer with more than two terminations" do
 
-  include LayerIdHelper
-
   before(:each) do
     @server = Server.new(model_data[:server_1])
     @application_main = ApplicationMain.new(model_data[:application_main_1])    
     @nic1 = Nic.new(model_data[:nic_1])
     @nic3 = Nic.new(model_data[:nic_3]) 
     @nic4 = Nic.new(model_data[:nic_4]) 
+    @server << [@application_main, @nic1, @nic3]   
+    @application_main << @nic4   
     @cip = AlnConnection.new(:resource_name => 'ip_connection', :termination_type => :ip_termination)
     @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :termination_type => :tcp_socket_termination)
   end
 
   after(:each) do
     @server.destroy
-    @application_main.destroy    
-    @nic1.destroy
-    @nic3.destroy
-    @nic4.destroy
     @cip.destroy
     @ctcp.destroy
   end
@@ -519,11 +487,8 @@ describe "assignement of layer ID for terminations when a connection is establis
     tcp4 = TcpSocketTermination.new(model_data[:tcp_socket_termination_4])
 
     #### create initial support relationship with nonterminating resouces    
-    @server << [@application_main, @nic3]   
-    @application_main << @nic4   
     @nic3 << ip3  
     @nic4 << tcp4
-
     @nic1 << [eth1, eth2]
         
     #### create supporter network relationship with terminating resouces
@@ -568,14 +533,14 @@ end
 ##########################################################################################################
 describe "assignement of layer ID for terminations for a network with more than three layers" do
 
-  include LayerIdHelper
-
   before(:each) do
     @server = Server.new(model_data[:server_1])
     @application_main = ApplicationMain.new(model_data[:application_main_1])
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
     @nic3 = Nic.new(model_data[:nic_3]) 
+    @server << [@application_main, @nic2, @nic3]   
+    @application_main << @nic1
     @cip = AlnConnection.new(:resource_name => 'ip_connection', :termination_type => :ip_termination)
     @ctcp = AlnConnection.new(:resource_name => 'tcp_connection', :termination_type => :tcp_socket_termination)
     @ctp = AlnConnection.new(:resource_name => 'tp_connection', :termination_type => :aln_termination)
@@ -583,10 +548,6 @@ describe "assignement of layer ID for terminations for a network with more than 
 
   after(:each) do
     @server.destroy
-    @application_main.destroy    
-    @nic1.destroy
-    @nic2.destroy
-    @nic3.destroy
     @cip.destroy
     @ctcp.destroy
     @ctp.destroy
@@ -604,8 +565,6 @@ describe "assignement of layer ID for terminations for a network with more than 
     tp1 = AlnTermination.new(model_data[:aln_termination_1])
 
     #### create initial support relationship with nonterminating resouces    
-    @server << [@application_main, @nic2]   
-    @application_main << @nic1
     @nic1 << tcp1
     @nic2 << ip2
     @nic3 << eth3   

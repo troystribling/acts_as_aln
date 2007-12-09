@@ -1,29 +1,18 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 ##########################################################################################################
-module NetworkIdHelper
-
-  def check_network_id(model, id, network_id)
-    chk = model.find(id)
-    chk.network_id.should eql(network_id)
-  end
-  
-end
-
-##########################################################################################################
 describe "assignement of network ID for terminations when added to a connection where the terminations are not involved in other prior connections or other prior support relations" do
 
-  include NetworkIdHelper
-  
   before(:each) do
+    @server = Server.new(model_data[:server_1])
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
+    @server << [@nic1, @nic2]
     @c = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
   end
 
   after(:each) do
-    @nic1.destroy
-    @nic2.destroy
+    @server.destroy
     @c.destroy
   end
   
@@ -66,18 +55,17 @@ end
 
 #########################################################################################################
 describe "assignement of network ID for terminations when termination hierarchy root is added to a connection if either or both terminations are involved in prior support relations with other terminations" do
-
-  include NetworkIdHelper
   
   before(:each) do
+    @server = Server.new(model_data[:server_1])
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
+    @server << [@nic1, @nic2]
     @c = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
   end
 
   after(:each) do
-    @nic1.destroy
-    @nic2.destroy
+    @server.destroy
     @c.destroy
   end
 
@@ -196,19 +184,18 @@ end
 
 ##########################################################################################################
 describe "assignement of network ID for terminations when termination supported is added to a connection" do
-
-  include NetworkIdHelper
   
   before(:each) do
+    @server = Server.new(model_data[:server_1])
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
+    @server << [@nic1, @nic2]
     @ethc = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
     @ipc = AlnConnection.new(:resource_name => 'ip_connection', :termination_type => :ip_termination)
   end
 
   after(:each) do
-    @nic1.destroy
-    @nic2.destroy
+    @server.destroy
     @ethc.destroy
     @ipc.destroy
   end

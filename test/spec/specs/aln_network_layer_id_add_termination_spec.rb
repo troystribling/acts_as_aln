@@ -3,14 +3,14 @@ require File.dirname(__FILE__) + '/../spec_helper'
 #########################################################################################################
 describe "assignement of layer ID for a termination when a support relationship is established with a nonterminating aln_resource where the termination is not involved in a connection or other support relations" do
 
-  include LayerIdHelper
-  
   before(:each) do
+    @server = Server.new(model_data[:server_1])
     @nic = Nic.new(model_data[:nic_1]) 
+    @server << @nic
   end
 
   after(:each) do
-    @nic.destroy
+    @server.destroy
   end
 
   it "should be 0 for termination prior to establishment of support relationship" do 
@@ -50,14 +50,14 @@ end
 #########################################################################################################
 describe "assignement of layer ID for terminations when a support relationship is established where none of the terminations are involved in a connection and the added supported are not involved in other support relations with terminations" do
 
-  include LayerIdHelper
-
   before(:each) do
+    @server = Server.new(model_data[:server_1])
     @nic = Nic.new(model_data[:nic_1]) 
+    @server << @nic
   end
 
   after(:each) do
-    @nic.destroy
+    @server.destroy
   end
 
   it "should increase from 0 to 1 when first termination supported is added" do 
@@ -197,17 +197,16 @@ end
 #########################################################################################################
 describe "assignement of layer ID for terminations when a support relationship is established where the terminations are involved in a connection and the added supported are not involved support relations with terminations" do
 
-  include LayerIdHelper
-
   before(:each) do
+    @server = Server.new(model_data[:server_1])
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
+    @server << [@nic1, @nic2]
     @c = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
   end
 
   after(:each) do
-    @nic1.destroy
-    @nic2.destroy
+    @server.destroy
     @c.destroy
   end
 
@@ -364,14 +363,14 @@ end
 #########################################################################################################
 describe "assignement of layer ID for terminations when a support relationship is established where the terminations are not involved in a connection but the added supported terminations are involved in prior support relations with terminations" do
 
-  include LayerIdHelper
-
   before(:each) do
+    @server = Server.new(model_data[:server_1])
     @nic = Nic.new(model_data[:nic_1]) 
+    @server << @nic
   end
 
   after(:each) do
-    @nic.destroy
+    @server.destroy
   end
 
   it "should increase from 0 to 2 when first supported termination is added if it has a single layer of supported" do 
