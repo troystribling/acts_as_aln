@@ -157,3 +157,6 @@ describe "assignement of network ID for terminations after deatching from suppor
 
 end
 
+##########################################################################################################
+describe "assignement of network ID for terminations after deatching from supporting relationship where the terminations are nvolved in connections but and have supported" do
+end
