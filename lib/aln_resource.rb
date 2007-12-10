@@ -162,10 +162,8 @@ class AlnResource < ActiveRecord::Base
     left = self.support_hierarchy_left
     root_id = self.class.get_support_hierarchy_root_id(self)
 
-    self.support_hierarchy_root_id = nil
+    self.support_hierarchy_root_id = self.id
     self.supporter_id = nil
-    self.support_hierarchy_right += 1 - left
-    self.support_hierarchy_left = 1
     self.save
 
     self.class.update_all("support_hierarchy_root_id = #{self.id}", "supporter_id = #{self.id}") 
@@ -184,13 +182,6 @@ class AlnResource < ActiveRecord::Base
     self.class.update_all("support_hierarchy_left = (support_hierarchy_left - #{update_increment})", "support_hierarchy_left > #{left_lower_bound + 1} AND support_hierarchy_root_id = #{root_id}") 
     self.class.update_all("support_hierarchy_right = (support_hierarchy_right - #{update_increment})", "support_hierarchy_right > #{left_lower_bound + 1} AND support_hierarchy_root_id = #{root_id}") 
     
-    ### if model is not hierahcy root also update root
-    unless root_id.eql?(self.id)
-      hierarchy_root = self.class.find(root_id)
-      hierarchy_root.support_hierarchy_right -= update_increment
-      hierarchy_root.save
-    end 
-       
   end
   
   ####################################################################################

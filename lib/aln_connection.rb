@@ -93,7 +93,7 @@ class AlnConnection < ActiveRecord::Base
   #### detach network from connection
   def detach_network(term)
     self.remove_termination(term)
-    term.detach_network(term.find_root_termination_supporter)
+    term.find_root_termination_supporter.detach_network
   end  
 
   ####################################################################################

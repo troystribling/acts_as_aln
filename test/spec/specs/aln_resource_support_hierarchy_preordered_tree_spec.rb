@@ -24,6 +24,7 @@ module PreorderedTreeHierarchyHelper
     root_chk = AlnResource.find(root_chk.id)
     root_chk.support_hierarchy_left.should eql(left)  
     root_chk.support_hierarchy_right.should eql(right) 
+    root_chk.support_hierarchy_root.should eql(root_chk.id) 
     root_chk 
   end
 

@@ -84,19 +84,22 @@ class AlnTermination < ActiveRecord::Base
   ####################################################################################
   #### detach termination from support hierarchy
   def detach_support_hierarchy
-    self.detach_network(self)
-#    self.termination_supporter_id = nil
-#    self.save
-#    aln_resource.detach_support_hierarchy
+    self.aln_resource.detach_support_hierarchy
+    self.reload 
+    self.termination_supporter_id = nil
+    self.save
+    self.detach_network
   end
     
   #### detach termination from network by assigning new network_id and appropriate
   #### layer_id
-  def detach_network (term_root) 
+  def detach_network 
     if self.has_supported?
       self.id.eql?(self.get_network_id) ? new_network_id = self.supported.first.to_descendant(:aln_termination).id : new_network_id = self.id 
-      self.class.reassign_network_id(term_root, new_network_id)
+      self.reassign_network_id(new_network_id)
+      self.reload
       self.reassign_layer_id_for_network(new_network_id)
+      self.reload
     else
       if self.get_peer_terminations.detect{|t| t.is_connected?}.nil?
         self.id.eql?(self.get_network_id) ? new_network_id = self.supporter.to_descendant(:aln_termination).id : new_network_id = self.id 
@@ -107,21 +110,30 @@ class AlnTermination < ActiveRecord::Base
     end
   end  
 
+  #### assign new network id for detached network
+  def reassign_network_id (new_network_id) 
+    self.update_support_hierrachy_network_id(new_network_id)
+    self.find_connected_terminations.each do |t| 
+      t.get_peer_terminations.each do |pt| 
+        pt.reassign_network_id(new_network_id) unless pt.network_id.eql?(new_network_id)
+      end
+    end
+  end  
+
   #### change layer_id for specified network
   def reassign_layer_id_for_network (network_id)
     term_roots = self.class.find_termination_roots_in_network_by_model(AlnTermination, network_id)
     min_layer_id = term_roots.inject(term_roots.first.layer_id) {|mlid, t| mlid > t.layer_id ? t.layer_id : mlid}
     self.class.update_layer_ids_for_network(-min_layer_id, network_id)
-    self.layer_id -= min_layer_id
-    self.save
   end
 
   ####################################################################################
   #### update network id for termination support hierarchy
   def update_support_hierrachy_network_id (new_network_id)
-    self.connection.execute("UPDATE aln_resources, aln_terminations SET aln_terminations.network_id = #{new_network_id} WHERE aln_resources.support_hierarchy_left > #{self.support_hierarchy_left} AND aln_resources.support_hierarchy_right < #{self.support_hierarchy_right}")
-    self.network_id = new_network_id
-    self.save
+    AlnTermination.find_by_model(:all, :conditions => "aln_resources.support_hierarchy_root_id = #{self.support_hierarchy_root_id}", :readonly => false).each do |t| 
+      t.network_id = new_network_id
+      t.save
+    end
   end
 
   ####################################################################################
@@ -149,7 +161,7 @@ class AlnTermination < ActiveRecord::Base
   ####################################################################################
   #### find connected terminations in support hierarchy
   def find_connected_terminations
-    self.find_in_support_hierarchy_by_model(AlnTermination, :conditions => "aln_terminations.aln_connection_id IS NULL")
+    self.aln_resource.find_in_support_hierarchy_by_model(AlnTermination, :all, :conditions => "aln_terminations.aln_connection_id IS NOT NULL")
   end
 
   #### find root termination supporter
@@ -188,17 +200,6 @@ class AlnTermination < ActiveRecord::Base
     def find_termination_roots_in_support_hierarchy_by_model (model, sup)
     end
     
-    ####################################################################################
-    #### assign new network id for detached network
-    def reassign_network_id (term_root, new_network_id) 
-      term_root.update_support_hierrachy_network_id(new_network_id)
-      term_root.find_connected_terminations.each do |t| 
-        t.get_peer_terminations.each do |pt| 
-          self.reassign_network_id(pt.find_root_termination_supporter, new_network_id) unless pt.network_id.eql?(new_network_id)
-        end
-      end
-    end  
-
     ####################################################################################
     #### set the layer id for specified network
     def update_layer_ids_for_network (layer_id_increment, network_id)

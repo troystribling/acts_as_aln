@@ -10,55 +10,24 @@ describe "assignement of network ID for terminations after deatching from suppor
   end
 
   after(:each) do
-    @server.destroy
+#    @server.destroy
   end
   
-  it "should be aln_termination_id of supported if supported and supporter has no supported" do 
-
-    #### create models
-    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
-    ip = IpTermination.new(model_data[:ip_termination_1])
-
-    #### create support relationships
-    @nic << eth    
-    eth << ip
-
-    #### validate initial configuration 
-    check_termination_supporter_id(EthernetTermination, eth.id, nil)
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
-    check_network_id(IpTermination, ip.id, eth.network_id)
-    check_termination_supporter_id(IpTermination, ip.id, eth.aln_termination.id)
-
-    #### detach from support hierarchy
-    ip.detach_support_hierarchy
-
-    #### validate final configuration
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
-    check_termination_supporter_id(EthernetTermination, eth.id, nil)
-    check_network_id(IpTermination, ip.id, ip.aln_termination.id)
-    check_termination_supporter_id(IpTermination, ip.id, nil)
-    
-  end
-
-#  it "should be aln_termination_id of supported if supporter has no supported but supported has supported" do 
+#  it "should be aln_termination_id of supported if supported and supporter has no supported" do 
 #
 #    #### create models
 #    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
 #    ip = IpTermination.new(model_data[:ip_termination_1])
-#    tcp = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
 #
 #    #### create support relationships
-#    @nic << eth 
-#    eth << ip   
-#    ip << tcp
+#    @nic << eth    
+#    eth << ip
 #
 #    #### validate initial configuration 
-#    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
 #    check_termination_supporter_id(EthernetTermination, eth.id, nil)
+#    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
 #    check_network_id(IpTermination, ip.id, eth.network_id)
 #    check_termination_supporter_id(IpTermination, ip.id, eth.aln_termination.id)
-#    check_network_id(TcpSocketTermination, tcp.id, eth.network_id)
-#    check_termination_supporter_id(TcpSocketTermination, tcp.id, ip.aln_termination.id)
 #
 #    #### detach from support hierarchy
 #    ip.detach_support_hierarchy
@@ -68,11 +37,42 @@ describe "assignement of network ID for terminations after deatching from suppor
 #    check_termination_supporter_id(EthernetTermination, eth.id, nil)
 #    check_network_id(IpTermination, ip.id, ip.aln_termination.id)
 #    check_termination_supporter_id(IpTermination, ip.id, nil)
-#    check_network_id(TcpSocketTermination, tcp.id, ip.network_id)
-#    check_termination_supporter_id(TcpSocketTermination, tcp.id, ip.aln_termination.id)
-#
+#    
 #  end
 #
+  it "should be aln_termination_id of supported if supporter has no supported but supported has supported" do 
+
+    #### create models
+    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip = IpTermination.new(model_data[:ip_termination_1])
+    tcp = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+
+    #### create support relationships
+    @nic << eth 
+    eth << ip   
+    ip << tcp
+
+    #### validate initial configuration 
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_termination_supporter_id(EthernetTermination, eth.id, nil)
+    check_network_id(IpTermination, ip.id, eth.network_id)
+    check_termination_supporter_id(IpTermination, ip.id, eth.aln_termination.id)
+    check_network_id(TcpSocketTermination, tcp.id, eth.network_id)
+    check_termination_supporter_id(TcpSocketTermination, tcp.id, ip.aln_termination.id)
+
+    #### detach from support hierarchy
+    ip.detach_support_hierarchy
+
+    #### validate final configuration
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_termination_supporter_id(EthernetTermination, eth.id, nil)
+    check_network_id(IpTermination, ip.id, ip.aln_termination.id)
+    check_termination_supporter_id(IpTermination, ip.id, nil)
+    check_network_id(TcpSocketTermination, tcp.id, ip.network_id)
+    check_termination_supporter_id(TcpSocketTermination, tcp.id, ip.aln_termination.id)
+
+  end
+
 #  it "should be aln_termination_id of supported if supported has no supported but supporter has supported" do 
 #
 #    #### create models
