@@ -96,6 +96,12 @@ hardware_component_1:
 hardware_component_2:
   resource_name: Hardware-Component-2
 
+hardware_component_3:
+  resource_name: Hardware-Component-3
+
+hardware_component_4:
+  resource_name: Hardware-Component-4
+
 nic_1:
   resource_name: NIC-1
   serial_number: A123456
@@ -193,7 +199,13 @@ application_component_1:
 
 application_component_2:
   resource_name: Application-Component-2
+
+application_component_3:
+  resource_name: Application-Component-3
   
+application_component_4:
+  resource_name: Application-Component-4
+
 application_main_1:
   resource_name: Application-Main-1
   pid: 1
@@ -204,6 +216,10 @@ application_main_2:
 
 application_main_3:
   resource_name: Application-Main-3
+  pid: 2
+
+application_main_4:
+  resource_name: Application-Main-4
   pid: 2
   
 find_by_model_aln_resource_depth_greater_than_1:
