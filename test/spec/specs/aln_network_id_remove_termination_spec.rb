@@ -155,6 +155,65 @@ describe "assignement of network ID for terminations after deatching from suppor
 
   end
 
+  it "should be aln_termination_id of supported if supported and supporter have multiple supported" do 
+
+    #### create models
+    eth = EthernetTermination.new(model_data[:ethernet_termination_1])
+    ip1 = IpTermination.new(model_data[:ip_termination_1])
+    ip2 = IpTermination.new(model_data[:ip_termination_2])
+    tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+    tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
+    tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
+    tcp4 = TcpSocketTermination.new(model_data[:tcp_socket_termination_4])
+
+    #### create support relationships
+    @nic << eth
+    eth << [ip1, ip2]
+    ip1 << [tcp1, tcp2]
+    ip2 << [tcp3, tcp4]
+
+    #### validate initial configuration 
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_termination_supporter_id(EthernetTermination, eth.id, nil)
+    check_network_id(IpTermination, ip1.id, eth.network_id)
+    check_termination_supporter_id(IpTermination, ip1.id, eth.aln_termination.id)
+    check_network_id(IpTermination, ip2.id, eth.network_id)
+    check_termination_supporter_id(IpTermination, ip2.id, eth.aln_termination.id)
+    check_network_id(TcpSocketTermination, tcp1.id, eth.network_id)
+    check_termination_supporter_id(TcpSocketTermination, tcp1.id, ip1.aln_termination.id)
+    check_network_id(TcpSocketTermination, tcp2.id, eth.network_id)
+    check_termination_supporter_id(TcpSocketTermination, tcp2.id, ip1.aln_termination.id)
+    check_network_id(TcpSocketTermination, tcp3.id, eth.network_id)
+    check_termination_supporter_id(TcpSocketTermination, tcp3.id, ip2.aln_termination.id)
+    check_network_id(TcpSocketTermination, tcp4.id, eth.network_id)
+    check_termination_supporter_id(TcpSocketTermination, tcp4.id, ip2.aln_termination.id)
+
+    #### detach from support hierarchy
+    ip2.detach_support_hierarchy
+
+    #### validate final configuration
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_termination_supporter_id(EthernetTermination, eth.id, nil)
+    check_network_id(IpTermination, ip1.id, eth.network_id)
+    check_termination_supporter_id(IpTermination, ip1.id, eth.aln_termination.id)
+    check_network_id(TcpSocketTermination, tcp1.id, eth.network_id)
+    check_termination_supporter_id(TcpSocketTermination, tcp1.id, ip1.aln_termination.id)
+    check_network_id(TcpSocketTermination, tcp2.id, eth.network_id)
+    check_termination_supporter_id(TcpSocketTermination, tcp2.id, ip1.aln_termination.id)
+
+    check_network_id(IpTermination, ip2.id, ip2.aln_termination.id)
+    check_termination_supporter_id(IpTermination, ip2.id, nil)
+    check_network_id(TcpSocketTermination, tcp3.id, ip2.network_id)
+    check_termination_supporter_id(TcpSocketTermination, tcp3.id, ip2.aln_termination.id)
+    check_network_id(TcpSocketTermination, tcp4.id, ip2.network_id)
+    check_termination_supporter_id(TcpSocketTermination, tcp4.id, ip2.aln_termination.id)
+
+    #### clean up
+    ip2.destroy
+
+  end
+
+
 end
 
 ##########################################################################################################
