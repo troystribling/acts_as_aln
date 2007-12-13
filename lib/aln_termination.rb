@@ -101,7 +101,7 @@ class AlnTermination < ActiveRecord::Base
       self.reassign_layer_id_for_network(new_network_id)
       self.reload
     else
-      if self.get_peer_terminations.detect{|t| t.is_connected?}.nil?
+      if self.get_peer_terminations.detect{|t| t.in_connection?}.nil?
         self.id.eql?(self.get_network_id) ? new_network_id = self.supporter.to_descendant(:aln_termination).id : new_network_id = self.id 
         self.network_id = new_network_id
         self.layer_id = 0
