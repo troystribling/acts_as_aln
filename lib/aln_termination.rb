@@ -106,6 +106,8 @@ class AlnTermination < ActiveRecord::Base
         self.network_id = new_network_id
         self.layer_id = 0
         self.save  
+      else
+        
       end
     end
   end  

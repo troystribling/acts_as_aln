@@ -129,7 +129,7 @@ class AlnResource < ActiveRecord::Base
   #### update meta data for all impacted models and save updates to database when
   #### a supported is added to hierarchy
   def add_update_metadata(sup, update_increment, left_lower_bound, root_id)
-        
+
     #### update meta data for all affected models
     add_update_all(update_increment, left_lower_bound, root_id)
     

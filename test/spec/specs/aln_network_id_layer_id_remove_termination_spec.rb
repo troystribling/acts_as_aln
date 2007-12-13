@@ -335,50 +335,54 @@ describe "assignement of network ID and layer ID for terminations after deatchin
     ip2 = IpTermination.new(model_data[:ip_termination_2])
 
     #### create support relationships
-#    @nic1 << eth    
-#    eth << ip1
-#    @nic2 << ip2
-#    
-#    #### create connection
-#    @cip << [ip1, ip2]
-#
-#    #### validate initial termination supporter
-#    check_termination_supporter_id(EthernetTermination, eth.id, nil)
-#    check_termination_supporter_id(IpTermination, ip1.id, eth.aln_termination.id)
-#    check_termination_supporter_id(IpTermination, ip2.id, nil)
-#
-#    #### validate initial configuration network id 
-#    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
-#    check_network_id(IpTermination, ip1.id, eth.network_id)
-#    check_network_id(IpTermination, ip2.id, eth.network_id)
-#
-#    #### validate initial configuration layer id
-#    check_layer_id(EthernetTermination, eth.id, 0)
-#    check_layer_id(IpTermination, ip1.id, 1)
-#    check_layer_id(IpTermination, ip2.id, 1)
-#
-#    #### detach from support hierarchy
-#    ip1.detach_support_hierarchy
-#
-#    #### validate final termination supporter
-#    check_termination_supporter_id(EthernetTermination, eth.id, nil)
-#
-#    check_termination_supporter_id(IpTermination, ip1.id, nil)
-#    check_termination_supporter_id(IpTermination, ip2.id, nil)
-#
-#    #### validate final configuration network id
-#    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
-#
-#    check_network_id(IpTermination, ip1.id, ip1.aln_termination.id)
-#    check_network_id(IpTermination, ip2.id, ip1.network_id)
-#
-#    #### validate final configuration layer id
-#    check_layer_id(EthernetTermination, eth.id, 0)
-#
-#    check_layer_id(IpTermination, ip1.id, 0)
-#    check_layer_id(IpTermination, ip2.id, 0)
-#
-#    #### clean up
+    @nic1.reload
+    @nic1 << eth   
+    eth << ip1
+    @nic2.reload
+    @nic2 << ip2
+    
+    #### create connection
+    ip1.reload
+    ip2.reload
+    @cip << [ip1, ip2]
+
+    #### validate initial termination supporter
+    check_termination_supporter_id(EthernetTermination, eth.id, nil)
+    check_termination_supporter_id(IpTermination, ip1.id, eth.aln_termination.id)
+    check_termination_supporter_id(IpTermination, ip2.id, nil)
+
+    #### validate initial configuration network id 
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(IpTermination, ip1.id, eth.network_id)
+    check_network_id(IpTermination, ip2.id, eth.network_id)
+
+    #### validate initial configuration layer id
+    check_layer_id(EthernetTermination, eth.id, 0)
+    check_layer_id(IpTermination, ip1.id, 1)
+    check_layer_id(IpTermination, ip2.id, 1)
+
+    #### detach from support hierarchy
+    ip1.detach_support_hierarchy
+
+    #### validate final termination supporter
+    check_termination_supporter_id(EthernetTermination, eth.id, nil)
+
+    check_termination_supporter_id(IpTermination, ip1.id, nil)
+    check_termination_supporter_id(IpTermination, ip2.id, nil)
+
+    #### validate final configuration network id
+    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+
+    check_network_id(IpTermination, ip1.id, ip1.aln_termination.id)
+    check_network_id(IpTermination, ip2.id, ip1.network_id)
+
+    #### validate final configuration layer id
+    check_layer_id(EthernetTermination, eth.id, 0)
+
+    check_layer_id(IpTermination, ip1.id, 0)
+    check_layer_id(IpTermination, ip2.id, 0)
+
+    #### clean up
 #    ip1.destroy
 
   end
