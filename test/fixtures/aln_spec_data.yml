@@ -118,7 +118,7 @@ nic_3:
   slot: 1
 
 nic_4:
-  resource_name: NIC-3
+  resource_name: NIC-4
   serial_number: A7543
   slot: 2
   
