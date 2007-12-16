@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 ##########################################################################################################
-describe "assignement of network ID and layer ID for terminations after detaching from supporting relationship where the supported network terminations are not involved in a connection but may have supported" do
+describe "assigned network ID and layer ID for terminations after detaching from supporting relationship where the supported network terminations are not involved in a connection but may have supported" do
 
   before(:each) do
     @server = Server.new(model_data[:server_1])
@@ -13,7 +13,7 @@ describe "assignement of network ID and layer ID for terminations after detachin
     @server.destroy
   end
   
-  it "should have network ID of aln_termination_id for supported network, network ID of supporter should not change and supported network and supporter should have maximum layer ID of 0 if supported network and supporter have no supported" do 
+  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supported network and supporter network should have maximum layer ID of 0 if supported network and supporter have no supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -58,7 +58,7 @@ describe "assignement of network ID and layer ID for terminations after detachin
     
   end
 
-  it "should have network ID of aln_termination_id for supported network, network ID of supporter should not change and supported network should have maximum layer ID of 1 and supported maximum layer ID of 0 if supported network has supported but supporter has no supported" do 
+  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supported network should have maximum layer ID of 1 and supported maximum layer ID of 0 if supported network has supported but supporter has no supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -111,7 +111,7 @@ describe "assignement of network ID and layer ID for terminations after detachin
 
   end
 
-  it "should have network ID of aln_termination_id for supported network, network ID of supporter should not change and supported should have maximum layer ID of 0 and supported maximum layer ID of 1 if supported network has no supported and supporter has supported" do 
+  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supported network should have maximum layer ID of 0 and supporter network maximum layer ID of 1 if supported network has no supported and supporter network has supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -163,7 +163,7 @@ describe "assignement of network ID and layer ID for terminations after detachin
 
   end
 
-  it "should have network ID of aln_termination_id for supported network, network ID of supporter should not change and supported network and supporter should have maximum layer ID of 1 if supported and supporter have supported" do 
+  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supported network and supporter network should have maximum layer ID of 1 if supported network and supporter network have supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -223,7 +223,7 @@ describe "assignement of network ID and layer ID for terminations after detachin
 
   end
 
-  it "should have network ID of aln_termination_id for supported network, network ID of supporter should not change and supported should have maximum layer ID of 1 and supported maximum layer ID of 2 if supported and supporter have multiple supported" do 
+  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supported netywork should have maximum layer ID of 1 and supported network maximum layer ID of 2 if supported network and supporter network have multiple supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -310,7 +310,7 @@ describe "assignement of network ID and layer ID for terminations after detachin
 end
 
 #########################################################################################################
-describe "assignement of network ID and layer ID for terminations after deatching from supporting relationship where the supported network terminations are involved in a connection with one termination and may have supported" do
+describe "assigned network ID and layer ID for terminations after deatching from supporting relationship where the supported network terminations are involved in a connection with one termination and may have supported" do
 
   before(:each) do
     @server = Server.new(model_data[:server_1])
@@ -327,7 +327,7 @@ describe "assignement of network ID and layer ID for terminations after deatchin
     @cip.destroy
   end
 
-  it "should have network ID of aln_termination_id for supported, network ID of supporter should not change and supported network and supporter should have maximum layer ID of 0 if supported network terminations have no supported" do 
+  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supported network and supporter network should have maximum layer ID of 0 if supported and supporter network terminations have no supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -387,7 +387,7 @@ describe "assignement of network ID and layer ID for terminations after deatchin
 
   end
 
-  it "should have network ID of aln_termination_id for supported, network ID of supporter should not change and supporter should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if supported network terminations have supported" do 
+  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if supported network terminations have supported and supporter network terminations do not have supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -403,8 +403,7 @@ describe "assignement of network ID and layer ID for terminations after deatchin
     @nic2.reload
     @nic2 << ip2
     ip2 << [tcp1, tcp2]
-    
-    
+        
     #### create connection
     ip1.reload
     ip2.reload
@@ -467,7 +466,7 @@ describe "assignement of network ID and layer ID for terminations after deatchin
 end
 
 ##########################################################################################################
-describe "assignement of network ID and layer ID for terminations after deatching from supporting relationship where the supported network terminations are involved in connections with more than 1 other termination and may have supported" do
+describe "assigned network ID and layer ID for terminations after deatching from supporting relationship where the supported network terminations are involved in connections with more than 1 other termination and may have supported" do
 
   before(:each) do
     @server = Server.new(model_data[:server_1])
@@ -488,7 +487,7 @@ describe "assignement of network ID and layer ID for terminations after deatchin
     @cip.destroy
   end
 
-  it "should have network ID of aln_termination_id for supported, network ID of supporter should not change and supporter should have maximum layer ID of 0 while supported network should have maximum layer ID of 0 if supported network terminations have no supported" do 
+  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 0 if supported and supporter network terminations have no supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -558,7 +557,7 @@ describe "assignement of network ID and layer ID for terminations after deatchin
 
   end
 
-  it "should have network ID of aln_termination_id for supported, network ID of supporter should not change and supporter should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if supported network terminations have supported" do 
+  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if supported network terminations have supported and supporter network terminations do not have terminations" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -647,7 +646,7 @@ describe "assignement of network ID and layer ID for terminations after deatchin
 end
 
 ###########################################################################################################
-describe "assignement of network ID and layer ID for terminations after deatching from supporting relationship where multiple supported network supported terminations at different layers are involved in connections with 1 other termination" do
+describe "assigned network ID and layer ID for terminations after deatching from supporting relationship where multiple supported network supported terminations at different layers are involved in connections with 1 other termination" do
 
   before(:each) do
     @server = Server.new(model_data[:server_1])
@@ -676,7 +675,7 @@ describe "assignement of network ID and layer ID for terminations after deatchin
     @ctcp2.destroy
   end
 
-  it "should have network ID of aln_termination_id for supported, network ID of supporter should not change and supporter should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if 1 connection exists in ip layer and two exist in tcp layer" do 
+  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if 1 connection exists in ip layer and two connections exist in tcp layer" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -774,7 +773,7 @@ describe "assignement of network ID and layer ID for terminations after deatchin
 
   end
   
-  it "should have network ID of aln_termination_id for supported, network ID of supporter should not change and supporter should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if 2 connections exists in ip layer and two exist in tcp layer" do 
+  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if 2 connections exists in ip layer and two connections exist in tcp layer" do 
 
     #### create models
     eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
