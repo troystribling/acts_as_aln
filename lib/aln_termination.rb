@@ -94,31 +94,39 @@ class AlnTermination < ActiveRecord::Base
   #### detach termination from network by assigning new network_id and appropriate
   #### layer_id
   def detach_network 
-    do_netork_metadata_update = lambda do
-      self.id.eql?(self.get_network_id) ? new_network_id = self.supported.first.to_descendant(:aln_termination).id : new_network_id = self.id 
-      self.reassign_network_id(new_network_id)
-      self.reload
-      self.reassign_layer_id_for_network(new_network_id)
-      self.reload
-    end
-    if self.has_supported?
-      do_netork_metadata_update[]
-    else
-      if self.get_connected_peer_terminations.detect{|t| t.in_connection?}.nil?
-        self.id.eql?(self.get_network_id) ? new_network_id = self.supporter.to_descendant(:aln_termination).id : new_network_id = self.id 
-        self.network_id = new_network_id
-        self.layer_id = 0
-        self.save  
-      else
-        do_netork_metadata_update[]
-      end
-    end
+    self.id.eql?(self.get_network_id) ? new_network_id = self.supported.first.to_descendant(:aln_termination).id : new_network_id = self.id 
+    self.reassign_network_id(new_network_id)
+    self.reload
+    self.reassign_layer_id_for_network(new_network_id)
+    self.reload
   end  
+#  def detach_network 
+#    do_netork_metadata_update = lambda do
+#      self.id.eql?(self.get_network_id) ? new_network_id = self.supported.first.to_descendant(:aln_termination).id : new_network_id = self.id 
+#      self.reassign_network_id(new_network_id)
+#      self.reload
+#      self.reassign_layer_id_for_network(new_network_id)
+#      self.reload
+#    end
+#    if self.has_supported?
+#      do_netork_metadata_update[]
+#    else
+#      if self.get_connected_peer_terminations.detect{|t| t.in_connection?}.nil?
+#        self.id.eql?(self.get_network_id) ? new_network_id = self.supporter.to_descendant(:aln_termination).id : new_network_id = self.id 
+#        self.network_id = new_network_id
+#        self.layer_id = 0
+#        self.save  
+#      else
+#        do_netork_metadata_update[]
+#      end
+#    end
+#  end  
 
   #### assign new network id for detached network
   def reassign_network_id (new_network_id) 
-    self.update_support_hierrachy_network_id(new_network_id)
-    self.find_connected_terminations_in_support_hierarchy.each do |t| 
+    term_root = self.find_root_termination_supporter
+    term_root.update_support_hierrachy_network_id(new_network_id)
+    term_root.find_connected_terminations_in_support_hierarchy.each do |t| 
       t.get_connected_peer_terminations.each do |pt| 
         pt.reassign_network_id(new_network_id) unless pt.network_id.eql?(new_network_id)
       end
