@@ -856,47 +856,47 @@ describe "assignement of network ID and layer ID for terminations after deatchin
     check_layer_id(TcpSocketTermination, tcp3.id, 2)
     check_layer_id(TcpSocketTermination, tcp4.id, 2)
 
-    #### detach from support hierarchy
-    ip1.detach_support_hierarchy
-
-    #### validate final termination supporter
-    check_termination_supporter_id(EthernetTermination, eth1.id, nil)
-
-    check_termination_supporter_id(IpTermination, ip1.id, nil)
-    check_termination_supporter_id(IpTermination, ip2.id, nil)
-    check_termination_supporter_id(TcpSocketTermination, tcp1.id, ip2.aln_termination.id)
-    check_termination_supporter_id(TcpSocketTermination, tcp2.id, ip2.aln_termination.id)
-    check_termination_supporter_id(IpTermination, ip3.id, nil)
-    check_termination_supporter_id(TcpSocketTermination, tcp3.id, ip3.aln_termination.id)
-    check_termination_supporter_id(TcpSocketTermination, tcp4.id, ip3.aln_termination.id)
-    check_termination_supporter_id(EthernetTermination, eth4.id, nil)
-    check_termination_supporter_id(IpTermination, ip4.id, eth4.aln_termination.id)
-
-    #### validate final configuration network id
-    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
-
-    check_network_id(IpTermination, ip1.id, ip1.aln_termination.id)
-    check_network_id(EthernetTermination, eth4.id, ip1.network_id)
-    check_network_id(IpTermination, ip2.id, ip1.network_id)
-    check_network_id(IpTermination, ip3.id, ip1.network_id)
-    check_network_id(IpTermination, ip4.id, ip1.network_id)
-    check_network_id(TcpSocketTermination, tcp1.id, ip1.network_id)
-    check_network_id(TcpSocketTermination, tcp2.id, ip1.network_id)
-    check_network_id(TcpSocketTermination, tcp3.id, ip1.network_id)
-    check_network_id(TcpSocketTermination, tcp4.id, ip1.network_id)
-
-    #### validate final configuration layer id
-    check_layer_id(EthernetTermination, eth1.id, 0)
-
-    check_layer_id(EthernetTermination, eth4.id, 0)
-    check_layer_id(IpTermination, ip1.id, 1)
-    check_layer_id(IpTermination, ip2.id, 1)
-    check_layer_id(IpTermination, ip3.id, 1)
-    check_layer_id(IpTermination, ip4.id, 1)
-    check_layer_id(TcpSocketTermination, tcp1.id, 2)
-    check_layer_id(TcpSocketTermination, tcp2.id, 2)
-    check_layer_id(TcpSocketTermination, tcp3.id, 2)
-    check_layer_id(TcpSocketTermination, tcp4.id, 2)
+#    #### detach from support hierarchy
+#    ip1.detach_support_hierarchy
+#
+#    #### validate final termination supporter
+#    check_termination_supporter_id(EthernetTermination, eth1.id, nil)
+#
+#    check_termination_supporter_id(IpTermination, ip1.id, nil)
+#    check_termination_supporter_id(IpTermination, ip2.id, nil)
+#    check_termination_supporter_id(TcpSocketTermination, tcp1.id, ip2.aln_termination.id)
+#    check_termination_supporter_id(TcpSocketTermination, tcp2.id, ip2.aln_termination.id)
+#    check_termination_supporter_id(IpTermination, ip3.id, nil)
+#    check_termination_supporter_id(TcpSocketTermination, tcp3.id, ip3.aln_termination.id)
+#    check_termination_supporter_id(TcpSocketTermination, tcp4.id, ip3.aln_termination.id)
+#    check_termination_supporter_id(EthernetTermination, eth4.id, nil)
+#    check_termination_supporter_id(IpTermination, ip4.id, eth4.aln_termination.id)
+#
+#    #### validate final configuration network id
+#    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+#
+#    check_network_id(IpTermination, ip1.id, ip1.aln_termination.id)
+#    check_network_id(EthernetTermination, eth4.id, ip1.network_id)
+#    check_network_id(IpTermination, ip2.id, ip1.network_id)
+#    check_network_id(IpTermination, ip3.id, ip1.network_id)
+#    check_network_id(IpTermination, ip4.id, ip1.network_id)
+#    check_network_id(TcpSocketTermination, tcp1.id, ip1.network_id)
+#    check_network_id(TcpSocketTermination, tcp2.id, ip1.network_id)
+#    check_network_id(TcpSocketTermination, tcp3.id, ip1.network_id)
+#    check_network_id(TcpSocketTermination, tcp4.id, ip1.network_id)
+#
+#    #### validate final configuration layer id
+#    check_layer_id(EthernetTermination, eth1.id, 0)
+#
+#    check_layer_id(EthernetTermination, eth4.id, 0)
+#    check_layer_id(IpTermination, ip1.id, 1)
+#    check_layer_id(IpTermination, ip2.id, 1)
+#    check_layer_id(IpTermination, ip3.id, 1)
+#    check_layer_id(IpTermination, ip4.id, 1)
+#    check_layer_id(TcpSocketTermination, tcp1.id, 2)
+#    check_layer_id(TcpSocketTermination, tcp2.id, 2)
+#    check_layer_id(TcpSocketTermination, tcp3.id, 2)
+#    check_layer_id(TcpSocketTermination, tcp4.id, 2)
 
     #### clean up
 #    ip1.destroy
