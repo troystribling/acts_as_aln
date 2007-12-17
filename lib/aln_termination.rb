@@ -102,11 +102,11 @@ class AlnTermination < ActiveRecord::Base
   end  
 
   #### assign new network id for detached network
-  def reassign_network_id (new_network_id) 
+  def reassign_network_id (new_network_id)   
     term_root = self.find_root_termination_supporter
     term_root.update_support_hierrachy_network_id(new_network_id)
     term_root.find_connected_terminations_in_support_hierarchy.each do |t| 
-      t.get_connected_peer_terminations.each do |pt| 
+      t.find_connected_peer_terminations.each do |pt| 
         pt.reassign_network_id(new_network_id) unless pt.network_id.eql?(new_network_id)
       end
     end
@@ -150,6 +150,16 @@ class AlnTermination < ActiveRecord::Base
     self.aln_path_id.nil? ? false : true
   end
 
+  #### true if termination is supported by a termination
+  def is_supported_by_termination?
+    self.find_termination_supporter.nil? ? false : true
+  end
+
+  #### true if supported peer terminations are connected
+  def are_supported_peer_terminations_connected?
+    self.find_supported_peer_terminations.detect{|t| t.in_connection?}.nil? ? true : false
+  end
+
   ####################################################################################
   #### find connected terminations in support hierarchy
   def find_connected_terminations_in_support_hierarchy
@@ -160,12 +170,29 @@ class AlnTermination < ActiveRecord::Base
   def find_root_termination_supporter
     ([self] + self.find_all_supporters_by_model(AlnTermination)).last
   end
+
+  #### find termination supporter
+  def find_termination_supporter
+    self.find_all_supporters_by_model(AlnTermination).first
+  end
   
-  #### return connection peer terminations
-  def get_connected_peer_terminations
-    if in_connection? 
+  #### return connected peer terminations
+  def find_connected_peer_terminations
+    if self.in_connection? 
       self.aln_connection.aln_terminations.to_ary.delete(self)
       self.aln_connection.aln_terminations
+    else 
+      []
+    end 
+  end
+
+  #### return supported peer terminations
+  def find_supported_peer_terminations
+    term_supporter =  self.find_termination_supporter
+    unless term_supporter.nil? 
+      term_peers = term_supporter.aln_resource.find_supported_by_model(AlnTermination, :all, :readonly => false)
+      term_peers.delete(self)
+      term_peers
     else 
       []
     end 
