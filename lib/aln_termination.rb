@@ -94,7 +94,7 @@ class AlnTermination < ActiveRecord::Base
   #### detach termination from network by assigning new network_id and appropriate
   #### layer_id
   def detach_network 
-    self.id.eql?(self.get_network_id) ? new_network_id = self.supported.first.to_descendant(:aln_termination).id : new_network_id = self.id 
+    new_network_id = self.id 
     self.reassign_network_id(new_network_id)
     self.reload
     self.reassign_layer_id_for_network(new_network_id)
