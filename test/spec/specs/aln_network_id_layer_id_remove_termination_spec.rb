@@ -13,7 +13,7 @@ describe "assigned network ID and layer ID for terminations after detaching from
     @server.destroy
   end
   
-  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supported network and supporter network should have maximum layer ID of 0 if supported network and supporter have no supported" do 
+  it "should have network ID of detached supported for supported network, network ID of supporter network should not change and supported network and supporter network should have maximum layer ID of 0 if supported network and supporter have no supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -28,7 +28,7 @@ describe "assigned network ID and layer ID for terminations after detaching from
     check_network_id(IpTermination, ip.id, eth.network_id)
 
     #### validate initial configuration for network id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_termination_supporter_id(IpTermination, ip.id, eth.aln_termination.id)
 
     #### validate initial configuration for layer id 
@@ -44,9 +44,9 @@ describe "assigned network ID and layer ID for terminations after detaching from
     check_termination_supporter_id(IpTermination, ip.id, nil)
 
     #### validate final configuration for network id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
 
-    check_network_id(IpTermination, ip.id, ip.aln_termination.id)
+    check_network_id(IpTermination, ip.id, ip.network_id)
     
     #### validate final configuration for layer id
     check_layer_id(EthernetTermination, eth.id, 0)
@@ -58,7 +58,7 @@ describe "assigned network ID and layer ID for terminations after detaching from
     
   end
 
-  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supported network should have maximum layer ID of 1 and supported maximum layer ID of 0 if supported network has supported but supporter has no supported" do 
+  it "should have network ID of detached supported for supported network, network ID of supporter network should not change and supported network should have maximum layer ID of 1 and supported maximum layer ID of 0 if supported network has supported but supporter has no supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -76,7 +76,7 @@ describe "assigned network ID and layer ID for terminations after detaching from
     check_termination_supporter_id(TcpSocketTermination, tcp.id, ip.aln_termination.id)
 
     #### validate initial configuration network id 
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip.id, eth.network_id)
     check_network_id(TcpSocketTermination, tcp.id, eth.network_id)
 
@@ -95,9 +95,9 @@ describe "assigned network ID and layer ID for terminations after detaching from
     check_termination_supporter_id(TcpSocketTermination, tcp.id, ip.aln_termination.id)
 
     #### validate final configuration network id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
 
-    check_network_id(IpTermination, ip.id, ip.aln_termination.id)
+    check_network_id(IpTermination, ip.id, ip.network_id)
     check_network_id(TcpSocketTermination, tcp.id, ip.network_id)
 
     #### validate final configuration layer id
@@ -111,7 +111,7 @@ describe "assigned network ID and layer ID for terminations after detaching from
 
   end
 
-  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supported network should have maximum layer ID of 0 and supporter network maximum layer ID of 1 if supported network has no supported and supporter network has supported" do 
+  it "should have network ID of detached supported for supported network, network ID of supporter network should not change and supported network should have maximum layer ID of 0 and supporter network maximum layer ID of 1 if supported network has no supported and supporter network has supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -128,7 +128,7 @@ describe "assigned network ID and layer ID for terminations after detaching from
     check_termination_supporter_id(IpTermination, ip2.id, eth.aln_termination.id)
 
     #### validate initial configuration network id 
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
     check_network_id(IpTermination, ip2.id, eth.network_id)
 
@@ -147,10 +147,10 @@ describe "assigned network ID and layer ID for terminations after detaching from
     check_termination_supporter_id(IpTermination, ip2.id, nil)
 
     #### validate final configuration network id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
 
-    check_network_id(IpTermination, ip2.id, ip2.aln_termination.id)
+    check_network_id(IpTermination, ip2.id, ip2.network_id)
 
     #### validate final configuration layer id
     check_layer_id(EthernetTermination, eth.id, 0)
@@ -163,7 +163,7 @@ describe "assigned network ID and layer ID for terminations after detaching from
 
   end
 
-  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supported network and supporter network should have maximum layer ID of 1 if supported network and supporter network have supported" do 
+  it "should have network ID of detached supported for supported network, network ID of supporter network should not change and supported network and supporter network should have maximum layer ID of 1 if supported network and supporter network have supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -183,7 +183,7 @@ describe "assigned network ID and layer ID for terminations after detaching from
     check_termination_supporter_id(TcpSocketTermination, tcp.id, ip2.aln_termination.id)
 
     #### validate initial configuration network id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
     check_network_id(IpTermination, ip2.id, eth.network_id)
     check_network_id(TcpSocketTermination, tcp.id, eth.network_id)
@@ -205,10 +205,10 @@ describe "assigned network ID and layer ID for terminations after detaching from
     check_termination_supporter_id(TcpSocketTermination, tcp.id, ip2.aln_termination.id)
 
     #### validate final configuration network id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
 
-    check_network_id(IpTermination, ip2.id, ip2.aln_termination.id)
+    check_network_id(IpTermination, ip2.id, ip2.network_id)
     check_network_id(TcpSocketTermination, tcp.id, ip2.network_id)
 
     #### validate final configuration layer id
@@ -223,7 +223,7 @@ describe "assigned network ID and layer ID for terminations after detaching from
 
   end
 
-  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supported netywork should have maximum layer ID of 1 and supported network maximum layer ID of 2 if supported network and supporter network have multiple supported" do 
+  it "should have network ID of detached supported for supported network, network ID of supporter network should not change and supported netywork should have maximum layer ID of 1 and supported network maximum layer ID of 2 if supported network and supporter network have multiple supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -250,7 +250,7 @@ describe "assigned network ID and layer ID for terminations after detaching from
     check_termination_supporter_id(TcpSocketTermination, tcp4.id, ip2.aln_termination.id)
 
     #### validate initial configuration network id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
     check_network_id(IpTermination, ip2.id, eth.network_id)
     check_network_id(TcpSocketTermination, tcp1.id, eth.network_id)
@@ -281,12 +281,12 @@ describe "assigned network ID and layer ID for terminations after detaching from
     check_termination_supporter_id(TcpSocketTermination, tcp4.id, ip2.aln_termination.id)
 
     #### validate final configuration network id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
     check_network_id(TcpSocketTermination, tcp1.id, eth.network_id)
     check_network_id(TcpSocketTermination, tcp2.id, eth.network_id)
 
-    check_network_id(IpTermination, ip2.id, ip2.aln_termination.id)
+    check_network_id(IpTermination, ip2.id, ip2.network_id)
     check_network_id(TcpSocketTermination, tcp3.id, ip2.network_id)
     check_network_id(TcpSocketTermination, tcp4.id, ip2.network_id)
 
@@ -305,7 +305,6 @@ describe "assigned network ID and layer ID for terminations after detaching from
     ip2.destroy
 
   end
-
 
 end
 
@@ -327,7 +326,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
     @cip.destroy
   end
 
-  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supported network and supporter network should have maximum layer ID of 0 if supported and supporter network terminations have no supported" do 
+  it "should have network ID of detached supported for supported network, network ID of supporter network should not change and supported network and supporter network should have maximum layer ID of 0 if supported and supporter network terminations have no supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -352,7 +351,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
     check_termination_supporter_id(IpTermination, ip2.id, nil)
 
     #### validate initial configuration network id 
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
     check_network_id(IpTermination, ip2.id, eth.network_id)
 
@@ -371,9 +370,9 @@ describe "assigned network ID and layer ID for terminations after deatching from
     check_termination_supporter_id(IpTermination, ip2.id, nil)
 
     #### validate final configuration network id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
 
-    check_network_id(IpTermination, ip1.id, ip1.aln_termination.id)
+    check_network_id(IpTermination, ip1.id, ip1.network_id)
     check_network_id(IpTermination, ip2.id, ip1.network_id)
 
     #### validate final configuration layer id
@@ -387,7 +386,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
 
   end
 
-  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if supported network terminations have supported and supporter network terminations do not have supported" do 
+  it "should have network ID of detached supported for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if supported network terminations have supported and supporter network terminations do not have supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -418,7 +417,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
     check_termination_supporter_id(TcpSocketTermination, tcp2.id, ip2.aln_termination.id)
 
     #### validate initial configuration network id 
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
     check_network_id(IpTermination, ip2.id, eth.network_id)
     check_network_id(TcpSocketTermination, tcp1.id, eth.network_id)
@@ -443,9 +442,9 @@ describe "assigned network ID and layer ID for terminations after deatching from
     check_termination_supporter_id(TcpSocketTermination, tcp2.id, ip2.aln_termination.id)
 
     #### validate final configuration network id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
 
-    check_network_id(IpTermination, ip1.id, ip1.aln_termination.id)
+    check_network_id(IpTermination, ip1.id, ip1.network_id)
     check_network_id(IpTermination, ip2.id, ip1.network_id)
     check_network_id(TcpSocketTermination, tcp1.id, ip1.network_id)
     check_network_id(TcpSocketTermination, tcp2.id, ip1.network_id)
@@ -487,7 +486,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
     @cip.destroy
   end
 
-  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 0 if supported and supporter network terminations have no supported" do 
+  it "should have network ID of detached supported for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 0 if supported and supporter network terminations have no supported" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -517,7 +516,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
     check_termination_supporter_id(IpTermination, ip3.id, nil)
 
     #### validate initial configuration network id 
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
     check_network_id(IpTermination, ip2.id, eth.network_id)
     check_network_id(IpTermination, ip3.id, eth.network_id)
@@ -539,9 +538,9 @@ describe "assigned network ID and layer ID for terminations after deatching from
     check_termination_supporter_id(IpTermination, ip3.id, nil)
 
     #### validate final configuration network id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
 
-    check_network_id(IpTermination, ip1.id, ip1.aln_termination.id)
+    check_network_id(IpTermination, ip1.id, ip1.network_id)
     check_network_id(IpTermination, ip2.id, ip1.network_id)
     check_network_id(IpTermination, ip3.id, ip1.network_id)
 
@@ -557,7 +556,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
 
   end
 
-  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if supported network terminations have supported and supporter network terminations do not have terminations" do 
+  it "should have network ID of detached supported for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if supported network terminations have supported and supporter network terminations do not have terminations" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -593,7 +592,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
     check_termination_supporter_id(TcpSocketTermination, tcp2.id, ip3.aln_termination.id)
 
     #### validate initial configuration network id 
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
     check_network_id(IpTermination, ip2.id, eth.network_id)
     check_network_id(IpTermination, ip3.id, eth.network_id)
@@ -621,9 +620,9 @@ describe "assigned network ID and layer ID for terminations after deatching from
     check_termination_supporter_id(TcpSocketTermination, tcp2.id, ip3.aln_termination.id)
 
     #### validate final configuration network id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
 
-    check_network_id(IpTermination, ip1.id, ip1.aln_termination.id)
+    check_network_id(IpTermination, ip1.id, ip1.network_id)
     check_network_id(IpTermination, ip2.id, ip1.network_id)
     check_network_id(IpTermination, ip3.id, ip1.network_id)
     check_network_id(TcpSocketTermination, tcp1.id, ip1.network_id)
@@ -675,7 +674,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
     @ctcp2.destroy
   end
 
-  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if 1 connection exists in ip layer and two connections exist in tcp layer" do 
+  it "should have network ID of detached supported for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if 1 connection exists in ip layer and two connections exist in tcp layer" do 
 
     #### create models
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -718,7 +717,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
     check_termination_supporter_id(TcpSocketTermination, tcp4.id, nil)
 
     #### validate initial configuration network id 
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
     check_network_id(IpTermination, ip2.id, eth.network_id)
     check_network_id(TcpSocketTermination, tcp1.id, eth.network_id)
@@ -749,9 +748,9 @@ describe "assigned network ID and layer ID for terminations after deatching from
     check_termination_supporter_id(TcpSocketTermination, tcp4.id, nil)
 
     #### validate final configuration network id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
 
-    check_network_id(IpTermination, ip1.id, ip1.aln_termination.id)
+    check_network_id(IpTermination, ip1.id, ip1.network_id)
     check_network_id(IpTermination, ip2.id, ip1.network_id)
     check_network_id(TcpSocketTermination, tcp1.id, ip1.network_id)
     check_network_id(TcpSocketTermination, tcp2.id, ip1.network_id)
@@ -773,7 +772,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
 
   end
   
-  it "should have network ID of detached supported aln_termination_id for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if 2 connections exists in ip layer and two connections exist in tcp layer" do 
+  it "should have network ID of detached supported for supported network, network ID of supporter network should not change and supporter network should have maximum layer ID of 0 while supported network should have maximum layer ID of 1 if 2 connections exists in ip layer and two connections exist in tcp layer" do 
 
     #### create models
     eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -832,7 +831,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
     check_termination_supporter_id(IpTermination, ip4.id, eth4.aln_termination.id)
 
     #### validate initial configuration network id 
-    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth1.id, eth1.network_id)
     check_network_id(EthernetTermination, eth4.id, eth1.network_id)
     check_network_id(IpTermination, ip1.id, eth1.network_id)
     check_network_id(IpTermination, ip2.id, eth1.network_id)
@@ -872,9 +871,9 @@ describe "assigned network ID and layer ID for terminations after deatching from
     check_termination_supporter_id(IpTermination, ip4.id, eth4.aln_termination.id)
 
     #### validate final configuration network id
-    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth1.id, eth1.network_id)
 
-    check_network_id(IpTermination, ip1.id, ip1.aln_termination.id)
+    check_network_id(IpTermination, ip1.id, ip1.network_id)
     check_network_id(EthernetTermination, eth4.id, ip1.network_id)
     check_network_id(IpTermination, ip2.id, ip1.network_id)
     check_network_id(IpTermination, ip3.id, ip1.network_id)

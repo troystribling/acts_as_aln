@@ -94,7 +94,7 @@ class AlnTermination < ActiveRecord::Base
   #### detach termination from network by assigning new network_id and appropriate
   #### layer_id
   def detach_network 
-    new_network_id = self.id 
+    new_network_id = AlnNetworkId.get_network_id 
     self.reassign_network_id(new_network_id)
     self.reload
     self.reassign_layer_id_for_network(new_network_id)
@@ -132,8 +132,7 @@ class AlnTermination < ActiveRecord::Base
   #### get network id
   def get_network_id
     if self.network_id.nil?
-      self.save if self.id.nil?
-      self.network_id = self.id
+      self.network_id = AlnNetworkId.get_network_id
       self.save
     end
     self.network_id

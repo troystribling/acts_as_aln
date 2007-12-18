@@ -16,7 +16,7 @@ describe "assignement of network ID for terminations when added to a connection 
     @c.destroy
   end
   
-  it "should be aln_termination_id of termination added to connection if no other terminations are in connection" do 
+  it "should be network_id of termination added to connection if no other terminations are in connection" do 
 
     #### create terminations
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
@@ -28,7 +28,7 @@ describe "assignement of network ID for terminations when added to a connection 
     @c << eth
     
     #### check network_id
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
 
   end
 
@@ -46,7 +46,7 @@ describe "assignement of network ID for terminations when added to a connection 
     @c << [eth1, eth2]
     
     #### check network_id
-    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth1.id, eth1.network_id)
     check_network_id(EthernetTermination, eth2.id, eth1.network_id)
 
   end
@@ -80,14 +80,14 @@ describe "assignement of network ID for terminations when termination hierarchy 
     eth << ip
     
     #### check network_id prior to connection
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip.id, eth.network_id)
     
     #### create connection
     @c.add_network(eth)
     
     #### check network_id after connection
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip.id, eth.network_id)
 
   end
@@ -105,7 +105,7 @@ describe "assignement of network ID for terminations when termination hierarchy 
     @nic2 << eth2
     
     #### check network_id prior to connection
-    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth1.id, eth1.network_id)
     check_network_id(IpTermination, ip.id, eth1.network_id)
     check_network_id(EthernetTermination, eth2.id, nil)
     
@@ -114,7 +114,7 @@ describe "assignement of network ID for terminations when termination hierarchy 
     @c << eth2
     
     #### check network_id after connection
-    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth1.id, eth1.network_id)
     check_network_id(EthernetTermination, eth2.id, eth1.network_id)
     check_network_id(IpTermination, ip.id, eth1.network_id)
 
@@ -135,9 +135,9 @@ describe "assignement of network ID for terminations when termination hierarchy 
     eth2 << ip2
     
     #### check network_id prior to connection
-    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth1.id, eth1.network_id)
     check_network_id(IpTermination, ip1.id, eth1.network_id)
-    check_network_id(EthernetTermination, eth2.id, eth2.aln_termination.id)
+    check_network_id(EthernetTermination, eth2.id, eth2.network_id)
     check_network_id(IpTermination, ip2.id, eth2.network_id)
     
     #### create connection
@@ -145,7 +145,7 @@ describe "assignement of network ID for terminations when termination hierarchy 
     @c.add_network(eth2)
     
     #### check network_id after connection
-    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth1.id, eth1.network_id)
     check_network_id(EthernetTermination, eth2.id, eth1.network_id)
     check_network_id(IpTermination, ip1.id, eth1.network_id)
     check_network_id(IpTermination, ip2.id, eth2.network_id)
@@ -166,7 +166,7 @@ describe "assignement of network ID for terminations when termination hierarchy 
     
     #### check network_id prior to connection
     check_network_id(EthernetTermination, eth1.id, nil)
-    check_network_id(EthernetTermination, eth2.id, eth2.aln_termination.id)
+    check_network_id(EthernetTermination, eth2.id, eth2.network_id)
     check_network_id(IpTermination, ip.id, eth2.network_id)
     
     #### create connection
@@ -174,7 +174,7 @@ describe "assignement of network ID for terminations when termination hierarchy 
     @c.add_network(eth2)
     
     #### check network_id after connection
-    check_network_id(EthernetTermination, eth1.id, eth1.aln_termination.id)
+    check_network_id(EthernetTermination, eth1.id, eth1.network_id)
     check_network_id(EthernetTermination, eth2.id, eth1.network_id)
     check_network_id(IpTermination, ip.id, eth1.network_id)
 
@@ -211,7 +211,7 @@ describe "assignement of network ID for terminations when termination supported 
     eth << ip
     
     #### check network_id prior to connection
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip.id, eth.network_id)
     
     #### create connections
@@ -219,7 +219,7 @@ describe "assignement of network ID for terminations when termination supported 
     @ipc.add_network(ip)
     
     #### check network_id after connection
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip.id, eth.network_id)
 
   end
@@ -237,7 +237,7 @@ describe "assignement of network ID for terminations when termination supported 
     @nic2 << ip2
     
     #### check network_id prior to connection
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
     check_network_id(IpTermination, ip2.id, nil)
     
@@ -247,7 +247,7 @@ describe "assignement of network ID for terminations when termination supported 
     @ipc.add_network(ip2)
     
     #### check network_id after connection
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip1.id, eth.network_id)
     check_network_id(IpTermination, ip2.id, eth.network_id)
 
@@ -267,7 +267,7 @@ describe "assignement of network ID for terminations when termination supported 
     
     #### check network_id prior to connection
     check_network_id(IpTermination, ip1.id, nil)
-    check_network_id(EthernetTermination, eth.id, eth.aln_termination.id)
+    check_network_id(EthernetTermination, eth.id, eth.network_id)
     check_network_id(IpTermination, ip2.id, eth.network_id)
     
     #### create connections
@@ -276,7 +276,7 @@ describe "assignement of network ID for terminations when termination supported 
     @ipc.add_network(ip2)
     
     #### check network_id after connection
-    check_network_id(IpTermination, ip1.id, ip1.aln_termination.id)
+    check_network_id(IpTermination, ip1.id, ip1.network_id)
     check_network_id(EthernetTermination, eth.id, ip1.network_id)
     check_network_id(IpTermination, ip2.id, ip1.network_id)
 
