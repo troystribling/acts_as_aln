@@ -4,7 +4,7 @@ module AlnTerminationHelper
   #### validate termination class
   def validate_termination(term)
     raise(PlanB::InvalidClass, "termination must be #{self.termination_type.to_s}") unless term.class.name.tableize.singularize.to_sym.eql?(self.termination_type)
-    raise(PlanB::TerminationInvalid, "termination is already in set") unless term.aln_connection_id.nil?
+    raise(PlanB::TerminationInvalid, "termination is already in #{self.class.name.tableize.singularize}") unless eval("term.#{self.class.name.tableize.singularize}_id.nil?")
     raise(PlanB::TerminationInvalid, "termination is in different support hierarchy") unless term.support_hierarchy_root_id.eql?(self.get_termination_support_hierarchy_root_id(term))
   end
 
