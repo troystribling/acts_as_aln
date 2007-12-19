@@ -18,11 +18,19 @@ class AlnPath < ActiveRecord::Base
   has_many :aln_terminations, :dependent => :nullify     
 
   ####################################################################################
+  #### remove path from termination
+  def do_remove_from_termination (term)
+    term.aln_path_id = nil
+    term.aln_path = nil
+    term.save
+  end
+
+  ####################################################################################
   #### add termination to path
   def << (term)    
     add_term = lambda do |t| 
       self.validate_termination(t)
-      raise(PlanB::TerminationInvalid, "termination is in different network") unless term.network_id.eql?(self.get_path_network_id(term))
+      raise(PlanB::TerminationInvalid, "termination is in different network") unless t.network_id.eql?(self.get_path_network_id(t))
       self.aln_terminations << AlnTermination.to_aln_termination(t)
     end
     term.class.eql?(Array) ? term.each{|t| add_term[t]} : add_term[term]

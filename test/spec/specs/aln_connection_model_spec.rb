@@ -8,7 +8,7 @@ describe "aln_connection inheritance associations" do
   end
 
   it "should include aln_resource ancestor association" do 
-    AlnConnection.should be_descendant_of(AlnConnection)
+    AlnConnection.should be_descendant_of(AlnResource)
   end
 
 end

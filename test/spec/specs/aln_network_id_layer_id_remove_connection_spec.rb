@@ -896,7 +896,8 @@ describe "assigned network ID terminations after deatching from a connection whe
     #### create connection
     eth1.reload
     eth2.reload
-    @ceth << [eth2, eth1]
+    @ceth << eth2
+    @ceth.add_network(eth1)
 
     #### validate initial termination supporter
     check_termination_supporter_id(EthernetTermination, eth1.id, nil)

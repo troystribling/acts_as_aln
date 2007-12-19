@@ -4,9 +4,9 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "persitence of aln_path", :shared => true do
 
   it "should occur when a termination is added to connection" do
-    @c.should_not persist
-    @c << @t
-    @c.should persist
+    @p.should_not persist
+    @p << @t
+    @p.should persist
   end
   
 end

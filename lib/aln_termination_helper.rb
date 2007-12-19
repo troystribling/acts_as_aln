@@ -45,6 +45,12 @@ module AlnTerminationHelper
     end  
   end
   
+  ####################################################################################
+  #### return termination as :termination_type
+  def find_termination_as_type(*args)
+    self.class.find_by_model_and_condition("aln_terminations.#{self.class.name.tableize.singularize}_id = #{self.id}", eval("#{self.termination_type.to_s.classify}"), *args)
+  end
+  
 end
 
 
