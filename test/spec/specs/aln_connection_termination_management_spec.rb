@@ -67,7 +67,7 @@ end
 #########################################################################################################
 describe "removing terminations from a connection", :shared => true do
 
-  def verify_persistence
+  def verify_connection_termination_persistence
     AlnTermination.to_aln_termination(@t1).should persist
     AlnTermination.to_aln_termination(@t2).should persist
     AlnTermination.to_aln_termination(@t3).should persist
@@ -88,13 +88,13 @@ describe "removing terminations from a connection", :shared => true do
     @c1.aln_terminations[0].should eql(AlnTermination.to_aln_termination(@t1))
     @c1.aln_terminations[1].should eql(AlnTermination.to_aln_termination(@t2))
     @c1.aln_terminations[2].should eql(AlnTermination.to_aln_termination(@t3))
-    verify_persistence
+    verify_connection_termination_persistence
     @c1.remove_termination(@t1)
     @c1.aln_terminations.length.should eql(2)
     @c1.aln_terminations.should_not include(AlnTermination.to_aln_termination(@t1))
     @c1.aln_terminations[0].should eql(AlnTermination.to_aln_termination(@t2))
     @c1.aln_terminations[1].should eql(AlnTermination.to_aln_termination(@t3))
-    verify_persistence
+    verify_connection_termination_persistence
     verify_connection_removal(@t1)
   end
 
@@ -104,13 +104,13 @@ describe "removing terminations from a connection", :shared => true do
     @c1.aln_terminations[0].should eql(AlnTermination.to_aln_termination(@t1))
     @c1.aln_terminations[1].should eql(AlnTermination.to_aln_termination(@t2))
     @c1.aln_terminations[2].should eql(AlnTermination.to_aln_termination(@t3))
-    verify_persistence
+    verify_connection_termination_persistence
     @c1.remove_termination([@t1, @t2])
     @c1.aln_terminations.length.should eql(1)
     @c1.aln_terminations[0].should eql(AlnTermination.to_aln_termination(@t3))
     @c1.aln_terminations.should_not include(AlnTermination.to_aln_termination(@t1))
     @c1.aln_terminations.should_not include(AlnTermination.to_aln_termination(@t2))
-    verify_persistence
+    verify_connection_termination_persistence
     verify_connection_removal(@t1)
     verify_connection_removal(@t2)
   end
@@ -121,7 +121,7 @@ describe "removing terminations from a connection", :shared => true do
     @c1.aln_terminations[0].should eql(AlnTermination.to_aln_termination(@t1))
     @c1.aln_terminations[1].should eql(AlnTermination.to_aln_termination(@t2))
     @c1.aln_terminations[2].should eql(AlnTermination.to_aln_termination(@t3))
-    verify_persistence
+    verify_connection_termination_persistence
     @c1.remove_termination_if do |t|
       t.direction.eql?('client')
     end
@@ -129,7 +129,7 @@ describe "removing terminations from a connection", :shared => true do
     @c1.aln_terminations[0].should eql(AlnTermination.to_aln_termination(@t1))
     @c1.aln_terminations.should_not include(AlnTermination.to_aln_termination(@t2))
     @c1.aln_terminations.should_not include(AlnTermination.to_aln_termination(@t3))
-    verify_persistence
+    verify_connection_termination_persistence
     verify_connection_removal(@t2)
     verify_connection_removal(@t3)
   end
@@ -139,10 +139,10 @@ describe "removing terminations from a connection", :shared => true do
     @c1.aln_terminations[0].should eql(AlnTermination.to_aln_termination(@t1))
     @c1.aln_terminations[1].should eql(AlnTermination.to_aln_termination(@t2))
     @c1.aln_terminations[2].should eql(AlnTermination.to_aln_termination(@t3))
-    verify_persistence
+    verify_connection_termination_persistence
     @c1.remove_all_terminations
     @c1.aln_terminations.should be_empty
-    verify_persistence
+    verify_connection_termination_persistence
     verify_connection_removal(@t1)
     verify_connection_removal(@t2)
     verify_connection_removal(@t3)
