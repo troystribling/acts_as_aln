@@ -37,6 +37,12 @@ describe "adding terminations to a path", :shared => true do
     @c2 << @t2
     lambda{@p1 << [@t1, @t2]}.should raise_error(PlanB::TerminationInvalid)
   end
+
+  it "should fail when termination is in another network" do
+    @nic1 << @t1
+    @nic2 << @t2
+    lambda{@p1 << [@t1, @t2]}.should_not raise_error(PlanB::TerminationInvalid)
+  end
   
 end
 
