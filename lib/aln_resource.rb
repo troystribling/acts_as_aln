@@ -179,7 +179,7 @@ class AlnResource < ActiveRecord::Base
   def remove_update_metadata (update_increment, left_lower_bound, root_id)
 
     #### update meta data for all affected models
-    self.class.update_all("support_hierarchy_left = (support_hierarchy_left - #{update_increment})", "support_hierarchy_left > #{left_lower_bound + 1} AND support_hierarchy_root_id = #{root_id}") 
+    self.class.update_all("support_hierarchy_left = (support_hierarchy_left - #{update_increment})", "support_hierarchy_left > #{left_lower_bound} AND support_hierarchy_root_id = #{root_id}") 
     self.class.update_all("support_hierarchy_right = (support_hierarchy_right - #{update_increment})", "support_hierarchy_right > #{left_lower_bound + 1} AND support_hierarchy_root_id = #{root_id}") 
     
   end
