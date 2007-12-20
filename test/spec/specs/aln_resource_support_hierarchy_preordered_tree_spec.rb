@@ -19,19 +19,23 @@ module PreorderedTreeHierarchyHelper
     sup.should persist   
   end
    
+  def verify_preordered_tree_metadata(node, left, right)
+    node_chk = AlnResource.to_aln_resource(node)
+    node_chk = AlnResource.find(node_chk.id)
+    node_chk.support_hierarchy_left.should eql(left)  
+    node_chk.support_hierarchy_right.should eql(right) 
+    node_chk 
+  end
+
   def verify_root(root, left, right)
-    root_chk = AlnResource.to_aln_resource(root)
-    root_chk = AlnResource.find(root_chk.id)
-    root_chk.support_hierarchy_left.should eql(left)  
-    root_chk.support_hierarchy_right.should eql(right) 
-    root_chk.support_hierarchy_root.should eql(root_chk.id) 
-    root_chk 
+    root_chk = verify_preordered_tree_metadata(root, left, right)
+    root_chk.support_hierarchy_root_id.should eql(root_chk.id) 
   end
 
   def verify_supported(hierachy_root, root, sup, left, right)
-    sub_chk = verify_root(sup, left, right)
+    sub_chk = verify_preordered_tree_metadata(sup, left, right)
     root_chk = AlnResource.to_aln_resource(root)
-    hierachy_root_chk = AlnResource.to_aln_resource(hierachy_root)
+    hierachy_root_chk = AlnResource.to_aln_resource(hierachy_root)  
     sub_chk.support_hierarchy_root_id.should eql(hierachy_root_chk.id) 
     sub_chk.supporter_id.should eql(root_chk.id) 
   end
@@ -172,143 +176,143 @@ describe "update of preordered tree meta data when adding a supported that may b
     
   end
 
-  it "should modify target hierarchy root and added support hierachy if target hierarchy consists only of a root and supported hierarchy has supported" do
-
-    #### build added hierarchy
-    add_first_supported(@root2, @s21)
-    add_supported(@root2, @s22)
-    add_supported(@root2, @s23)
-
-    #### verify added hierarchy
-    verify_root(@root2, 1, 8)
-    verify_supported(@root2, @root2, @s21, 6, 7)
-    verify_supported(@root2, @root2, @s22, 4, 5)
-    verify_supported(@root2, @root2, @s23, 2, 3)
-
-    #### verify root
-    @root.save
-    verify_root(@root, 1, 2)
-    
-    #### add subtree to root
-    @root.add_support_hierarchy(@root2)
-    
-    #### verify metadata update    
-    verify_root(@root, 1, 10)
-    verify_supported(@root, @root, @root2, 2, 9)
-    verify_supported(@root, @root2, @s21, 7, 8)
-    verify_supported(@root, @root2, @s22, 5, 6)
-    verify_supported(@root, @root2, @s23, 3, 4)
-    
-    #### clean up
-    @root.destroy
-    @root2.destroy
-    
-  end
-
-  it "should modify target hierarchy and added support hierachy if target hierarchy consists of root with supported and supported hierarchy has supported" do
-
-    #### build added hierarchy
-    add_first_supported(@root2, @s21)
-    add_supported(@root2, @s22)
-    add_supported(@root2, @s23)
-
-    #### verify added hierarchy
-    verify_root(@root2, 1, 8)
-    verify_supported(@root2, @root2, @s21, 6, 7)
-    verify_supported(@root2, @root2, @s22, 4, 5)
-    verify_supported(@root2, @root2, @s23, 2, 3)
-
-    #### build target hierarchy
-    add_first_supported(@root, @s1)
-    add_supported(@root, @s2)
-    add_supported(@root, @s3)
-
-    #### verify target hierarchy
-    verify_root(@root, 1, 8)
-    verify_supported(@root, @root, @s1, 6, 7)
-    verify_supported(@root, @root, @s2, 4, 5)
-    verify_supported(@root, @root, @s3, 2, 3)
-    
-    #### add subtree to root
-    @s3.add_support_hierarchy(@root2)
-    
-    #### verify metadata update    
-    verify_root(@root, 1, 16)
-    verify_supported(@root, @root, @s1, 14, 15)
-    verify_supported(@root, @root, @s2, 12, 13)
-    verify_supported(@root, @root, @s3, 2, 11)
-    verify_supported(@root, @s3, @root2, 3, 10)
-    verify_supported(@root, @root2, @s21, 8, 9)
-    verify_supported(@root, @root2, @s22, 6, 7)
-    verify_supported(@root, @root2, @s23, 4, 5)
-    
-    #### clean up
-    @root.destroy
-    @root2.destroy
-    
-  end
-
-  it "should modify only specified hierarchy if hierarchies with different roots are contained in database" do
-
-    #### build added hierarchy
-    add_first_supported(@root2, @s21)
-    add_supported(@root2, @s22)
-    add_supported(@root2, @s23)
-
-    #### verify added hierarchy
-    verify_root(@root2, 1, 8)
-    verify_supported(@root2, @root2, @s21, 6, 7)
-    verify_supported(@root2, @root2, @s22, 4, 5)
-    verify_supported(@root2, @root2, @s23, 2, 3)
-
-    #### build target hierarchy
-    add_first_supported(@root, @s1)
-    add_supported(@root, @s2)
-    add_supported(@root, @s3)
-
-    #### verify target hierarchy
-    verify_root(@root, 1, 8)
-    verify_supported(@root, @root, @s1, 6, 7)
-    verify_supported(@root, @root, @s2, 4, 5)
-    verify_supported(@root, @root, @s3, 2, 3)
-
-    #### build control hierarchy
-    add_first_supported(@root3, @s31)
-    add_supported(@root3, @s32)
-    add_supported(@root3, @s33)
-
-    #### verify control hierarchy
-    verify_root(@root3, 1, 8)
-    verify_supported(@root3, @root3, @s31, 6, 7)
-    verify_supported(@root3, @root3, @s32, 4, 5)
-    verify_supported(@root3, @root3, @s33, 2, 3)
-    
-    #### add subtree to root
-    @s3.add_support_hierarchy(@root2)
-    
-    #### verify metadata update    
-    verify_root(@root, 1, 16)
-    verify_supported(@root, @root, @s1, 14, 15)
-    verify_supported(@root, @root, @s2, 12, 13)
-    verify_supported(@root, @root, @s3, 2, 11)
-    verify_supported(@root, @s3, @root2, 3, 10)
-    verify_supported(@root, @root2, @s21, 8, 9)
-    verify_supported(@root, @root2, @s22, 6, 7)
-    verify_supported(@root, @root2, @s23, 4, 5)
-
-    #### verify control hierarchy
-    verify_root(@root3, 1, 8)
-    verify_supported(@root3, @root3, @s31, 6, 7)
-    verify_supported(@root3, @root3, @s32, 4, 5)
-    verify_supported(@root3, @root3, @s33, 2, 3)
-    
-    #### clean up
-    @root.destroy
-    @root2.destroy
-    @root3.destroy
-
-  end
-  
+#  it "should modify target hierarchy root and added support hierachy if target hierarchy consists only of a root and supported hierarchy has supported" do
+#
+#    #### build added hierarchy
+#    add_first_supported(@root2, @s21)
+#    add_supported(@root2, @s22)
+#    add_supported(@root2, @s23)
+#
+#    #### verify added hierarchy
+#    verify_root(@root2, 1, 8)
+#    verify_supported(@root2, @root2, @s21, 6, 7)
+#    verify_supported(@root2, @root2, @s22, 4, 5)
+#    verify_supported(@root2, @root2, @s23, 2, 3)
+#
+#    #### verify root
+#    @root.save
+#    verify_root(@root, 1, 2)
+#    
+#    #### add subtree to root
+#    @root.add_support_hierarchy(@root2)
+#    
+#    #### verify metadata update    
+#    verify_root(@root, 1, 10)
+#    verify_supported(@root, @root, @root2, 2, 9)
+#    verify_supported(@root, @root2, @s21, 7, 8)
+#    verify_supported(@root, @root2, @s22, 5, 6)
+#    verify_supported(@root, @root2, @s23, 3, 4)
+#    
+#    #### clean up
+#    @root.destroy
+#    @root2.destroy
+#    
+#  end
+#
+#  it "should modify target hierarchy and added support hierachy if target hierarchy consists of root with supported and supported hierarchy has supported" do
+#
+#    #### build added hierarchy
+#    add_first_supported(@root2, @s21)
+#    add_supported(@root2, @s22)
+#    add_supported(@root2, @s23)
+#
+#    #### verify added hierarchy
+#    verify_root(@root2, 1, 8)
+#    verify_supported(@root2, @root2, @s21, 6, 7)
+#    verify_supported(@root2, @root2, @s22, 4, 5)
+#    verify_supported(@root2, @root2, @s23, 2, 3)
+#
+#    #### build target hierarchy
+#    add_first_supported(@root, @s1)
+#    add_supported(@root, @s2)
+#    add_supported(@root, @s3)
+#
+#    #### verify target hierarchy
+#    verify_root(@root, 1, 8)
+#    verify_supported(@root, @root, @s1, 6, 7)
+#    verify_supported(@root, @root, @s2, 4, 5)
+#    verify_supported(@root, @root, @s3, 2, 3)
+#    
+#    #### add subtree to root
+#    @s3.add_support_hierarchy(@root2)
+#    
+#    #### verify metadata update    
+#    verify_root(@root, 1, 16)
+#    verify_supported(@root, @root, @s1, 14, 15)
+#    verify_supported(@root, @root, @s2, 12, 13)
+#    verify_supported(@root, @root, @s3, 2, 11)
+#    verify_supported(@root, @s3, @root2, 3, 10)
+#    verify_supported(@root, @root2, @s21, 8, 9)
+#    verify_supported(@root, @root2, @s22, 6, 7)
+#    verify_supported(@root, @root2, @s23, 4, 5)
+#    
+#    #### clean up
+#    @root.destroy
+#    @root2.destroy
+#    
+#  end
+#
+#  it "should modify only specified hierarchy if hierarchies with different roots are contained in database" do
+#
+#    #### build added hierarchy
+#    add_first_supported(@root2, @s21)
+#    add_supported(@root2, @s22)
+#    add_supported(@root2, @s23)
+#
+#    #### verify added hierarchy
+#    verify_root(@root2, 1, 8)
+#    verify_supported(@root2, @root2, @s21, 6, 7)
+#    verify_supported(@root2, @root2, @s22, 4, 5)
+#    verify_supported(@root2, @root2, @s23, 2, 3)
+#
+#    #### build target hierarchy
+#    add_first_supported(@root, @s1)
+#    add_supported(@root, @s2)
+#    add_supported(@root, @s3)
+#
+#    #### verify target hierarchy
+#    verify_root(@root, 1, 8)
+#    verify_supported(@root, @root, @s1, 6, 7)
+#    verify_supported(@root, @root, @s2, 4, 5)
+#    verify_supported(@root, @root, @s3, 2, 3)
+#
+#    #### build control hierarchy
+#    add_first_supported(@root3, @s31)
+#    add_supported(@root3, @s32)
+#    add_supported(@root3, @s33)
+#
+#    #### verify control hierarchy
+#    verify_root(@root3, 1, 8)
+#    verify_supported(@root3, @root3, @s31, 6, 7)
+#    verify_supported(@root3, @root3, @s32, 4, 5)
+#    verify_supported(@root3, @root3, @s33, 2, 3)
+#    
+#    #### add subtree to root
+#    @s3.add_support_hierarchy(@root2)
+#    
+#    #### verify metadata update    
+#    verify_root(@root, 1, 16)
+#    verify_supported(@root, @root, @s1, 14, 15)
+#    verify_supported(@root, @root, @s2, 12, 13)
+#    verify_supported(@root, @root, @s3, 2, 11)
+#    verify_supported(@root, @s3, @root2, 3, 10)
+#    verify_supported(@root, @root2, @s21, 8, 9)
+#    verify_supported(@root, @root2, @s22, 6, 7)
+#    verify_supported(@root, @root2, @s23, 4, 5)
+#
+#    #### verify control hierarchy
+#    verify_root(@root3, 1, 8)
+#    verify_supported(@root3, @root3, @s31, 6, 7)
+#    verify_supported(@root3, @root3, @s32, 4, 5)
+#    verify_supported(@root3, @root3, @s33, 2, 3)
+#    
+#    #### clean up
+#    @root.destroy
+#    @root2.destroy
+#    @root3.destroy
+#
+#  end
+#  
 end
 
 ##########################################################################################################
@@ -778,15 +782,15 @@ describe "updates to preordered tree meta data for aln_resource supported and al
 
   end
   
-  it_should_behave_like "update of preordered tree meta data by adding a supported with no supported to a support hierarchy"
-
-  it_should_behave_like "update of preordered tree meta data for support hiearchy by destroying a supported with no supported"
-
-  it_should_behave_like "update of preordered tree meta data for all model destroy methods"
+#  it_should_behave_like "update of preordered tree meta data by adding a supported with no supported to a support hierarchy"
+#
+#  it_should_behave_like "update of preordered tree meta data for support hiearchy by destroying a supported with no supported"
+#
+#  it_should_behave_like "update of preordered tree meta data for all model destroy methods"
 
   it_should_behave_like "update of preordered tree meta data when adding a supported that may be a support hierarchy root to a support hierarchy"
   
-  it_should_behave_like "update of preordered tree meta data when removing a supported that may be a support hierarchy root from a support hierarchy"
+#  it_should_behave_like "update of preordered tree meta data when removing a supported that may be a support hierarchy root from a support hierarchy"
   
 end
 
@@ -814,15 +818,15 @@ describe "updates to preordered tree meta data for aln_resource descendant suppo
 
   end
   
-  it_should_behave_like "update of preordered tree meta data by adding a supported with no supported to a support hierarchy"
-
-  it_should_behave_like "update of preordered tree meta data for support hiearchy by destroying a supported with no supported"
-
-  it_should_behave_like "update of preordered tree meta data for all model destroy methods"
-
-  it_should_behave_like "update of preordered tree meta data when adding a supported that may be a support hierarchy root to a support hierarchy"
-
-  it_should_behave_like "update of preordered tree meta data when removing a supported that may be a support hierarchy root from a support hierarchy"
-  
+#  it_should_behave_like "update of preordered tree meta data by adding a supported with no supported to a support hierarchy"
+#
+#  it_should_behave_like "update of preordered tree meta data for support hiearchy by destroying a supported with no supported"
+#
+#  it_should_behave_like "update of preordered tree meta data for all model destroy methods"
+#
+#  it_should_behave_like "update of preordered tree meta data when adding a supported that may be a support hierarchy root to a support hierarchy"
+#
+#  it_should_behave_like "update of preordered tree meta data when removing a supported that may be a support hierarchy root from a support hierarchy"
+#  
 end
 
