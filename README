@@ -1,4 +1,18 @@
-Aln
-===
+acts_as_aln
+=================
 
-Description goes here
+install and use, see
+http://research.inplanb.com/acts_as_aln
+
+test/rails_root/spec/model contains examples which implement 
+acts_as_aln.
+
+to run specs configure test/rails_root/config/database.yml and type the following in the 
+installation directory
+
+rake spec
+
+to generate html spec report type the following in the 
+installation directory
+
+rake spec_report

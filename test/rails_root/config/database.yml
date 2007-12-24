@@ -1,0 +1,21 @@
+test:
+  adapter: mysql
+  socket: /var/lib/mysql/mysql.sock
+  username: tester
+  password: testing
+  database: plugin_testing
+
+development:
+  adapter: mysql
+  socket: /var/lib/mysql/mysql.sock
+  username: tester
+  password: testing
+  database: plugin_testing
+
+production:
+  adapter: mysql
+  socket: /var/lib/mysql/mysql.sock
+  username: tester
+  password: testing
+  database: plugin_testing
+
