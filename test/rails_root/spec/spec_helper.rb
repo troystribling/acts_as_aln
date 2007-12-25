@@ -19,8 +19,8 @@ Spec::Runner.configure do |config|
   config.fixture_path = RAILS_ROOT + '/spec/fixtures/'
   config.include(PlanB::SpecExtensions)
   config.include(PlanB::SpecMatchers)
-  config.model_data = File.open(File.dirname(__FILE__) + '/fixtures/aln_spec_data.yml') {|yf| YAML::load(yf)}
-  config.model_data.symbolize_keys!
+  PlanB::SpecExtensions::ModelData.model_data = File.open(File.dirname(__FILE__) + '/fixtures/aln_spec_data.yml') {|yf| YAML::load(yf)}
+  PlanB::SpecExtensions::ModelData.model_data.symbolize_keys!
 
   # == Fixtures
   #
