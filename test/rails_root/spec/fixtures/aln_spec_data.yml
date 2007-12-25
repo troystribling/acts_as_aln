@@ -20,22 +20,22 @@ aln_termination:
 
 aln_termination_supported_1:
   resource_name: Termination-1
-  directionality: unidirectional
+  directionality: ingress
   direction: server 
 
 aln_termination_supported_2:
   resource_name: Termination-2
-  directionality: unidirectional
+  directionality: ingress
   direction: client 
 
 aln_termination_supported_3:
   resource_name: Termination-3
-  directionality: unidirectional
+  directionality: ingress
   direction: client 
 
 aln_termination_supported_4:
   resource_name: Termination-4
-  directionality: unidirectional
+  directionality: ingress
   direction: client 
 
 ip_termination_query_1:

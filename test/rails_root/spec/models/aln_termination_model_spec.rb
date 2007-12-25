@@ -50,8 +50,12 @@ describe "aln_termination directionality attribute" do
     AlnTermination.new().should be_valid
   end
 
-  it "should be valid for value unidirectional" do 
-    AlnTermination.new(:directionality => 'unidirectional').should be_valid
+  it "should be valid for value ingress" do 
+    AlnTermination.new(:directionality => 'ingress').should be_valid
+  end
+
+  it "should be valid for value egress" do 
+    AlnTermination.new(:directionality => 'egress').should be_valid
   end
 
   it "should be valid for value bidirectional" do 

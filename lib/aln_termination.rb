@@ -22,8 +22,8 @@ class AlnTermination < ActiveRecord::Base
   #### attribute validators
   ###############################################################
   validates_inclusion_of :directionality, 
-                         :in => ['unidirectional', 'bidirectional'],
-                         :message => "should be unidirectional or bidirectional",
+                         :in => ['ingress', 'egress', 'bidirectional'],
+                         :message => "should be ingress, egress or bidirectional",
                          :allow_nil => true
   
   validates_inclusion_of :direction,
