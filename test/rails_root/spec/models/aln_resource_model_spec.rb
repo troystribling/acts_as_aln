@@ -16,14 +16,6 @@ end
 ##########################################################################################################
 describe "attributes supported by aln_resource models" do
 
-  it "should include date and time of model creation" do 
-    AlnResource.should have_attribute(:created_at, :datetime)
-  end
-
-  it "should include date and time of last object update" do 
-    AlnResource.should have_attribute(:updated_at, :datetime)
-  end
-
   it "should include an integer preordered tree parameter support_hierarchy_left" do 
     AlnResource.should have_attribute(:support_hierarchy_left, :integer)
   end
