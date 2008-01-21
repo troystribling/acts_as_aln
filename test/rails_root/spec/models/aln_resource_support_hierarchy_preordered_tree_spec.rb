@@ -633,7 +633,7 @@ describe "update of preordered tree meta data for all model destroy methods", :s
     verify_supported(@root, @root, @s3, 2, 3)
 
     #### destroy
-    @root.destroy_supported_by_model(@s1.class, :first, :conditions => "aln_resources.resource_name = '#{@s1.resource_name}'")
+    @root.destroy_supported_by_model(@s1.class, :first, :conditions => "aln_resources.name = '#{@s1.name}'")
 
     #### validate database changes
     @root.should persist   
@@ -665,7 +665,7 @@ describe "update of preordered tree meta data for all model destroy methods", :s
     verify_supported(@root, @root, @s3, 2, 3)
 
     #### destroy
-    @root.destroy_supported_by_model(@s1.class, :all, :conditions => "aln_resources.resource_name = '#{@s1.resource_name}'")
+    @root.destroy_supported_by_model(@s1.class, :all, :conditions => "aln_resources.name = '#{@s1.name}'")
 
     #### validate database changes
     @root.should persist   

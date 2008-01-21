@@ -136,11 +136,11 @@ describe "force load of array of supported from database", :shared => true do
   it "should be an option when an element of supported retrieved" do
     @root << [@s1, @s2, @s3]
     s1_update = AlnResource.find(AlnResource.to_aln_resource(@s1).id)
-    @root.supported.first.resource_name.should eql(s1_update.resource_name)
-    s1_update.resource_name = 'new_name'
+    @root.supported.first.name.should eql(s1_update.name)
+    s1_update.name = 'new_name'
     s1_update.save
-    @root.supported.first.resource_name.should_not eql(s1_update.resource_name)
-    @root.supported(true).first.resource_name.should eql(s1_update.resource_name)
+    @root.supported.first.name.should_not eql(s1_update.name)
+    @root.supported(true).first.name.should eql(s1_update.name)
   end
 
 end
@@ -151,10 +151,10 @@ describe "force load of supporter from database", :shared => true do
   it "should be an option when supporter is accessed" do
     @root << [@s1, @s2, @s3]
     root_update = AlnResource.find(AlnResource.to_aln_resource(@root).id)
-    root_update.resource_name = 'new_name'
-    @s1.supporter.value.resource_name.should_not eql(root_update.resource_name)
+    root_update.name = 'new_name'
+    @s1.supporter.value.name.should_not eql(root_update.name)
     root_update.save
-    @s1.supporter(true).value.resource_name.should eql(root_update.resource_name)
+    @s1.supporter(true).value.name.should eql(root_update.name)
   end
 
 end

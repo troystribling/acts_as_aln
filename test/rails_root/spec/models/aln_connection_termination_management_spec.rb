@@ -219,7 +219,7 @@ describe "management of aln_terminations in a connection" do
     @t2 = AlnTermination.new(model_data[:aln_termination_supported_2])
     @t3 = AlnTermination.new(model_data[:aln_termination_supported_3])
     @td1 = IpTermination.new(model_data[:ip_termination_1])
-    @match_attributes = [:aln_connection_id, :directionality, :resource_name, :direction, :layer_id]
+    @match_attributes = [:aln_connection_id, :directionality, :name, :direction, :layer_id]
   end
   
   after(:each) do
@@ -257,7 +257,7 @@ describe "management of aln_termination descendants in a connection" do
     @t2 = IpTermination.new(model_data[:ip_termination_query_2])
     @t3 = IpTermination.new(model_data[:ip_termination_query_3])
     @td1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
-    @match_attributes = [:aln_connection_id, :network_id, :directionality, :resource_name, :direction, :layer_id, :ip_addr]
+    @match_attributes = [:aln_connection_id, :network_id, :directionality, :name, :direction, :layer_id, :ip_addr]
   end
 
   after(:each) do

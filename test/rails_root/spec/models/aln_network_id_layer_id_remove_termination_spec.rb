@@ -318,7 +318,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
     @nic2 = Nic.new(model_data[:nic_2]) 
     @server << [@nic1 , @hw2]
     @hw2 << @nic2 
-    @cip = AlnConnection.new(:resource_name => 'ip-connection', :termination_type => :ip_termination)
+    @cip = AlnConnection.new(:name => 'ip-connection', :termination_type => :ip_termination)
   end
 
   after(:each) do
@@ -478,7 +478,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
     @hw2.reload
     @hw2 << @nic2 
     @hw3 << @nic3 
-    @cip = AlnConnection.new(:resource_name => 'ip-connection', :termination_type => :ip_termination)
+    @cip = AlnConnection.new(:name => 'ip-connection', :termination_type => :ip_termination)
   end
 
   after(:each) do
@@ -660,10 +660,10 @@ describe "assigned network ID and layer ID for terminations after deatching from
     @hw2 << @nic2 
     @hw3.reload
     @hw3 << @nic3 
-    @cip1 = AlnConnection.new(:resource_name => 'ip-connection-1', :termination_type => :ip_termination)
-    @cip2 = AlnConnection.new(:resource_name => 'ip-connection-2', :termination_type => :ip_termination)
-    @ctcp1 = AlnConnection.new(:resource_name => 'tcp-connection-1', :termination_type => :tcp_socket_termination)
-    @ctcp2 = AlnConnection.new(:resource_name => 'tcp-connection-2', :termination_type => :tcp_socket_termination)
+    @cip1 = AlnConnection.new(:name => 'ip-connection-1', :termination_type => :ip_termination)
+    @cip2 = AlnConnection.new(:name => 'ip-connection-2', :termination_type => :ip_termination)
+    @ctcp1 = AlnConnection.new(:name => 'tcp-connection-1', :termination_type => :tcp_socket_termination)
+    @ctcp2 = AlnConnection.new(:name => 'tcp-connection-2', :termination_type => :tcp_socket_termination)
   end
 
   after(:each) do

@@ -13,7 +13,7 @@ class CreateActsAsAlnModel < ActiveRecord::Migration
       t.column :support_hierarchy_right, :integer, :default => 2
       t.column :created_at, :datetime
       t.column :updated_at, :datetime
-      t.column :resource_name, :string
+      t.column :name, :string
     end
    
     create_table :aln_paths, :force => true, :primary_key => :aln_path_id do |t|

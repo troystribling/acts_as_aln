@@ -34,7 +34,7 @@ describe "supporter model and supported model lifecyle operations relative to su
     @root.should persist 
     @s1.should persist   
     @s2.should persist   
-    @root.destroy_supported_by_model(@s1.class, :first, :conditions => "aln_resources.resource_name = '#{@s1.resource_name}'")
+    @root.destroy_supported_by_model(@s1.class, :first, :conditions => "aln_resources.name = '#{@s1.name}'")
     @root.should persist 
     @s1.should_not persist  
     @root.supported(true).should_not include(AlnResource.to_aln_resource(@s1)) 
@@ -49,7 +49,7 @@ describe "supporter model and supported model lifecyle operations relative to su
     @s1.should persist   
     @s2.should persist   
     @s3.should persist   
-    @root.destroy_supported_by_model(@s1.class, :all, :conditions => "aln_resources.resource_name = '#{@s1.resource_name}'")
+    @root.destroy_supported_by_model(@s1.class, :all, :conditions => "aln_resources.name = '#{@s1.name}'")
     @root.should persist 
     @s1.should_not persist   
     @s2.should_not persist   

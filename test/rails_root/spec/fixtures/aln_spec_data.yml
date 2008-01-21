@@ -1,225 +1,225 @@
 aln_resource:
-  resource_name: Resource
+  name: Resource
 
 aln_resource_supported_1:
-  resource_name: Resource-1
+  name: Resource-1
 
 aln_resource_supported_2:
-  resource_name: Resource-2
+  name: Resource-2
 
 aln_resource_supported_3:
-  resource_name: Resource-3
+  name: Resource-3
 
 aln_resource_supported_4:
-  resource_name: Resource-4
+  name: Resource-4
 
 aln_termination:
-  resource_name: Termination
+  name: Termination
   directionality: bidirectional
   direction: client 
 
 aln_termination_supported_1:
-  resource_name: Termination-1
+  name: Termination-1
   directionality: ingress
   direction: server 
 
 aln_termination_supported_2:
-  resource_name: Termination-2
+  name: Termination-2
   directionality: ingress
   direction: client 
 
 aln_termination_supported_3:
-  resource_name: Termination-3
+  name: Termination-3
   directionality: ingress
   direction: client 
 
 aln_termination_supported_4:
-  resource_name: Termination-4
+  name: Termination-4
   directionality: ingress
   direction: client 
 
 ip_termination_query_1:
-  resource_name: IP-1
+  name: IP-1
   directionality: bidirectional
   direction: server 
   ip_addr: 10.10.10.1
 
 ip_termination_query_2:
-  resource_name: IP-2
+  name: IP-2
   directionality: bidirectional
   direction: client
   ip_addr: 10.10.10.2
 
 ip_termination_query_3:
-  resource_name: IP-3
+  name: IP-3
   directionality: bidirectional
   direction: client 
   ip_addr: 10.10.10.3
 
 aln_termination_resource:
-  resource_name: Termination
+  name: Termination
 
 aln_termination_resource_supported_1:
-  resource_name: Termination-1
+  name: Termination-1
 
 aln_termination_resource_supported_2:
-  resource_name: Termination-2
+  name: Termination-2
 
 aln_connection:
-  resource_name: Connection-1
+  name: Connection-1
 
 aln_connection_resource:
-  resource_name: Connection-1
+  name: Connection-1
 
 aln_path:
-  resource_name: Path-1
+  name: Path-1
 
 datacenter:
-  resource_name: datacenter
+  name: datacenter
   location: Nowhere
 
 server_1:
-  resource_name: Server-1
+  name: Server-1
   model: KickAss
 
 server_2:
-  resource_name: Server-2
+  name: Server-2
   model: KickAss
 
 switch:
-  resource_name: Switch
+  name: Switch
   model: BigSwitch
 
 hardware_component_1:
-  resource_name: Hardware-Component-1
+  name: Hardware-Component-1
 
 hardware_component_2:
-  resource_name: Hardware-Component-2
+  name: Hardware-Component-2
 
 hardware_component_3:
-  resource_name: Hardware-Component-3
+  name: Hardware-Component-3
 
 hardware_component_4:
-  resource_name: Hardware-Component-4
+  name: Hardware-Component-4
 
 nic_1:
-  resource_name: NIC-1
+  name: NIC-1
   serial_number: A123456
   slot: 1
 
 nic_2:
-  resource_name: NIC-2
+  name: NIC-2
   serial_number: A789101112
   slot: 1
 
 nic_3:
-  resource_name: NIC-3
+  name: NIC-3
   serial_number: A6543
   slot: 1
 
 nic_4:
-  resource_name: NIC-4
+  name: NIC-4
   serial_number: A7543
   slot: 2
   
 ethernet_termination_1:
-  resource_name: Ethernet-1
+  name: Ethernet-1
   directionality: bidirectional
   direction: server 
   mac_addr: AA:BB:CC:DD:EE:FF
 
 ethernet_termination_2:
-  resource_name: Ethernet-2
+  name: Ethernet-2
   directionality: bidirectional
   direction: server 
   mac_addr: 00:11:22:33:44:55
 
 ethernet_termination_3:
-  resource_name: Ethernet-3
+  name: Ethernet-3
   directionality: bidirectional
   direction: server 
   mac_addr: 1A:2B:3C:4D:5E:6F
 
 ethernet_termination_4:
-  resource_name: Ethernet-4
+  name: Ethernet-4
   directionality: bidirectional
   direction: server 
   mac_addr: A1:B2:C3:D4:E5:F6
 
 ip_termination_1:
-  resource_name: IP-1
+  name: IP-1
   directionality: bidirectional
   direction: server 
   ip_addr: 10.10.10.1
 
 ip_termination_2:
-  resource_name: IP-2
+  name: IP-2
   directionality: bidirectional
   direction: server 
   ip_addr: 10.10.10.2
 
 ip_termination_3:
-  resource_name: IP-3
+  name: IP-3
   directionality: bidirectional
   direction: server 
   ip_addr: 10.10.10.3
 
 ip_termination_4:
-  resource_name: IP-4
+  name: IP-4
   directionality: bidirectional
   direction: server 
   ip_addr: 10.10.10.4
 
 tcp_socket_termination_1:
-  resource_name: TCP-1
+  name: TCP-1
   directionality: bidirectional
   direction: server 
   tcp_port: 1
 
 tcp_socket_termination_2:
-  resource_name: TCP-2
+  name: TCP-2
   directionality: bidirectional
   direction: client 
   tcp_port: 1
 
 tcp_socket_termination_3:
-  resource_name: TCP-3
+  name: TCP-3
   directionality: bidirectional
   direction: server 
   tcp_port: 2
 
 tcp_socket_termination_4:
-  resource_name: TCP-4
+  name: TCP-4
   directionality: bidirectional
   direction: client 
   tcp_port: 2
 
 application_component_1:
-  resource_name: Application-Component-1
+  name: Application-Component-1
 
 application_component_2:
-  resource_name: Application-Component-2
+  name: Application-Component-2
 
 application_component_3:
-  resource_name: Application-Component-3
+  name: Application-Component-3
   
 application_component_4:
-  resource_name: Application-Component-4
+  name: Application-Component-4
 
 application_main_1:
-  resource_name: Application-Main-1
+  name: Application-Main-1
   pid: 1
 
 application_main_2:
-  resource_name: Application-Main-2
+  name: Application-Main-2
   pid: 2
 
 application_main_3:
-  resource_name: Application-Main-3
+  name: Application-Main-3
   pid: 2
 
 application_main_4:
-  resource_name: Application-Main-4
+  name: Application-Main-4
   pid: 2
   
 find_by_model_aln_resource_depth_greater_than_1:

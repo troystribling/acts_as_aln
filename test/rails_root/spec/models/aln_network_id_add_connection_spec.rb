@@ -8,7 +8,7 @@ describe "assignement of network ID for terminations when added to a connection 
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
     @server << [@nic1, @nic2]
-    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
+    @c = AlnConnection.new(:name => 'ethernet_connection', :termination_type => :ethernet_termination)
   end
 
   after(:each) do
@@ -61,7 +61,7 @@ describe "assignement of network ID for terminations when termination hierarchy 
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
     @server << [@nic1, @nic2]
-    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
+    @c = AlnConnection.new(:name => 'ethernet_connection', :termination_type => :ethernet_termination)
   end
 
   after(:each) do
@@ -190,8 +190,8 @@ describe "assignement of network ID for terminations when termination supported 
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
     @server << [@nic1, @nic2]
-    @ethc = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
-    @ipc = AlnConnection.new(:resource_name => 'ip_connection', :termination_type => :ip_termination)
+    @ethc = AlnConnection.new(:name => 'ethernet_connection', :termination_type => :ethernet_termination)
+    @ipc = AlnConnection.new(:name => 'ip_connection', :termination_type => :ip_termination)
   end
 
   after(:each) do

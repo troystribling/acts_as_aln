@@ -25,7 +25,7 @@ describe "attributes supported by aln_resource models" do
   end
 
   it "should include a string name of aln_resource" do 
-    AlnResource.should have_attribute(:resource_name, :string)
+    AlnResource.should have_attribute(:name, :string)
   end
 
   it "should include an integer preordered tree parameter support_hierarchy_left" do 

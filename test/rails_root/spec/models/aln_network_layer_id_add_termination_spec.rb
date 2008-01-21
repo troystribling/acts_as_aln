@@ -202,7 +202,7 @@ describe "assignement of layer ID for terminations when a support relationship i
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
     @server << [@nic1, @nic2]
-    @c = AlnConnection.new(:resource_name => 'ethernet_connection', :termination_type => :ethernet_termination)
+    @c = AlnConnection.new(:name => 'ethernet_connection', :termination_type => :ethernet_termination)
   end
 
   after(:each) do
