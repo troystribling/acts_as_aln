@@ -140,7 +140,7 @@ module PlanB
                   finder_options[:conditions] = [finder_options[:conditions] << ' and ' + finder_cond] + args[0..attr_count-1]
                 end
               else
-                finder_options[:conditions] = finder_cond
+                finder_options[:conditions] = [finder_cond] + args[0..attr_count-1]
               end
             end
             find_by_model(finder_type, finder_options)
