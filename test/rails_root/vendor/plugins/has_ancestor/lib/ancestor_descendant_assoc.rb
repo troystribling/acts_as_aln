@@ -13,6 +13,25 @@ module PlanB
 
         ##################################################
         module AncestorAndDescendant
+
+          def self.add_methods(target)
+                      
+            target.class_eval <<-do_eval
+
+              def self.descendants
+                if self.has_descendants?
+                  self.find(:all, :select => "DISTINCT " + "#{target.name.tableize.singularize}_descendant_type").collect do |m|
+                    eval(m.#{target.name.tableize.singularize}_descendant_type)
+                  end
+                else
+                  []
+                end
+              end          
+              
+            do_eval
+            
+          end
+          
         end
 
       end

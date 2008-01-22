@@ -31,6 +31,7 @@ module PlanB
             eval("belongs_to :#{self.name.tableize.singularize}_descendant, :polymorphic => true")
 
             #### add methods used by both ancestors and descendants
+            PlanB::Has::Ancestor::DynamicMethods::AncestorAndDescendant.add_methods(self)
             include(PlanB::Has::Ancestor::InstanceMethods::AncestorAndDescendant)
             extend(PlanB::Has::Ancestor::ClassMethods::AncestorAndDescendant)
 
@@ -51,6 +52,7 @@ module PlanB
             eval("has_one args[:named], :as => :#{args[:named]}_descendant, :dependent => :destroy")
 
             #### add methods used by both ancestors and descendants
+            PlanB::Has::Ancestor::DynamicMethods::AncestorAndDescendant.add_methods(self)
             include(PlanB::Has::Ancestor::InstanceMethods::AncestorAndDescendant)
             extend(PlanB::Has::Ancestor::ClassMethods::AncestorAndDescendant)
 
