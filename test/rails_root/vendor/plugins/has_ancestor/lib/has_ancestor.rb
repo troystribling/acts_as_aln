@@ -61,6 +61,7 @@ module PlanB
             include(PlanB::Has::Ancestor::InstanceMethods::Descendant)
             extend(PlanB::Has::Ancestor::ClassMethods::Descendant)
 
+
           end    
  
         end

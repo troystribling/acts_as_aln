@@ -95,6 +95,11 @@ module PlanB
         ##################################################
         module Descendant
           
+          def count(*args)
+            args.push(add_options(args.pop))          
+            super(*args)
+          end
+                    
           def method_missing(meth, *args, &blk)
             finder = /^find_(all_by|by)_([_a-zA-Z]*)$/.match(meth.to_s)
             if finder.nil? 

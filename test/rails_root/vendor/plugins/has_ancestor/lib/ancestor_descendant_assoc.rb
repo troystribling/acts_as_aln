@@ -53,20 +53,12 @@ module PlanB
 
           def to_descendant(arg = nil)
             if arg.nil?
-              if descendant.nil?
-                self
-              else
-                descendant.to_descendant
-              end
+              descendant.nil? ? self : descendant.to_descendant
             else  
               if self.class.name.eql?(arg.to_s.classify)
                 self
               else
-                if descendant.nil?
-                  raise(PlanB::InvalidClass, "target model is invalid")
-                else
-                  descendant.to_descendant(arg)
-                end
+                descendant.nil? ? raise(PlanB::InvalidClass, "target model is invalid") : descendant.to_descendant(arg)
               end
             end
           end
@@ -137,34 +129,34 @@ module PlanB
           end
           
           def find_by_model(*args)
-            if args.first.eql?(:first) || args.first.eql?(:all)
-              ch = class_hierarchy.collect{|c| c.name.tableize}
-              joins = ""
-              conditions = ""
-              if ch.length > 1
-                (0..ch.length-2).each do |i|
-                  joins << "LEFT JOIN " + ch[i+1] + " ON " + ch[i+1] + "." + ch[i+1].singularize +
-                           "_descendant_id = " + ch[i] + "." + ch[i].singularize + "_id "
-                  conditions << ch[i+1] + "." + ch[i+1].singularize + "_descendant_type = '" + ch[i].classify + "'"
-                  conditions << " and " if i < ch.length-2
-                end
-                if args[1].nil?
-                  args[1] = {:conditions => conditions, :joins => joins}
-                else
-                  args[1].include?(:joins) ?  args[1][:joins] << ' ' + joins : args[1][:joins] = joins
-                  if args[1].include?(:conditions) 
-                    if args[1][:conditions].class.eql?(Array)
-                      args[1][:conditions].first << ' and ' + conditions
-                    else
-                      args[1][:conditions] << ' and ' + conditions
-                    end 
-                  else
-                    args[1][:conditions] = conditions
-                  end
-                end
-              end  
-            end
+            args[1].nil? ? args.push(add_options(nil)) : args.push(add_options(args.pop))                         
             find(*args)
+          end
+
+          def add_options(opts)
+            ch = class_hierarchy.collect{|c| c.name.tableize}
+            if ch.length > 1
+              joins = ""
+              conditions = ""              
+              (0..ch.length-2).each do |i|
+                joins << "LEFT JOIN " + ch[i+1] + " ON " + ch[i+1] + "." + ch[i+1].singularize +
+                         "_descendant_id = " + ch[i] + "." + ch[i].singularize + "_id "
+                conditions << ch[i+1] + "." + ch[i+1].singularize + "_descendant_type = '" + ch[i].classify + "'"
+                conditions << " and " if i < ch.length-2
+              end
+              opts = {} if opts.nil?
+              if opts.include?(:joins) and not opts[:joins].empty?
+                opts[:joins] << ' ' + joins 
+              else
+               opts[:joins] = joins
+              end
+              if opts.include?(:conditions) and not opts[:conditions].empty?
+                opts[:conditions].class.eql?(Array) ? opts[:conditions].first << ' and ' + conditions : opts[:conditions] << ' and ' + conditions
+              else
+                opts[:conditions] = conditions
+              end
+            end
+            opts
           end
 
         end
