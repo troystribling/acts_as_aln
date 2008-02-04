@@ -129,7 +129,9 @@ module PlanB
           end
           
           def find_by_model(*args)
-            args[1].nil? ? args.push(add_options(nil)) : args.push(add_options(args.pop))                         
+            if args.first.eql?(:all) or args.first.eql?(:first)
+              args[1].nil? ? args.push(add_options(nil)) : args.push(add_options(args.pop)) 
+            end                        
             find(*args)
           end
 

@@ -96,7 +96,7 @@ module PlanB
         module Descendant
           
           def count(*args)
-            args.push(add_options(args.pop))          
+            args.push(add_options(args.pop)) if args.detect{|a| a.class.eql?(Hash)}
             super(*args)
           end
                     
