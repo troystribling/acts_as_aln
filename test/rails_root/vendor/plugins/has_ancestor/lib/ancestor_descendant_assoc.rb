@@ -103,6 +103,10 @@ module PlanB
             ancestor == nil ? [self] : [self] + ancestor.class_hierarchy
           end
           
+          def column_names_hierarchy
+            ancestor.nil? ? column_names : column_names + ancestor.column_names_hierarchy
+          end
+
           def columns_hash_hierarchy
             ancestor.nil? ? columns_hash : columns_hash.merge(ancestor.columns_hash_hierarchy)
           end
