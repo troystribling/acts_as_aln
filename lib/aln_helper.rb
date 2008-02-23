@@ -6,8 +6,12 @@ module AlnHelper
       if args[1].nil?
         args[1] = {:conditions => condition, :readonly => false}
       else
-        args[1].merge(:readonly => false)
-        args[1].include?(:conditions) ? args[1][:conditions] << ' AND ' + condition : args[1][:conditions] = condition
+        if args[1].include?(:conditions) and not args[1][:conditions].blank? 
+          args[1][:conditions] << ' AND ' + condition
+        else 
+         args[1][:conditions] = condition
+        end
+        args[1].update(:readonly => false)
       end
     end
     model.find_by_model(*args)
