@@ -221,12 +221,17 @@ class AlnResource < ActiveRecord::Base
 
   #### find specified supporter within entire hierarchy
   def find_in_support_hierarchy_by_model(model, *args)
-    cond = "aln_resources.support_hierarchy_left BETWEEN #{self.support_hierarchy_left} AND #{self.support_hierarchy_right} AND "
-    self.support_hierarchy_root_id.nil? ? cond +=  "aln_resources.support_hierarchy_root_id IS NULL" : cond +=  "aln_resources.support_hierarchy_root_id = #{self.support_hierarchy_root_id}"
+    cond = find_in_support_hierarchy_by_model_conditions(*args)
     if args.first.eql?(:all)
       args = self.class.set_order_parameter("aln_resources.support_hierarchy_left DESC", *args)
     end
     self.class.find_by_model_and_condition(cond, model, *args)
+  end
+
+  def find_in_support_hierarchy_by_model_conditions(*args)
+    cond = "aln_resources.support_hierarchy_left BETWEEN #{self.support_hierarchy_left} AND #{self.support_hierarchy_right} AND "
+    self.support_hierarchy_root_id.nil? ? cond +=  "aln_resources.support_hierarchy_root_id IS NULL" : cond +=  "aln_resources.support_hierarchy_root_id = #{self.support_hierarchy_root_id}"
+    cond
   end
   
   ####################################################################################
