@@ -56,7 +56,7 @@ describe "management of aln_terminations in a connection" do
 
   before(:each) do
     @t = AlnTermination.new(model_data[:aln_termination_supported_1])
-    @p = AlnPath.new(:termination_type => :aln_termination)
+    @p = AlnPath.new(:termination_type => 'AlnTermination')
   end
   
   after(:each) do
@@ -77,7 +77,7 @@ describe "management of aln_termination descendants in a connection" do
 
   before(:each) do
     @t = IpTermination.new(model_data[:ip_termination_remove_1])
-    @p = AlnPath.new(:termination_type => :ip_termination)
+    @p = AlnPath.new(:termination_type => 'IpTermination')
   end
 
   after(:each) do

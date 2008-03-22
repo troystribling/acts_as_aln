@@ -71,7 +71,7 @@ describe "queries for root of support hierarcy" do
     root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2])]
     root = AlnTermination.new(model_data[:aln_termination])
     root << [AlnTermination.new(model_data[:aln_termination_supported_3]), AlnTermination.new(model_data[:aln_termination_supported_4])]
-    root = AlnConnection.new(model_data[:aln_connection].merge({:termination_type => :aln_termination}))
+    root = AlnConnection.new(model_data[:aln_connection].merge({:termination_type => 'AlnTermination'}))
     root.aln_resource << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2])]
     root_chk = AlnResource.find_support_hierarchy_root_by_model(AlnResource, :all)
     root_chk.length.should be(3)
@@ -89,7 +89,7 @@ describe "queries for root of support hierarcy" do
     root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_1])]
     root = AlnTermination.new(model_data[:aln_termination])
     root << [AlnTermination.new(model_data[:aln_termination_supported_2]), AlnTermination.new(model_data[:aln_termination_supported_2])]
-    root_con = AlnConnection.new(model_data[:aln_connection].merge({:termination_type => :aln_termination}))
+    root_con = AlnConnection.new(model_data[:aln_connection].merge({:termination_type => 'AlnTermination'}))
     root_con.aln_resource << [AlnTermination.new(model_data[:aln_termination_supported_2]), AlnTermination.new(model_data[:aln_termination_supported_2])]
     root_chk = AlnTermination.find_support_hierarchy_root_by_model(AlnTermination, :all)
     root_chk.length.should be(2)

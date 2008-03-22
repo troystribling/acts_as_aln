@@ -213,8 +213,8 @@ describe "management of aln_terminations in a connection" do
   before(:each) do
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
-    @c1 = AlnConnection.new(:termination_type => :aln_termination)
-    @c2 = AlnConnection.new(:termination_type => :aln_termination)
+    @c1 = AlnConnection.new(:termination_type => 'AlnTermination')
+    @c2 = AlnConnection.new(:termination_type => 'AlnTermination')
     @t1 = AlnTermination.new(model_data[:aln_termination_supported_1])
     @t2 = AlnTermination.new(model_data[:aln_termination_supported_2])
     @t3 = AlnTermination.new(model_data[:aln_termination_supported_3])
@@ -251,8 +251,8 @@ describe "management of aln_termination descendants in a connection" do
   before(:each) do
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
-    @c1 = AlnConnection.new(:termination_type => :ip_termination)
-    @c2 = AlnConnection.new(:termination_type => :ip_termination)
+    @c1 = AlnConnection.new(:termination_type => 'IpTermination')
+    @c2 = AlnConnection.new(:termination_type => 'IpTermination')
     @t1 = IpTermination.new(model_data[:ip_termination_query_1])
     @t2 = IpTermination.new(model_data[:ip_termination_query_2])
     @t3 = IpTermination.new(model_data[:ip_termination_query_3])

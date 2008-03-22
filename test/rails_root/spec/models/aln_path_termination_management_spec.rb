@@ -221,8 +221,8 @@ describe "management of aln_terminations in a path" do
   before(:each) do
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
-    @p1 = AlnPath.new(:termination_type => :aln_termination)
-    @p2 = AlnPath.new(:termination_type => :aln_termination)
+    @p1 = AlnPath.new(:termination_type => 'AlnTermination')
+    @p2 = AlnPath.new(:termination_type => 'AlnTermination')
     @t1 = AlnTermination.new(model_data[:aln_termination_supported_1])
     @t2 = AlnTermination.new(model_data[:aln_termination_supported_2])
     @t3 = AlnTermination.new(model_data[:aln_termination_supported_3])
@@ -260,8 +260,8 @@ describe "management of aln_termination descendants in a path" do
   before(:each) do
     @nic1 = Nic.new(model_data[:nic_1]) 
     @nic2 = Nic.new(model_data[:nic_2]) 
-    @p1 = AlnPath.new(:termination_type => :ip_termination)
-    @p2 = AlnPath.new(:termination_type => :ip_termination)
+    @p1 = AlnPath.new(:termination_type => 'IpTermination')
+    @p2 = AlnPath.new(:termination_type => 'IpTermination')
     @t1 = IpTermination.new(model_data[:ip_termination_query_1])
     @t2 = IpTermination.new(model_data[:ip_termination_query_2])
     @t3 = IpTermination.new(model_data[:ip_termination_query_3])
