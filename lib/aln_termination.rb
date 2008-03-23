@@ -10,14 +10,7 @@ class AlnTermination < ActiveRecord::Base
   ###############################################################
   has_descendants
   has_ancestor :named => :aln_resource   
-  
-  ###############################################################
-  #### declare terminates associations with aln_connection and
-  #### aln_path
-  ###############################################################
-  belongs_to :aln_connection  
-  belongs_to :aln_path  
-  
+       
   ###############################################################
   #### attribute validators
   ###############################################################
@@ -34,6 +27,27 @@ class AlnTermination < ActiveRecord::Base
   ####################################################################################
   #### instance attributes
   ####################################################################################
+  #### connection
+  def aln_connection(*args)
+    unless self.connection_id.nil?
+       self.create_connecter    
+      @connecter.load(*args)
+    end
+  end
+
+  def create_connecter
+   @connecter = AlnConnecter.new(self) if @connecter.nil?
+  end
+  
+  def aln_connection=(conn)
+    self.create_connecter    
+    @connecter.value = AlnConnection.to_aln_connection(conn)
+  end
+
+  def has_aln_connection?
+    self.connection_id.nil? ? false : true
+  end
+
   #### termination supporter
   def termination_supporter(*args)
     unless self.termination_supporter_id.nil?

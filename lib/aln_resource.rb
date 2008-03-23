@@ -23,7 +23,7 @@ class AlnResource < ActiveRecord::Base
     end
   end
 
-  #### set supporter
+  #### create supporter
   def create_supporter
    @supporter = AlnSupporter.new(self) if @supporter.nil?
   end

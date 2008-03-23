@@ -41,6 +41,25 @@ describe "adding terminations to a connection", :shared => true do
 end
 
 #########################################################################################################
+describe "adding terminations to a persistent connection", :shared => true do
+
+  it "should be possible to add multiple connections when connection is retrieved prior to adding each connection" do
+    c1_chk = AlnConnection.find(@c1.aln_connection_id)
+    c1_chk << @t1
+    @t1.save
+    t1_chk = AlnTermination.find(@t1.aln_termination_id)
+    c2_chk = AlnConnection.find(@c1.aln_connection_id)
+    c2_chk << @t2
+    @t2.save
+    t2_chk = AlnTermination.find(@t2.aln_termination_id)
+    AlnConnection.find(@c1.aln_connection_id).aln_terminations.should include(AlnTermination.to_aln_termination(t1_chk))
+    AlnConnection.find(@c1.aln_connection_id).aln_terminations.should include(AlnTermination.to_aln_termination(t2_chk))
+  end
+
+  
+end
+
+#########################################################################################################
 describe "accessing terminations in a connection", :shared => true do
 
   it "should be possible by index" do
@@ -211,8 +230,6 @@ end
 describe "management of aln_terminations in a connection" do
 
   before(:each) do
-    @nic1 = Nic.new(model_data[:nic_1]) 
-    @nic2 = Nic.new(model_data[:nic_2]) 
     @c1 = AlnConnection.new(:termination_type => 'AlnTermination')
     @c2 = AlnConnection.new(:termination_type => 'AlnTermination')
     @t1 = AlnTermination.new(model_data[:aln_termination_supported_1])
@@ -225,60 +242,79 @@ describe "management of aln_terminations in a connection" do
   after(:each) do
     @c1.destroy
     @c2.destroy
-    @nic1.destroy
-    @nic2.destroy
     @t1.destroy
     @t2.destroy
     @t3.destroy
     @td1.destroy
   end
 
-  it_should_behave_like "adding terminations to a connection"
-
-  it_should_behave_like "accessing terminations in a connection"
-
-  it_should_behave_like "removing terminations from a connection"
-
-  it_should_behave_like "retrieval of connection from contained termination"
+#  it_should_behave_like "adding terminations to a connection"
+#
+#  it_should_behave_like "accessing terminations in a connection"
+#
+#  it_should_behave_like "removing terminations from a connection"
+#
+#  it_should_behave_like "retrieval of connection from contained termination"
 
   it_should_behave_like "retrieval of contained termination from connection"
 
 end
 
 #########################################################################################################
-describe "management of aln_termination descendants in a connection" do
-
-  before(:each) do
-    @nic1 = Nic.new(model_data[:nic_1]) 
-    @nic2 = Nic.new(model_data[:nic_2]) 
-    @c1 = AlnConnection.new(:termination_type => 'IpTermination')
-    @c2 = AlnConnection.new(:termination_type => 'IpTermination')
-    @t1 = IpTermination.new(model_data[:ip_termination_query_1])
-    @t2 = IpTermination.new(model_data[:ip_termination_query_2])
-    @t3 = IpTermination.new(model_data[:ip_termination_query_3])
-    @td1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
-    @match_attributes = [:aln_connection_id, :network_id, :directionality, :name, :direction, :layer_id, :ip_addr]
-  end
-
-  after(:each) do
-    @c1.destroy
-    @c2.destroy
-    @nic1.destroy
-    @nic2.destroy
-    @t1.destroy
-    @t2.destroy
-    @t3.destroy
-    @td1.destroy
-  end
-
-  it_should_behave_like "adding terminations to a connection"
-
-  it_should_behave_like "accessing terminations in a connection"
-
-  it_should_behave_like "removing terminations from a connection"
-
-  it_should_behave_like "retrieval of connection from contained termination"
-
-  it_should_behave_like "retrieval of contained termination from connection"
-
-end
+#describe "management of aln_termination descendants in a connection" do
+#
+#  before(:each) do
+#    @c1 = AlnConnection.new(:termination_type => 'IpTermination')
+#    @c2 = AlnConnection.new(:termination_type => 'IpTermination')
+#    @t1 = IpTermination.new(model_data[:ip_termination_query_1])
+#    @t2 = IpTermination.new(model_data[:ip_termination_query_2])
+#    @t3 = IpTermination.new(model_data[:ip_termination_query_3])
+#    @td1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+#    @match_attributes = [:aln_connection_id, :network_id, :directionality, :name, :direction, :layer_id, :ip_addr]
+#  end
+#
+#  after(:each) do
+#    @c1.destroy
+#    @c2.destroy
+#    @t1.destroy
+#    @t2.destroy
+#    @t3.destroy
+#    @td1.destroy
+#  end
+#
+#  it_should_behave_like "adding terminations to a connection"
+#
+#  it_should_behave_like "accessing terminations in a connection"
+#
+#  it_should_behave_like "removing terminations from a connection"
+#
+#  it_should_behave_like "retrieval of connection from contained termination"
+#
+#  it_should_behave_like "retrieval of contained termination from connection"
+#
+#end
+#
+##########################################################################################################
+#describe "management of aln_termination descendants in a persistent connection" do
+#
+#  before(:each) do
+#    @c1 = AlnConnection.new(:termination_type => 'IpTermination')
+#    @c2 = AlnConnection.new(:termination_type => 'IpTermination')
+#    @t1 = IpTermination.new(model_data[:ip_termination_query_1])
+#    @t2 = IpTermination.new(model_data[:ip_termination_query_2])
+#    @t3 = IpTermination.new(model_data[:ip_termination_query_3])
+#    @td1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+#  end
+#
+#  after(:each) do
+#    @c1.destroy
+#    @c2.destroy
+#    @t1.destroy
+#    @t2.destroy
+#    @t3.destroy
+#    @td1.destroy
+#  end
+#
+#  it_should_behave_like "adding terminations to a persistent connection"
+#
+#end

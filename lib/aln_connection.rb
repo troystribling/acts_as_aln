@@ -12,11 +12,20 @@ class AlnConnection < ActiveRecord::Base
   has_descendants
   has_ancestor :named => :aln_resource   
 
-  ###############################################################
-  #### declare termination associations with aln_terminations
-  ###############################################################
-  has_many :aln_terminations, :dependent => :nullify     
-  
+  ####################################################################################
+  #### instance attributes
+  ####################################################################################
+  #### supported
+  def aln_terminations(*args)
+    @connected = AlnConnected.new(self) if @connected.nil?
+    @connected.load(*args)
+  end
+    
+  #### true if connection supports terminations
+  def has_aln_terminations?
+    @connected.empty? ? false : true
+  end
+
   ####################################################################################
   #### remove connection from termination
   def do_remove_from_termination (term)
@@ -32,13 +41,14 @@ class AlnConnection < ActiveRecord::Base
       self.validate_termination(t)    
       t.get_network_id 
       self.aln_terminations << AlnTermination.to_aln_termination(t)
+      t.save
     end
     add_term = lambda do |t| 
       self.validate_termination(t)    
       self.update_layer_id(t, false)
       t.network_id = self.aln_terminations.first.network_id 
-      t.save
       self.aln_terminations << AlnTermination.to_aln_termination(t)
+      t.save
     end
     if self.aln_terminations.empty?
       if term.class.eql?(Array) 
@@ -99,6 +109,13 @@ class AlnConnection < ActiveRecord::Base
   ####################################################################################
   # class methods
   class << self
+
+    ####################################################################################
+    #### return model aln_termination
+    def to_aln_connection(mod)
+      mod.class.eql?(AlnConnection) ? mod : mod.aln_connection
+    end
+
   end
 
 end
