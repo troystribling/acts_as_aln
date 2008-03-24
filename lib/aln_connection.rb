@@ -17,7 +17,7 @@ class AlnConnection < ActiveRecord::Base
   ####################################################################################
   #### supported
   def aln_terminations(*args)
-    @connected = AlnConnected.new(self) if @connected.nil?
+    @connected = AlnAggregated.new(:aggregator_model => self, :aggregated_class => AlnTermination) if @connected.nil?
     @connected.load(*args)
   end
     

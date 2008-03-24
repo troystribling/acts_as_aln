@@ -29,19 +29,23 @@ class AlnTermination < ActiveRecord::Base
   ####################################################################################
   #### connection
   def aln_connection(*args)
-    unless self.connection_id.nil?
+    unless self.aln_connection_id.nil?
        self.create_connecter    
       @connecter.load(*args)
     end
   end
 
   def create_connecter
-   @connecter = AlnConnecter.new(self) if @connecter.nil?
+   @connecter = AlnAggregator.new(:aggregated_model => self, :aggregator_class => AlnConnection) if @connecter.nil?
   end
   
   def aln_connection=(conn)
-    self.create_connecter    
-    @connecter.value = AlnConnection.to_aln_connection(conn)
+    if conn
+      self.create_connecter    
+      @connecter.value = AlnConnection.to_aln_connection(conn)
+    else
+      @connecter = nil
+    end
   end
 
   def has_aln_connection?

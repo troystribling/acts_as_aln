@@ -32,7 +32,7 @@ module AlnTerminationHelper
   #### remove all terminations
   def remove_all_terminations
     self.aln_terminations.each{|t| self.do_remove_from_termination(t)}
-    self.aln_terminations.to_ary.clear
+    self.aln_terminations.clear
   end
 
   ####################################################################################
