@@ -4,9 +4,10 @@ class AlnAggregated
 
   ##################################################################################
   def initialize(args)
-    args.assert_valid_keys(:aggregator_model, :aggregated_class)
+    args.assert_valid_keys(:aggregator_model, :aggregated_class, :aggregator_name)
     @aggregator = args[:aggregator_model]
     @aggregated_class = args[:aggregated_class]
+    @aggregator_name = args[:aggregator_name] || @aggregator.class.name.tableize.singularize
     @aggregator.save if @aggregator.new_record?
     @aggregated = []
     @loaded = false
@@ -44,7 +45,7 @@ class AlnAggregated
   
   ##################################################################################
   def set_aggregator(aggregated, aggregator)
-    aggregated.send("#{@aggregator.class.name.tableize.singularize}=".to_sym, aggregator)
+    aggregated.send("#{@aggregator_name}=".to_sym, aggregator)
   end
   
   ##################################################################################
@@ -56,7 +57,7 @@ class AlnAggregated
   def load(*args)
     args[0].nil? ? force = false : force = args[0]
     unless loaded? and not force
-      @aggregated = @aggregated_class.send("find_all_by_#{@aggregator.class.name.tableize.singularize}_id".to_sym, @aggregator.id)
+      @aggregated = @aggregated_class.send("find_all_by_#{@aggregator_name}_id".to_sym, @aggregator.id)
       @aggregated.each{|m| set_aggregator(m, @aggregator)}
       @loaded = true
     end

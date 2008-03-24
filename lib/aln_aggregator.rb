@@ -4,9 +4,10 @@ class AlnAggregator
 
   ##################################################################################
   def initialize(args)
-    args.assert_valid_keys(:aggregated_model, :aggregator_class)
+    args.assert_valid_keys(:aggregated_model, :aggregator_class, :aggregator_name)
     @aggregated = args[:aggregated_model]
     @aggregator_class = args[:aggregator_class]
+    @aggregator_name = args[:aggregator_name] || @aggregator_class.name.tableize.singularize
     @aggregator = nil
     @loaded = false
   end
@@ -15,7 +16,7 @@ class AlnAggregator
   def value=(v)
     @aggregator = v
     @aggregator.save if @aggregator.new_record?
-    @aggregated.send("#{@aggregator_class.name.tableize.singularize}_id=".to_sym, @aggregator.id)
+    @aggregated.send("#{@aggregator_name}_id=".to_sym, @aggregator.id)
     @loaded = true
   end
 
@@ -55,7 +56,7 @@ class AlnAggregator
 
   ##################################################################################
   def id_from_aggregated
-    @aggregated.send("#{@aggregator_class.name.tableize.singularize}_id".to_sym)
+    @aggregated.send("#{@aggregator_name}_id".to_sym)
   end
   
   ##################################################################################
