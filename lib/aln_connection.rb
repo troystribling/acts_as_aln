@@ -4,6 +4,7 @@ class AlnConnection < ActiveRecord::Base
   #### mixins
   extend AlnHelper
   include AlnTerminationHelper
+  include AlnAggregation
   
   ###############################################################
   #### declare descendant associations and ancestor association
@@ -13,18 +14,8 @@ class AlnConnection < ActiveRecord::Base
   has_ancestor :named => :aln_resource   
 
   ####################################################################################
-  #### instance attributes
-  ####################################################################################
-  #### supported
-  def aln_terminations(*args)
-    @connected = AlnAggregated.new(:aggregator_model => self, :aggregated_class => AlnTermination) if @connected.nil?
-    @connected.load(*args)
-  end
-    
-  #### true if connection supports terminations
-  def has_aln_terminations?
-    @connected.empty? ? false : true
-  end
+  #### aggregation relations
+  aggregator_of :aggregated_class => AlnTermination
 
   ####################################################################################
   #### remove connection from termination

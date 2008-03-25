@@ -3,6 +3,7 @@ class AlnTermination < ActiveRecord::Base
   ###############################################################
   #### mixins
   extend AlnHelper
+  include AlnAggregation
 
   ###############################################################
   #### declare descendant associations and ancestor association
@@ -10,7 +11,11 @@ class AlnTermination < ActiveRecord::Base
   ###############################################################
   has_descendants
   has_ancestor :named => :aln_resource   
-       
+
+  ####################################################################################
+  #### aggregation relations
+  aggregated_by :aggregator_class => AlnConnection
+         
   ###############################################################
   #### attribute validators
   ###############################################################
@@ -25,33 +30,6 @@ class AlnTermination < ActiveRecord::Base
                          :allow_nil => true
 
   ####################################################################################
-  #### instance attributes
-  ####################################################################################
-  #### connection
-  def aln_connection(*args)
-    unless self.aln_connection_id.nil?
-       self.create_connecter    
-      @connecter.load(*args)
-    end
-  end
-
-  def create_connecter
-   @connecter = AlnAggregator.new(:aggregated_model => self, :aggregator_class => AlnConnection) if @connecter.nil?
-  end
-  
-  def aln_connection=(conn)
-    if conn
-      self.create_connecter    
-      @connecter.value = AlnConnection.to_aln_connection(conn)
-    else
-      @connecter = nil
-    end
-  end
-
-  def has_aln_connection?
-    self.connection_id.nil? ? false : true
-  end
-
   #### termination supporter
   def termination_supporter(*args)
     unless self.termination_supporter_id.nil?
