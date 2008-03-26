@@ -4,6 +4,7 @@ class AlnPath < ActiveRecord::Base
   #### mixins
   extend AlnHelper
   include AlnTerminationHelper
+  include AlnAggregation
 
   ###############################################################
   #### declare descendant associations and ancestor association
@@ -12,10 +13,9 @@ class AlnPath < ActiveRecord::Base
   has_descendants
   has_ancestor :named => :aln_resource   
 
-  ###############################################################
-  #### declare termination associations with aln_terminations
-  ###############################################################
-  has_many :aln_terminations, :dependent => :nullify     
+  ####################################################################################
+  #### aggregation relations
+  aggregator_of :aggregated_class => AlnTermination
 
   ####################################################################################
   #### remove path from termination
@@ -50,6 +50,13 @@ class AlnPath < ActiveRecord::Base
   ####################################################################################
   # class methods
   class << self            
+
+    ####################################################################################
+    #### return model as aln_path
+    def to_aln_path(mod)
+      mod.class.eql?(AlnPath) ? mod : mod.aln_path
+    end
+
   end
 
 end

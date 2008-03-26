@@ -15,6 +15,7 @@ class AlnTermination < ActiveRecord::Base
   ####################################################################################
   #### aggregation relations
   aggregated_by :aggregator_class => AlnConnection
+  aggregated_by :aggregator_class => AlnPath
          
   ###############################################################
   #### attribute validators

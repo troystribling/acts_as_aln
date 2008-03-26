@@ -102,7 +102,7 @@ class AlnConnection < ActiveRecord::Base
   class << self
 
     ####################################################################################
-    #### return model aln_termination
+    #### return model as aln_connection
     def to_aln_connection(mod)
       mod.class.eql?(AlnConnection) ? mod : mod.aln_connection
     end

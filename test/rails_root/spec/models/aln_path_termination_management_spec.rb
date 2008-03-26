@@ -73,6 +73,25 @@ describe "accessing terminations in a path", :shared => true do
 end
 
 #########################################################################################################
+describe "adding terminations to a persistent path", :shared => true do
+
+  it "should be possible to add multiple terminations when path is retrieved prior to adding each termination" do
+    @c1.save
+    c1_chk = AlnConnection.find(@c1.aln_connection_id)
+    c1_chk << @t1
+    @t1.save
+    t1_chk = AlnTermination.find(@t1.aln_termination_id)
+    c2_chk = AlnConnection.find(@c1.aln_connection_id)
+    c2_chk << @t2
+    @t2.save
+    t2_chk = AlnTermination.find(@t2.aln_termination_id)
+    AlnConnection.find(@c1.aln_connection_id).aln_terminations.should include(AlnTermination.to_aln_termination(t1_chk))
+    AlnConnection.find(@c1.aln_connection_id).aln_terminations.should include(AlnTermination.to_aln_termination(t2_chk))
+  end
+  
+end
+
+#########################################################################################################
 describe "removing terminations from a path", :shared => true do
 
   def verify_path_termination_persistence
@@ -188,8 +207,8 @@ describe "retrieval of contained termination from path", :shared => true do
 
   it "should be possible for all terminations as AlnTermination class" do
     @p1 << [@t1, @t2, @t3]
-    @p1.aln_terminations.should have_attributes_with_values([AlnTermination.to_aln_termination(@t1).attributes, AlnTermination.to_aln_termination(@t2).attributes, AlnTermination.to_aln_termination(@t3).attributes])
-    @p1.aln_terminations.should be_class(AlnTermination)
+    @p1.aln_terminations.to_a.should have_attributes_with_values([AlnTermination.to_aln_termination(@t1).attributes, AlnTermination.to_aln_termination(@t2).attributes, AlnTermination.to_aln_termination(@t3).attributes])
+    @p1.aln_terminations.to_a.should be_class(AlnTermination)
   end
 
   it "should be possible for first termination as :termination_type class" do
@@ -290,5 +309,30 @@ describe "management of aln_termination descendants in a path" do
   it_should_behave_like "retrieval of path from contained termination"
 
   it_should_behave_like "retrieval of contained termination from path"
+
+end
+
+#########################################################################################################
+describe "management of aln_termination descendants in a persistent connection" do
+
+  before(:each) do
+    @p1 = AlnPath.new(:termination_type => 'IpTermination')
+    @p2 = AlnPath.new(:termination_type => 'IpTermination')
+    @t1 = IpTermination.new(model_data[:ip_termination_query_1])
+    @t2 = IpTermination.new(model_data[:ip_termination_query_2])
+    @t3 = IpTermination.new(model_data[:ip_termination_query_3])
+    @td1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_1])
+  end
+
+  after(:each) do
+    @p1.destroy
+    @p2.destroy
+    @t1.destroy
+    @t2.destroy
+    @t3.destroy
+    @td1.destroy
+  end
+
+  it_should_behave_like "adding terminations to a persistent path"
 
 end

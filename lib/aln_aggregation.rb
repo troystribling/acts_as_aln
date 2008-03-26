@@ -61,14 +61,14 @@ module AlnAggregation
       class_eval <<-do_eval
 
         def #{@aggregated_name}(*args)
-          @#{@aggregator_name}_aggregated = AlnAggregated.new(:aggregator_model => self, :aggregated_class => #{@aggregated_class}, :aggregator_name => #{@aggregator_name}) if @connected.nil?
+          @#{@aggregator_name}_aggregated = AlnAggregated.new(:aggregator_model => self, :aggregated_class => #{@aggregated_class}, :aggregator_name => '#{@aggregator_name}') if @#{@aggregator_name}_aggregated.nil?
           @#{@aggregator_name}_aggregated.load(*args)
         end
           
-        def has_#{@aggregated_name}?
-          @#{@aggregator_name}_aggregated.empty? ? false : true
+        def has_aln_terminations?
+          #{@aggregated_name}.empty? ? false : true
         end
-          
+                   
       do_eval
 
     end
@@ -163,8 +163,7 @@ module AlnAggregation
     ##################################################################################
     def value=(v)
       @aggregator = v
-      @aggregator.save if @aggregator.new_record?
-     
+      @aggregator.save if @aggregator.new_record?     
       @aggregated.send("#{@aggregator_name}_id=".to_sym, @aggregator.id)
       @loaded = true
     end
