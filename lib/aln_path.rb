@@ -32,6 +32,7 @@ class AlnPath < ActiveRecord::Base
       self.validate_termination(t)
       raise(PlanB::TerminationInvalid, "termination is in different network") unless t.network_id.eql?(self.get_path_network_id(t))
       self.aln_terminations << AlnTermination.to_aln_termination(t)
+      t.save
     end
     term.class.eql?(Array) ? term.each{|t| add_term[t]} : add_term[term]
     self.save

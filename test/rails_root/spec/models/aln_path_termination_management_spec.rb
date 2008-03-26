@@ -76,17 +76,17 @@ end
 describe "adding terminations to a persistent path", :shared => true do
 
   it "should be possible to add multiple terminations when path is retrieved prior to adding each termination" do
-    @c1.save
-    c1_chk = AlnConnection.find(@c1.aln_connection_id)
-    c1_chk << @t1
+    @p1.save
+    p1_chk = AlnPath.find(@p1.aln_path_id)
+    p1_chk << @t1
     @t1.save
     t1_chk = AlnTermination.find(@t1.aln_termination_id)
-    c2_chk = AlnConnection.find(@c1.aln_connection_id)
-    c2_chk << @t2
+    p2_chk = AlnPath.find(@p1.aln_path_id)
+    p2_chk << @t2
     @t2.save
     t2_chk = AlnTermination.find(@t2.aln_termination_id)
-    AlnConnection.find(@c1.aln_connection_id).aln_terminations.should include(AlnTermination.to_aln_termination(t1_chk))
-    AlnConnection.find(@c1.aln_connection_id).aln_terminations.should include(AlnTermination.to_aln_termination(t2_chk))
+    AlnPath.find(@p1.aln_path_id).aln_terminations.should include(AlnTermination.to_aln_termination(t1_chk))
+    AlnPath.find(@p1.aln_path_id).aln_terminations.should include(AlnTermination.to_aln_termination(t2_chk))
   end
   
 end
