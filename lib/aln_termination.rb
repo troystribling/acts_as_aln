@@ -16,6 +16,7 @@ class AlnTermination < ActiveRecord::Base
   #### aggregation relations
   aggregated_by :aggregator_class => AlnConnection
   aggregated_by :aggregator_class => AlnPath
+  aggregator_of :aggregated_class => self
          
   ###############################################################
   #### attribute validators
@@ -32,22 +33,12 @@ class AlnTermination < ActiveRecord::Base
 
   ####################################################################################
   #### termination supporter
-  def termination_supporter(*args)
-    unless self.termination_supporter_id.nil?
-       self.create_termination_supporter    
-      @termination_supporter.load(*args)
-    end
-  end
-
-  #### set supporter
-  def create_termination_supporter
-   @termination_supporter = AlnSupporter.new(self, :termination_supporter_id) if @termination_supporter.nil?
-  end
-  
-  #### set supporter
   def termination_supporter= (sup)
-    self.create_termination_supporter    
-    @termination_supporter.value = self.class.to_aln_termination(sup)
+    unless sup.nil?
+      self.termination_supporter_id = sup.aln_termination_id
+    else
+      self.termination_supporter_id = nil
+    end
   end
 
   ####################################################################################
@@ -83,7 +74,7 @@ class AlnTermination < ActiveRecord::Base
   def detach_support_hierarchy
     self.aln_resource.detach_support_hierarchy
     self.reload 
-    self.termination_supporter_id = nil
+    self.termination_supporter = nil
     self.save
     self.detach_network
   end

@@ -35,7 +35,7 @@ module AlnAggregation
         def #{@aggregator_name}=(agg)
           if agg
             self.create_#{@aggregator_name}_aggregator    
-            @#{@aggregator_name}_aggregator.value = #{@aggregator_class}.to_#{@aggregator_name}(agg)
+            @#{@aggregator_name}_aggregator.value = #{@aggregator_class}.to_#{@aggregator_class.name.tableize.singularize}(agg)
           else
             @#{@aggregator_name}_aggregator = nil
           end
