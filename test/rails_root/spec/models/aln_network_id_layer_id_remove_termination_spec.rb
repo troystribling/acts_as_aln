@@ -644,7 +644,7 @@ describe "assigned network ID and layer ID for terminations after deatching from
   
 end
 
-###########################################################################################################
+##########################################################################################################
 describe "assigned network ID and layer ID for terminations after deatching from supporting relationship where multiple supported network supported terminations at different layers are involved in connections with 1 other termination" do
 
   before(:each) do
