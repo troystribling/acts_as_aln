@@ -68,6 +68,7 @@ class AlnConnection < ActiveRecord::Base
     end     
     self.aln_terminations << AlnTermination.to_aln_termination(term)    
     self.save
+    term.save
   end  
 
   ####################################################################################
