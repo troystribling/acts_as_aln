@@ -29,7 +29,7 @@ module AlnAggregation
         end
         
         def create_#{@aggregator_name}_aggregator
-          @#{@aggregator_name}_aggregator = AlnAggregator.new(:aggregated_model => self, :aggregator_class => #{@aggregator_class}, :aggregator_name => "#{@aggregator_name}") if @connecter.nil?
+          @#{@aggregator_name}_aggregator = AlnAggregator.new(:aggregated_model => self, :aggregator_class => #{@aggregator_class}, :aggregator_name => "#{@aggregator_name}") if @#{@aggregator_name}_aggregator.nil?
         end
           
         def #{@aggregator_name}=(agg)

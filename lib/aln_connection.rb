@@ -18,13 +18,20 @@ class AlnConnection < ActiveRecord::Base
   aggregator_of :aggregated_class => AlnTermination
 
   ####################################################################################
+  #### destroy model and remove from connection ferom terminations
+  def destroy
+    AlnTermination.find_all_by_aln_connection_id(self.aln_connection_id, :readonly => false).each {|t| do_remove_from_termination(t)}
+    super
+  end
+
+  ####################################################################################
   #### remove connection from termination
   def do_remove_from_termination (term)
     term.aln_connection_id = nil
     term.aln_connection = nil
     term.save
   end
-      
+            
   ####################################################################################
   #### add termination to connection
   def << (term)    

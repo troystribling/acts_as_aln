@@ -18,44 +18,6 @@ class AlnResource < ActiveRecord::Base
   aggregated_by :aggregator_class => self, :aggregator_name => 'supporter'
   aggregator_of :aggregated_class => self, :aggregator_name => 'supporter', :aggregated_name => 'supported'
   
-#  ####################################################################################
-#  #### instance attributes
-#  ####################################################################################
-#  #### supporter
-#  def supporter(*args)
-#    unless self.supporter_id.nil?
-#       self.create_supporter    
-#      @supporter.load(*args)
-#    end
-#  end
-#
-#  #### create supporter
-#  def create_supporter
-#   @supporter = AlnSupporter.new(self) if @supporter.nil?
-#  end
-#  
-#  #### set supporter
-#  def supporter=(sup)
-#    self.create_supporter    
-#    @supporter.value = self.class.to_aln_resource(sup)
-#  end
-#         
-#  #### supported
-#  def supported(*args)
-#    @supported = AlnSupported.new(self) if @supported.nil?
-#    @supported.load(*args)
-#  end
-#    
-#  #### true if resource has supported
-#  def has_supported?
-#    supported.empty? ? false : true
-#  end
-#
-#  #### true if resource has supporter
-#  def has_supporter?
-#    self.supporter_id.nil? ? false : true
-#  end
-  
   ####################################################################################
   ##### update entire hierarchy
   def save_hierarchy

@@ -21,7 +21,7 @@ describe "assignement of layer ID for terminations when a connection is establis
     #### create terminations
     eth = EthernetTermination.new(model_data[:ethernet_termination_1])
 
-    #### create support relationship with nonterminating resouces    
+    #### create support relationship with nonterminating resources    
     @nic1 << eth  
     
     #### verify layer id of final configuration
@@ -51,7 +51,7 @@ describe "assignement of layer ID for terminations when a connection is establis
     eth1 = EthernetTermination.new(model_data[:ethernet_termination_1])
     eth2 = EthernetTermination.new(model_data[:ethernet_termination_1])
 
-    #### create support relationship with nonterminating resouces    
+    #### create support relationship with nonterminating resources    
     @nic1 << eth1   
     @nic2 << eth2   
     
@@ -89,11 +89,11 @@ describe "assignement of layer ID for terminations when a connection is establis
     eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
     ip1 = IpTermination.new(model_data[:ip_termination_1])
 
-    #### create initial support relationship with nonterminating resouces    
+    #### create initial support relationship with nonterminating resoucres    
     @nic1 << eth1   
     @nic2 << eth2   
         
-    #### create supporter network relationship with terminating resouces
+    #### create supporter network relationship with terminating resoucres
     eth1 << ip1    
 
     #### verify layer id of initial configuration
@@ -119,11 +119,11 @@ describe "assignement of layer ID for terminations when a connection is establis
     ip1 = IpTermination.new(model_data[:ip_termination_1])
     ip2 = IpTermination.new(model_data[:ip_termination_2])
 
-    #### create initial support relationship with nonterminating resouces    
+    #### create initial support relationship with nonterminating resoucres    
     @nic1 << eth1   
     @nic2 << eth2   
         
-    #### create supporter network relationship with terminating resouces
+    #### create supporter network relationship with terminating resoucres
     eth1 << ip1    
     eth2 << ip2    
 
@@ -151,11 +151,11 @@ describe "assignement of layer ID for terminations when a connection is establis
     eth2 = EthernetTermination.new(model_data[:ethernet_termination_2])
     ip1 = IpTermination.new(model_data[:ip_termination_1])
 
-    #### create initial support relationship with nonterminating resouces    
+    #### create initial support relationship with nonterminating resources    
     @nic1 << eth1   
     @nic2 << eth2   
         
-    #### create supporter network relationship with terminating resouces
+    #### create supporter network relationship with terminating resources
     eth2 << ip1    
 
     #### verify layer id of initial configuration
@@ -204,11 +204,11 @@ describe "assignement of layer ID for terminations when a connection is establis
     ip1 = IpTermination.new(model_data[:ip_termination_1])
     ip2 = IpTermination.new(model_data[:ip_termination_2])
 
-    #### create initial support relationship with nonterminating resouces    
+    #### create initial support relationship with nonterminating resources    
     @nic1 << eth1   
     @nic2 << eth2   
         
-    #### create supporter network relationship with terminating resouces
+    #### create supporter network relationship with terminating resources
     eth1 << ip1    
     eth2 << ip2    
 
@@ -238,11 +238,11 @@ describe "assignement of layer ID for terminations when a connection is establis
     ip1 = IpTermination.new(model_data[:ip_termination_1])
     ip2 = IpTermination.new(model_data[:ip_termination_2])
 
-    #### create initial support relationship with nonterminating resouces    
+    #### create initial support relationship with nonterminating resources    
     @nic1 << ip1
     @nic2 << eth2   
         
-    #### create supporter network relationship with terminating resouces
+    #### create supporter network relationship with terminating resources
     eth2 << ip2    
 
     #### verify layer id of initial configuration
@@ -270,11 +270,11 @@ describe "assignement of layer ID for terminations when a connection is establis
     ip2 = IpTermination.new(model_data[:ip_termination_2])
     tcp1 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
 
-    #### create initial support relationship with nonterminating resouces    
+    #### create initial support relationship with nonterminating resources    
     @nic1 << ip1
     @nic2 << eth2   
         
-    #### create supporter network relationship with terminating resouces
+    #### create supporter network relationship with terminating resources
     ip1 << tcp1
     eth2 << ip2    
 
@@ -306,12 +306,12 @@ describe "assignement of layer ID for terminations when a connection is establis
     tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
     tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
 
-    #### create initial support relationship with nonterminating resouces    
+    #### create initial support relationship with nonterminating resources    
     @nic1 << tcp1
     @nic2 << ip2
     @nic3 << eth3   
         
-    #### create supporter network relationship with terminating resouces
+    #### create supporter network relationship with terminating resources
     ip2 << tcp2
     eth3 << ip3    
     
@@ -372,12 +372,12 @@ describe "assignement of layer ID for terminations when a connection is establis
     tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
     tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
 
-    #### create initial support relationship with nonterminating resouces    
+    #### create initial support relationship with nonterminating resources    
     @nic1 << tcp1
     @nic2 << ip2
     @nic3 << eth3   
         
-    #### create supporter network relationship with terminating resouces
+    #### create supporter network relationship with terminating resources
     ip2 << tcp2
     eth3 << ip3    
     
@@ -415,12 +415,12 @@ describe "assignement of layer ID for terminations when a connection is establis
     tcp2 = TcpSocketTermination.new(model_data[:tcp_socket_termination_2])
     tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
 
-    #### create initial support relationship with nonterminating resouces    
+    #### create initial support relationship with nonterminating resources    
     @nic1 << tcp1
     @nic2 << ip2
     @nic3 << eth3   
         
-    #### create supporter network relationship with terminating resouces
+    #### create supporter network relationship with terminating resources
     ip2 << tcp2
     eth3 << ip3    
     
@@ -452,7 +452,6 @@ describe "assignement of layer ID for terminations when a connection is establis
   end
   
 end
-
 
 ##########################################################################################################
 describe "assignement of layer ID for terminations when a connection is established at a supporting layer with more than two terminations" do
@@ -486,12 +485,12 @@ describe "assignement of layer ID for terminations when a connection is establis
     tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
     tcp4 = TcpSocketTermination.new(model_data[:tcp_socket_termination_4])
 
-    #### create initial support relationship with nonterminating resouces    
+    #### create initial support relationship with nonterminating resources    
     @nic3 << ip3  
     @nic4 << tcp4
     @nic1 << [eth1, eth2]
         
-    #### create supporter network relationship with terminating resouces
+    #### create supporter network relationship with terminating resources
     eth1 << ip1    
     eth2 << ip2    
     ip3 << tcp3
@@ -499,7 +498,7 @@ describe "assignement of layer ID for terminations when a connection is establis
     #### create prior connections
     @ctcp.add_network(tcp3)
     @ctcp.add_network(tcp4)
-    @cip << [ip2, ip2]
+    @cip << [ip1, ip2]
     
     #### verify layer id of initial configuration
     check_layer_id(EthernetTermination, eth1.id, 0)
@@ -564,12 +563,12 @@ describe "assignement of layer ID for terminations for a network with more than 
     tcp3 = TcpSocketTermination.new(model_data[:tcp_socket_termination_3])
     tp1 = AlnTermination.new(model_data[:aln_termination_1])
 
-    #### create initial support relationship with nonterminating resouces    
+    #### create initial support relationship with nonterminating resources    
     @nic1 << tcp1
     @nic2 << ip2
     @nic3 << eth3   
         
-    #### create supporter network relationship with terminating resouces
+    #### create supporter network relationship with terminating resources
     tcp1 << tp1
     ip2 << tcp2
     eth3 << ip3    

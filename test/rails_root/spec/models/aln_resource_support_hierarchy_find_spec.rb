@@ -108,8 +108,8 @@ end
 describe "queries for directly supported from supporter", :shared => true do
 
   it "should find all supported and return models as aln_reasource" do 
-    @root.supported.to_array.should have_attributes_with_values([model_data[:aln_termination_resource_supported_1], model_data[:aln_termination_resource_supported_2], model_data[:aln_resource_supported_1], model_data[:aln_resource_supported_2]])
-    @root.supported.to_array.should be_class(AlnResource)
+    @root.supported.to_a.should have_attributes_with_values([model_data[:aln_termination_resource_supported_1], model_data[:aln_termination_resource_supported_2], model_data[:aln_resource_supported_1], model_data[:aln_resource_supported_2]])
+    @root.supported.to_a.should be_class(AlnResource)
   end
 
   it "should find first supported of specified model" do 
@@ -136,25 +136,6 @@ describe "queries for directly supported from supporter", :shared => true do
     mods.should be_class(AlnTermination)
   end
   
-end
-
-##########################################################################################################
-describe "queries for directly supported from aln_resource supporter" do
-
-  before(:each) do
-    root = AlnResource.new(model_data[:aln_resource])
-    root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
-             AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2])]
-    root.save
-    @root = AlnResource.find_support_hierarchy_root_by_model(AlnResource, :first)
-  end
-
-  after(:each) do
-    @root.destroy   
-  end
-  
-  it_should_behave_like "queries for directly supported from supporter"
-    
 end
 
 #########################################################################################################
@@ -540,6 +521,25 @@ describe "queries within hierachy from hierarchy root when hiearchy depth is 0 f
 
   it_should_behave_like "queries within hierachy from hierarchy root when hiearchy depth is 0"
   
+end
+
+##########################################################################################################
+describe "queries for directly supported from aln_resource supporter" do
+
+  before(:each) do
+    root = AlnResource.new(model_data[:aln_resource])
+    root << [AlnTermination.new(model_data[:aln_termination_supported_1]), AlnTermination.new(model_data[:aln_termination_supported_2]),
+             AlnResource.new(model_data[:aln_resource_supported_1]), AlnResource.new(model_data[:aln_resource_supported_2])]
+    root.save
+    @root = AlnResource.find_support_hierarchy_root_by_model(AlnResource, :first)
+  end
+
+  after(:each) do
+    @root.destroy   
+  end
+  
+  it_should_behave_like "queries for directly supported from supporter"
+    
 end
 
 ##########################################################################################################

@@ -18,6 +18,13 @@ class AlnPath < ActiveRecord::Base
   aggregator_of :aggregated_class => AlnTermination
 
   ####################################################################################
+  #### destroy model and remove from connection ferom terminations
+  def destroy
+    AlnTermination.find_all_by_aln_path_id(self.aln_path_id, :readonly => false).each {|t| do_remove_from_termination(t)}
+    super
+  end
+
+  ####################################################################################
   #### remove path from termination
   def do_remove_from_termination (term)
     term.aln_path_id = nil
