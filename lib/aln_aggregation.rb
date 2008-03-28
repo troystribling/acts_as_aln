@@ -29,7 +29,7 @@ module AlnAggregation
         end
         
         def create_#{@aggregator_name}_aggregator
-          @#{@aggregator_name}_aggregator = AlnAggregator.new(:aggregated_model => self, :aggregator_class => #{@aggregator_class}) if @connecter.nil?
+          @#{@aggregator_name}_aggregator = AlnAggregator.new(:aggregated_model => self, :aggregator_class => #{@aggregator_class}, :aggregator_name => "#{@aggregator_name}") if @connecter.nil?
         end
           
         def #{@aggregator_name}=(agg)
@@ -51,17 +51,16 @@ module AlnAggregation
 
     ######################################################################################################
     def aggregator_of(args)
-            
       args.assert_valid_keys(:aggregated_class, :aggregator_name, :aggregated_name)
       @aggregated_class = args[:aggregated_class]
       @aggregated_name = args[:aggregated_name] || @aggregated_class.name.tableize
       @aggregator_name = args[:aggregator_name] || self.name.tableize.singularize
-        
+
       ######################################################################################################
       class_eval <<-do_eval
 
         def #{@aggregated_name}(*args)
-          @#{@aggregator_name}_aggregated = AlnAggregated.new(:aggregator_model => self, :aggregated_class => #{@aggregated_class}, :aggregator_name => '#{@aggregator_name}') if @#{@aggregator_name}_aggregated.nil?
+          @#{@aggregator_name}_aggregated = AlnAggregated.new(:aggregator_model => self, :aggregated_class => #{@aggregated_class}, :aggregator_name => "#{@aggregator_name}") if @#{@aggregator_name}_aggregated.nil?
           @#{@aggregator_name}_aggregated.load(*args)
         end
           
@@ -163,7 +162,7 @@ module AlnAggregation
     ##################################################################################
     def value=(v)
       @aggregator = v
-      @aggregator.save if @aggregator.new_record?     
+      @aggregator.save if @aggregator.new_record?   
       @aggregated.send("#{@aggregator_name}_id=".to_sym, @aggregator.id)
       @loaded = true
     end
