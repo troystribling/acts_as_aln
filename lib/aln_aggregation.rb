@@ -24,7 +24,7 @@ module AlnAggregation
         def #{@aggregator_name}(*args)
           unless self.#{@aggregator_name}_id.nil?
              self.create_#{@aggregator_name}_aggregator    
-            @#{@aggregator_name}_aggregator.load(*args)
+            @#{@aggregator_name}_aggregator.load(*args).value
           end
         end
         
@@ -64,7 +64,7 @@ module AlnAggregation
           @#{@aggregator_name}_aggregated.load(*args)
         end
           
-        def has_aln_terminations?
+        def has_#{@aggregated_name}?
           #{@aggregated_name}.empty? ? false : true
         end
                    
