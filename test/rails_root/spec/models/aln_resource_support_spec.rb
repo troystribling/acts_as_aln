@@ -152,9 +152,9 @@ describe "force load of supporter from database", :shared => true do
     @root << [@s1, @s2, @s3]
     root_update = AlnResource.find(AlnResource.to_aln_resource(@root).id)
     root_update.name = 'new_name'
-    @s1.supporter.value.name.should_not eql(root_update.name)
+    @s1.supporter.name.should_not eql(root_update.name)
     root_update.save
-    @s1.supporter(true).value.name.should eql(root_update.name)
+    @s1.supporter(true).name.should eql(root_update.name)
   end
 
 end
@@ -176,9 +176,9 @@ describe "value of supporter from supported", :shared => true do
     @s1.supporter.id.should eql(AlnResource.to_aln_resource(@root).id)
     @s2.supporter.id.should eql(AlnResource.to_aln_resource(@root).id)
     @s3.supporter.id.should eql(AlnResource.to_aln_resource(@root).id)
-    @s1.supporter.value.object_id.should eql(AlnResource.to_aln_resource(@root).object_id)
-    @s2.supporter.value.object_id.should eql(AlnResource.to_aln_resource(@root).object_id)
-    @s3.supporter.value.object_id.should eql(AlnResource.to_aln_resource(@root).object_id)
+    @s1.supporter.object_id.should eql(AlnResource.to_aln_resource(@root).object_id)
+    @s2.supporter.object_id.should eql(AlnResource.to_aln_resource(@root).object_id)
+    @s3.supporter.object_id.should eql(AlnResource.to_aln_resource(@root).object_id)
   end
 
   it "should be persistant supporter for supported that is persistent" do
@@ -194,9 +194,9 @@ describe "value of supporter from supported", :shared => true do
   it "should be persistant supporter for supporter that is persistent" do
     @root << [@s1, @s2, @s3]
     @chk_root = AlnResource.find(AlnResource.to_aln_resource(@root).id)
-    @chk_root.supported[0].supporter.value.object_id.should eql(@chk_root.object_id)
-    @chk_root.supported[1].supporter.value.object_id.should eql(@chk_root.object_id)
-    @chk_root.supported[2].supporter.value.object_id.should eql(@chk_root.object_id)
+    @chk_root.supported[0].supporter.object_id.should eql(@chk_root.object_id)
+    @chk_root.supported[1].supporter.object_id.should eql(@chk_root.object_id)
+    @chk_root.supported[2].supporter.object_id.should eql(@chk_root.object_id)
   end
 
 end
