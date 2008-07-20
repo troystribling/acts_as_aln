@@ -16,7 +16,7 @@ module AlnAggregation
             
       args.assert_valid_keys(:aggregator_class, :aggregator_name)
       @aggregator_class = args[:aggregator_class]
-      @aggregator_name = args[:aggregator_name] || @aggregator_class.name.tableize.singularize
+      @aggregator_name = args[:aggregator_name] || @aggregator_class.name.underscore
         
       ######################################################################################################
       class_eval <<-do_eval
@@ -35,7 +35,7 @@ module AlnAggregation
         def #{@aggregator_name}=(agg)
           if agg
             self.create_#{@aggregator_name}_aggregator    
-            @#{@aggregator_name}_aggregator.value = #{@aggregator_class}.to_#{@aggregator_class.name.tableize.singularize}(agg)
+            @#{@aggregator_name}_aggregator.value = #{@aggregator_class}.to_#{@aggregator_class.name.underscore}(agg)
           else
             @#{@aggregator_name}_aggregator = nil
           end
@@ -54,7 +54,7 @@ module AlnAggregation
       args.assert_valid_keys(:aggregated_class, :aggregator_name, :aggregated_name)
       @aggregated_class = args[:aggregated_class]
       @aggregated_name = args[:aggregated_name] || @aggregated_class.name.tableize
-      @aggregator_name = args[:aggregator_name] || self.name.tableize.singularize
+      @aggregator_name = args[:aggregator_name] || self.name.underscore
 
       ######################################################################################################
       class_eval <<-do_eval
@@ -84,7 +84,7 @@ module AlnAggregation
       args.assert_valid_keys(:aggregator_model, :aggregated_class, :aggregator_name)
       @aggregator = args[:aggregator_model]
       @aggregated_class = args[:aggregated_class]
-      @aggregator_name = args[:aggregator_name] || @aggregator.class.name.tableize.singularize
+      @aggregator_name = args[:aggregator_name] || @aggregator.class.name.underscore
       @aggregator.save if @aggregator.new_record?
       @aggregated = []
       @loaded = false
@@ -154,7 +154,7 @@ module AlnAggregation
       args.assert_valid_keys(:aggregated_model, :aggregator_class, :aggregator_name)
       @aggregated = args[:aggregated_model]
       @aggregator_class = args[:aggregator_class]
-      @aggregator_name = args[:aggregator_name] || @aggregator_class.name.tableize.singularize
+      @aggregator_name = args[:aggregator_name] || @aggregator_class.name.underscore
       @aggregator = nil
       @loaded = false
     end

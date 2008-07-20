@@ -20,8 +20,8 @@ module PlanB
 
               def self.descendants
                 if self.has_descendants?
-                  self.find(:all, :select => "DISTINCT " + "#{target.name.tableize.singularize}_descendant_type").collect do |m|
-                    eval(m.#{target.name.tableize.singularize}_descendant_type)
+                  self.find(:all, :select => "DISTINCT " + "#{target.name.underscore}_descendant_type").collect do |m|
+                    eval(m.#{target.name.underscore}_descendant_type)
                   end
                 else
                   []
@@ -140,7 +140,7 @@ module PlanB
           end
 
           def add_options(opts)
-            ch = class_hierarchy.collect{|c| c.name.tableize}
+            ch = class_hierarchy.collect{|c| c.table_name}
             if ch.length > 1
               joins = ""
               conditions = ""              
@@ -157,7 +157,7 @@ module PlanB
                opts[:joins] = joins
               end
               if opts.include?(:conditions) and not opts[:conditions].empty?
-                opts[:conditions].class.eql?(Array) ? opts[:conditions].first << ' and ' + conditions : opts[:conditions] << ' and ' + conditions
+                opts[:conditions].class.eql?(Array) ? opts[:conditions].first << ' AND ' + conditions : opts[:conditions] << ' AND ' + conditions
               else
                 opts[:conditions] = conditions
               end

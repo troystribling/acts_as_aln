@@ -4,7 +4,7 @@ module AlnTerminationHelper
   #### validate termination class
   def validate_termination(term)
     raise(PlanB::InvalidClass, "termination must be #{self.termination_type.to_s}") unless term.class.name.eql?(self.termination_type)
-    raise(PlanB::TerminationInvalid, "termination is already in #{self.class.name.tableize.singularize}") unless eval("term.#{self.class.name.tableize.singularize}_id.nil?")
+    raise(PlanB::TerminationInvalid, "termination is already in #{self.class.name.underscore}") unless eval("term.#{self.class.name.underscore}_id.nil?")
     raise(PlanB::TerminationInvalid, "termination is in different support hierarchy") unless term.support_hierarchy_root_id.eql?(self.get_termination_support_hierarchy_root_id(term))
   end
 
@@ -48,7 +48,7 @@ module AlnTerminationHelper
   ####################################################################################
   #### return termination as :termination_type
   def find_termination_as_type(*args)
-    self.class.find_by_model_and_condition("aln_terminations.#{self.class.name.tableize.singularize}_id = #{self.id}", eval("#{self.termination_type.to_s.classify}"), *args)
+    self.class.find_by_model_and_condition("aln_terminations.#{self.class.name.underscore}_id = #{self.id}", eval("#{self.termination_type.to_s.classify}"), *args)
   end
     
 end

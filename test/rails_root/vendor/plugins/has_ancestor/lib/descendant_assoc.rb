@@ -131,13 +131,13 @@ module PlanB
             finder_options = args[attr_count]
             finder_cond = " "
             (0..attr_count-1).each do |i|
-              finder_cond << ancestor_for_attribute(finder_attr[i].to_sym).name.tableize + "." + finder_attr[i] + " = ? "
+              finder_cond << ancestor_for_attribute(finder_attr[i].to_sym).table_name + "." + finder_attr[i] + " = ? "
               i.eql?(finder_attr.length-1) ? finder_cond << " " : finder_cond << " and " 
             end
             if finder_options.nil?
               finder_options = {:conditions => [finder_cond] + args[0..attr_count-1]}
             else
-              if finder_options.include?(:conditions)
+              if finder_options.include?(:conditions) and not finder_options[:conditions].empty?
                 if finder_options[:conditions].class.eql?(Array)
                   finder_options[:conditions].first << ' and ' + finder_cond
                   finder_options[:conditions] += args[0..attr_count-1]

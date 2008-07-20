@@ -27,8 +27,8 @@ module PlanB
           def has_descendants
 
             #### declare active record association
-            self.primary_key = "#{self.name.tableize.singularize}_id"
-            eval("belongs_to :#{self.name.tableize.singularize}_descendant, :polymorphic => true")
+            self.primary_key = "#{self.name.underscore}_id"
+            eval("belongs_to :#{self.name.underscore}_descendant, :polymorphic => true")
 
             #### add methods used by both ancestors and descendants
             PlanB::Has::Ancestor::DynamicMethods::AncestorAndDescendant.add_methods(self)
@@ -48,7 +48,7 @@ module PlanB
            
             #### declare active record association
             args.assert_valid_keys(:named)
-            self.primary_key = "#{self.name.tableize.singularize}_id"
+            self.primary_key = "#{self.name.underscore}_id"
             eval("has_one args[:named], :as => :#{args[:named]}_descendant, :dependent => :destroy")
 
             #### add methods used by both ancestors and descendants

@@ -31,7 +31,7 @@ module PlanB
               target.class_eval <<-do_eval
   
                 def get_descendant
-                  #{target.to_s.tableize.singularize}_descendant      
+                  #{target.to_s.underscore}_descendant      
                 end
                     
               do_eval
